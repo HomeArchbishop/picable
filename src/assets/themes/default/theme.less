@@ -1,0 +1,40 @@
+@color-theme: #d66e9e; // #ec407a;
+@color-active-highlight-1: #FFA700;
+@color-active-highlight-2: rgb(252, 119, 141);
+@color-active-highlight-3: rgb(0, 143, 251);
+@color-active-highlight-4: rgb(150, 242, 150);
+@color-active-highlight-5: rgb(255, 119, 119);
+
+@color-font-default: #111111;
+@color-font-default-sub: darken(@color-font-default, -50%);
+@color-font-default-highlight: @color-theme;
+@color-font-theme: @color-theme;
+
+@color-shadow: #ccc;
+
+@color-line-default: #111111;
+@color-line-default-sub: #c5c5c5;
+
+@background-window-head: fade(@color-theme, 50%);
+@background-main: #fcfcfc;
+@background-btn-default: #99999944;
+@background-btn-highlight: @color-theme;
+
+@shadow-card-default: 0 0 8px 2px @color-shadow;
+
+@font-face {
+  font-family: 'ChineseFont';
+  src: url('~@/assets/fonts/FZJuZXFJF.ttf');
+}
+@font-face {
+  font-family: 'EnglishFont';
+  src: url('~@/assets/fonts/ZillaSlab.ttf');
+}
+
+.hoverable-btn {
+  border-radius: .75em;
+  transition: .2s;
+  &:hover {
+    background-color: @background-btn-default;
+  }
+}
