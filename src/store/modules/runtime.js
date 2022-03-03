@@ -1,4 +1,5 @@
 import deepcopy from 'deepcopy'
+import { isObjectLike } from 'lodash'
 
 export default {
   namespaced: true,
@@ -13,7 +14,8 @@ export default {
       { code: 'ld', name: '最爱' },
       { code: 'vd', name: '最多' }
     ],
-    searchKeyword: ''
+    searchKeyword: '',
+    savedScrollPositions: {}
   },
   mutations: {
     setDiversionUrlList (state, { nextDiversionUrlList }) {
@@ -27,6 +29,13 @@ export default {
     },
     setSearchKeyword (state, { nextSearchKeyword }) {
       state.searchKeyword = '' + nextSearchKeyword
+    },
+    setSavedScrollPosition (state, { routeName, nextX = 0, nextY = 0 }) {
+      if (!isObjectLike(state.savedScrollPositions[routeName])) {
+        state.savedScrollPositions[routeName] = {}
+      }
+      state.savedScrollPositions[routeName].x = nextX
+      state.savedScrollPositions[routeName].y = nextY
     }
   },
   actions: {}
