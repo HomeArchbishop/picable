@@ -1,4 +1,6 @@
+import { isObjectLike } from 'lodash'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '../store'
 
 const routes = [
   {
@@ -82,29 +84,28 @@ const routes = [
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
-  // scrollBehavior (to, from, savedPosition) {
-  //   if (to.name === from.name) { return {} }
-  //   console.log(savedPosition)
-  //   console.log(to)
-  //   if (savedPosition) {
-  //     console.log(savedPosition)
-  //     return savedPosition
-  //   } else {
-  //     const position = {}
-  //     if (to.hash) {
-  //       console.log(to.hash)
-  //       position.selector = to.hash
-  //     } else {
-  //       position.top = 0
-  //     }
-  //     return position
-  //   }
-  // }
+  routes,
+  scrollBehavior (to, from) {
+    if (to.name === from.name) { return false }
+    const x = isObjectLike(store.state.runtime.savedScrollPositions[to.name])
+      ? store.state.runtime.savedScrollPositions[to.name].x : 0
+    const y = isObjectLike(store.state.runtime.savedScrollPositions[to.name])
+      ? store.state.runtime.savedScrollPositions[to.name].y : 0
+    console.log(x, y)
+    // TODO better it
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({ left: x, top: y })
+      }, 50)
+    })
+  }
 })
 
-// router.beforeEach((to, from, next) => {
-//   next()
-// })
+router.beforeEach((to, from, next) => {
+  store.commit('runtime/setSavedScrollPosition', {
+    routeName: from.name, nextX: scrollX, nextY: scrollY
+  })
+  next()
+})
 
 export default router
