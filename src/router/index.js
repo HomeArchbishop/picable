@@ -45,6 +45,14 @@ const routes = [
     component: () => import('../views/ComicComments')
   },
   {
+    path: '/favourite',
+    name: 'Favourite',
+    component: () => import('../views/Favourite'),
+    meta: {
+      keepAlive: true
+    }
+  },
+  {
     path: '/search',
     name: 'Search',
     props: route => ({ kw: route.query.kw }),

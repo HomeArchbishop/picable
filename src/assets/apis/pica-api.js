@@ -168,9 +168,11 @@ async function personInfo ({ diversionUrl, token }) {
 }
 
 // 返回 favourite 已收藏漫画
-async function myFavourite (token, page = 1) {
+async function myFavourite ({ diversionUrl, token, page = 1 }) {
   const subUrl = `users/favourite?s=ua&page=${page}`
-  const respData = await sendGet(diversionUrl, subUrl, token)
+  const respData = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return respData.data.comics
 }
 
