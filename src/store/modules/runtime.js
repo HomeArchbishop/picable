@@ -16,6 +16,11 @@ export default {
       { code: 'ld', name: '最爱' },
       { code: 'vd', name: '最多' }
     ],
+    ttList: [
+      { code: 'H24', name: '日排' },
+      { code: 'D7', name: '周排' },
+      { code: 'D30', name: '月排' }
+    ],
     searchKeyword: '',
     savedScrollPositions: {}
   },

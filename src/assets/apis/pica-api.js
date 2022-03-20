@@ -284,9 +284,11 @@ async function sendComments (token, bookId, content = '') {
 
 // 排行榜
 // tt: 'H24' | 'D7' | 'D30'
-async function rank (token, tt) {
+async function rank ({ diversionUrl, token, tt }) {
   const subUrl = `comics/leaderboard?tt=${tt}&ct=VC`
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data.comics
 }
 

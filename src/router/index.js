@@ -111,7 +111,7 @@ const routes = [
   {
     path: '/rank',
     name: 'Rank',
-    component: () => import('../views/Random')
+    component: () => import('../views/Rank')
   }
 ]
 
