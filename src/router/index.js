@@ -92,6 +92,11 @@ const routes = [
     name: 'Link',
     props: route => ({ link: route.query.link }),
     component: () => import('../views/Link')
+  },
+  {
+    path: '/random',
+    name: 'Random',
+    component: () => import('../views/Random')
   }
 ]
 
