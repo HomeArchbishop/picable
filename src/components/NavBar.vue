@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="part-group center-group">
-      <span class="window-title">推荐</span>
+      <span class="window-title">{{ $store.state.runtime.windowTitle }}</span>
     </div>
     <div class="part-group right-group">
     </div>
