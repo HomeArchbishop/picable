@@ -97,6 +97,21 @@ const routes = [
     path: '/random',
     name: 'Random',
     component: () => import('../views/Random')
+  },
+  {
+    path: '/game',
+    name: 'Game',
+    component: () => import('../views/Random')
+  },
+  {
+    path: '/knight',
+    name: 'Knight',
+    component: () => import('../views/Random')
+  },
+  {
+    path: '/rank',
+    name: 'Rank',
+    component: () => import('../views/Random')
   }
 ]
 

@@ -9,7 +9,7 @@
         <item-small v-for="item in webList" :key="item._id + item.title" :item="item"
           :link="{ name: 'Link', query: { link: item.link } }" />
         <item-small v-for="item in appList" :key="item._id + item.title" :item="item"
-          :link="`/${item.path}`" />
+          :link="{ name: item.toName }" />
       </div>
     </div>
     <div class="display-card">

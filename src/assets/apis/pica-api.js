@@ -1,6 +1,6 @@
 import { sendGet, sendPost, sendPut } from './https/request'
 import axios from 'axios'
-
+import extraCategoriesList from '../../config/extraCategories'
 /**
  * sorts
  * @type ua: 默认
@@ -39,8 +39,7 @@ async function categories ({ diversionUrl, token }) {
     diversionUrl, subUrl: 'categories', token
   })
   const officialCategoriesList = respData.data.categories
-  const ExtraCategoriesList = [] // TODO await sendGet(backendApiUrl, 'extra-categories')
-  return [...officialCategoriesList, ...ExtraCategoriesList]
+  return [...officialCategoriesList, ...extraCategoriesList]
 }
 
 // 根据分类（cate）和标签返回漫画列表
