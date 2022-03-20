@@ -139,9 +139,11 @@ async function like ({ diversionUrl, token, comicId }) {
 }
 
 // 返回某一本漫画的评论
-async function comments (token, comicId, page = 1) {
+async function comments ({ diversionUrl, token, comicId, page = 1 }) {
   const subUrl = `comics/${comicId}/comments?page=${page}`
-  const respData = await sendGet(diversionUrl, subUrl, token)
+  const respData = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return respData.data
 }
 
@@ -322,16 +324,20 @@ async function register (registerData) {
 }
 
 // 评论点赞
-async function commentLike (token, commentId) {
+async function commentLike ({ diversionUrl, token, commentId }) {
   const subUrl = `comments/${commentId}/like`
-  const json = await sendPost(diversionUrl, subUrl, null, token)
+  const json = await sendPost({
+    diversionUrl, subUrl, token
+  })
   return json.data.action
 }
 
 // 获得子评论
-async function childrenComments (token, commentId, page = 1) {
+async function childrenComments ({ diversionUrl, token, commentId, page = 1 }) {
   const subUrl = `comments/${commentId}/childrens?page=${page}`
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data.comments
 }
 
