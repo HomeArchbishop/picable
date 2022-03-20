@@ -204,9 +204,11 @@ async function punch ({ diversionUrl, token }) {
 }
 
 // 获取随机本子
-async function randomComic (token) {
+async function randomComic ({ diversionUrl, token }) {
   const subUrl = 'comics/random'
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data.comics
 }
 
