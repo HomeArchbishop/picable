@@ -57,7 +57,7 @@
           <font-awesome-icon icon="heart" />点赞
           <div class="func-btn-badge">{{ comicDetailObject.likesCount }}</div>
         </div>
-        <router-link :to="`/comments/${comicId}`" custom v-slot="{ navigate }">
+        <router-link :to="{ name: 'ComicComments', params: { comicId } }" custom v-slot="{ navigate }">
           <div class="func-btn" @click="navigate">
             <font-awesome-icon icon="comment-dots" />评论
             <div class="func-btn-badge">{{ comicDetailObject.commentsCount }}</div>

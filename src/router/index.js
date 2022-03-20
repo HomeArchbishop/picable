@@ -40,6 +40,11 @@ const routes = [
     component: () => import('../views/ComicViewer')
   },
   {
+    path: '/comic-comments/:comicId',
+    name: 'ComicComments',
+    component: () => import('../views/ComicComments')
+  },
+  {
     path: '/search',
     name: 'Search',
     props: route => ({ kw: route.query.kw }),
@@ -91,7 +96,7 @@ const router = createRouter({
       ? store.state.runtime.savedScrollPositions[to.name].x : 0
     const y = isObjectLike(store.state.runtime.savedScrollPositions[to.name])
       ? store.state.runtime.savedScrollPositions[to.name].y : 0
-    console.log(x, y)
+    // console.log(x, y)
     // TODO better it
     return new Promise((resolve, reject) => {
       setTimeout(() => {

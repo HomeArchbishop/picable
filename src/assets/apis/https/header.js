@@ -1,8 +1,9 @@
 import * as uuid from 'uuid'
 import * as crypto from 'crypto'
+import config from '../../../config'
 
-const apiKey = 'C69BAF41DA5ABD1FFEDC6D2FEA56B'
-const shaKey = '~d}$Q7$eIni=V)9\\RK/P.RM4;9[7|@/CA}b~OW!3?EV`:<>M7pddUBL5n|0/*Cn'
+const apiKey = config.apiKey
+const shaKey = config.shaKey
 
 class Header {
   createSignature (url, time, nonce, method) {
@@ -19,19 +20,19 @@ class Header {
     this.headers = {
       time,
       nonce,
-      accept: 'application/vnd.picacomic.com.v1+json',
+      accept: config.accept,
       signature: this.createSignature(url, time, nonce, method),
       // host: 'picaapi.picacomic.com',  // TODO solve ths HOST safety problem
       authorization: auth,
-      'app-channel': '1',
+      'app-channel': config['app-channel'],
       'api-key': apiKey,
-      'app-version': '2.2.1.3.3.4',
-      'app-uuid': 'cb69a7aa-b9a8-3320-8cf1-74347e9ee970',
-      'image-quality': 'original',
-      'app-platform': 'android',
-      'app-build-version': '45',
+      'app-version': config['app-version'],
+      'app-uuid': config['app-uuid'],
+      'image-quality': config['image-quality'],
+      'app-platform': config['app-platform'],
+      'app-build-version': config['app-build-version'],
       // 'User-Agent': 'okhttp/3.8.1', // we have already set UA properly in electron background.js
-      'Content-Type': 'application/json; charset=UTF-8'
+      'Content-Type': config['Content-Type']
     }
   }
 }

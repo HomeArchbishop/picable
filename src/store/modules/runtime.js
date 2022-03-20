@@ -1,10 +1,12 @@
 import deepcopy from 'deepcopy'
 import { isObjectLike } from 'lodash'
 
+import config from '@/config'
+
 export default {
   namespaced: true,
   state: {
-    diversionUrlList: ['http://picaapi.picacomic.com/'],
+    diversionUrlList: [config.baseURL],
     keywordList: [],
     categoryList: [],
     sortList: [
