@@ -13,7 +13,8 @@ const routes = [
     name: 'Home',
     component: () => import('../views/Home'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '推荐'
     }
   },
   {
@@ -21,13 +22,17 @@ const routes = [
     name: 'Category',
     component: () => import('../views/Category'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '分类'
     }
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login')
+    component: () => import('../views/Login'),
+    meta: {
+      title: '登录'
+    }
   },
   {
     path: '/comic-detail/:comicId',
@@ -42,14 +47,18 @@ const routes = [
   {
     path: '/comic-comments/:comicId',
     name: 'ComicComments',
-    component: () => import('../views/ComicComments')
+    component: () => import('../views/ComicComments'),
+    meta: {
+      title: '漫画评论'
+    }
   },
   {
     path: '/favourite',
     name: 'Favourite',
     component: () => import('../views/Favourite'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '收藏'
     }
   },
   {
@@ -58,7 +67,8 @@ const routes = [
     props: route => ({ kw: route.query.kw }),
     component: () => import('../views/Search'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '搜索'
     }
   },
   {
@@ -67,7 +77,8 @@ const routes = [
     props: route => ({ t: route.query.t }),
     component: () => import('../views/SearchTag'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '标签搜索'
     }
   },
   {
@@ -76,7 +87,8 @@ const routes = [
     props: route => ({ c: route.query.c }),
     component: () => import('../views/SearchCategory'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '分类搜索'
     }
   },
   {
@@ -84,7 +96,8 @@ const routes = [
     name: 'User',
     component: () => import('../views/User'),
     meta: {
-      keepAlive: true
+      keepAlive: true,
+      title: '用户'
     }
   },
   {
@@ -96,22 +109,34 @@ const routes = [
   {
     path: '/random',
     name: 'Random',
-    component: () => import('../views/Random')
+    component: () => import('../views/Random'),
+    meta: {
+      title: '随机本子'
+    }
   },
   {
     path: '/game',
     name: 'Game',
-    component: () => import('../views/Random')
+    component: () => import('../views/Random'),
+    meta: {
+      title: '游戏区'
+    }
   },
   {
     path: '/knight',
     name: 'Knight',
-    component: () => import('../views/Random')
+    component: () => import('../views/Random'),
+    meta: {
+      title: '骑士榜'
+    }
   },
   {
     path: '/rank',
     name: 'Rank',
-    component: () => import('../views/Rank')
+    component: () => import('../views/Rank'),
+    meta: {
+      title: '排行榜'
+    }
   }
 ]
 
@@ -139,6 +164,13 @@ router.beforeEach((to, from, next) => {
     routeName: from.name, nextX: scrollX, nextY: scrollY
   })
   next()
+})
+
+router.afterEach((to, from) => {
+  // change window title
+  store.commit('runtime/setWindowTitle', {
+    nextTitle: to.meta.title || ''
+  })
 })
 
 export default router

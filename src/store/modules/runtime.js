@@ -9,6 +9,7 @@ export default {
     diversionUrlList: [config.baseURL],
     keywordList: [],
     categoryList: [],
+    windowTitle: '',
     sortList: [
       { code: 'ua', name: '默认' },
       { code: 'dd', name: '最新' },
@@ -33,6 +34,9 @@ export default {
     },
     setCategoryList (state, { nextCategoryList }) {
       state.categoryList = deepcopy(nextCategoryList)
+    },
+    setWindowTitle (state, { nextTitle }) {
+      state.windowTitle = deepcopy(nextTitle)
     },
     setSearchKeyword (state, { nextSearchKeyword }) {
       state.searchKeyword = '' + nextSearchKeyword
