@@ -163,14 +163,15 @@ router.beforeEach((to, from, next) => {
   store.commit('runtime/setSavedScrollPosition', {
     routeName: from.name, nextX: scrollX, nextY: scrollY
   })
-  next()
+  return next()
 })
 
-router.afterEach((to, from) => {
-  // change window title
-  store.commit('runtime/setWindowTitle', {
-    nextTitle: to.meta.title || ''
-  })
-})
+// router.afterEach((to, from, next) => {
+//   // change window title
+//   store.commit('runtime/setWindowTitle', {
+//     nextTitle: to.meta.title || ''
+//   })
+//   next()
+// })
 
 export default router
