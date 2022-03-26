@@ -2,6 +2,7 @@ import { formatImgUrl } from './formatImgUrl'
 import { viewLargeImage } from './viewLargeImage'
 import { getCalendarTime } from './getCalendarTime'
 import { getDate } from './getDate'
+import { showLoadingPica, hideLoadingPica } from './controlLoadingPica'
 
 export default {
   install: (app) => {
@@ -9,7 +10,9 @@ export default {
       formatImgUrl,
       viewLargeImage,
       getCalendarTime,
-      getDate
+      getDate,
+      showLoadingPica,
+      hideLoadingPica
     }
   }
 }

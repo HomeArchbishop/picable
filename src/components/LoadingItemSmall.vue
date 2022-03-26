@@ -12,6 +12,7 @@ export default {
   name: 'LoadingItemSmall'
 }
 </script>
+
 <style lang="less" scoped>
 @import '~@/assets/themes/config';
 @import '~@/assets/themes/@{theme-name}/theme';

@@ -23,13 +23,19 @@ export default {
     })
   },
   methods: {
-    chose: async function (nextDiversionIndex) {
+    async chose (nextDiversionIndex) {
+      // show loading-pica animation
+      this.$utils.showLoadingPica()
+      // check token
       this.$store.commit('storage/setDiversionIndex', { nextDiversionIndex })
-      if (await this.$api.checkToken({ diversionUrl: this.diversionUrl, token: this.token })) {
+      const tokenResult = await this.$api.checkToken({ diversionUrl: this.diversionUrl, token: this.token })
+      if (tokenResult) {
         this.$router.replace({ name: 'Home' })
       } else {
         this.$router.replace({ name: 'Login' })
       }
+      // hide loading-pica animation
+      this.$utils.hideLoadingPica()
     }
   }
 }

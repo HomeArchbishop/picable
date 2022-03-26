@@ -13,4 +13,4 @@ createApp(App).use(store).use(router).use(apis).use(utils).mixin({
       diversionUrl: state => state.runtime.diversionUrlList[state.storage.diversionIndex] || state.runtime.diversionUrlList[0]
     })
   }
-}).mount('body')
+}).mount('#app')
