@@ -27,6 +27,7 @@ async function createWindow () {
     y: 0,
     frame: false,
     titleBarStyle: 'hiddenInset',
+    transparent: true,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true

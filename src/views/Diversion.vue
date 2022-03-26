@@ -64,7 +64,7 @@ export default {
     width: 200px;
     background: @background-btn-default;
     border-radius: .75em;
-    transition: .2s;
+    // transition: .2s;
     cursor: pointer;
     &:not(:nth-child(1)) {
       margin-top: 12px;
