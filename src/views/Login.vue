@@ -65,7 +65,8 @@ export default {
       })
       if (nextToken === false) {
         swal({
-          title: '账号或密码错误'
+          title: '账号或密码错误',
+          icon: 'error'
         })
         return
       }
