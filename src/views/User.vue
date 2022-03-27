@@ -59,19 +59,25 @@
         </div>
         <div>{{ $utils.getDate(personInfo.birthday) }}</div>
       </div>
+      <hr>
+      <div class="function-line">
+        <div class="function-button"><font-awesome-icon icon="pen" /> 编辑资料</div>
+        <div class="function-button"><font-awesome-icon icon="gear" /> 设置</div>
+        <div class="function-button" @click="logout()"><font-awesome-icon icon="right-from-bracket" /> 退出登录</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight } from '@fortawesome/free-solid-svg-icons'
+import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import dobToAge from 'dob-to-age'
 import swal from 'sweetalert'
 import RadialProgressBar from 'vue-radial-progress'
 
-library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight)
+library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket)
 
 export default {
   name: 'User',
@@ -171,8 +177,22 @@ export default {
       this.isRequestingPunch = false
     },
     logout: async function () {
-      localStorage.token = ''
-      this.$router.push({ name: 'LoginView' })
+      swal({
+        title: '确定退出登录吗？',
+        text: '您的浏览记录、下载将不会被删除',
+        buttons: {
+          cancel: '取消',
+          confirm: {
+            text: '确认登出',
+            value: true
+          }
+        }
+      }).then(val => {
+        if (val) {
+          this.$store.commit('storage/setToken', { nextToken: '' })
+          this.$router.replace({ name: 'Diversion' })
+        }
+      })
     }
   },
   created () {
@@ -264,6 +284,30 @@ export default {
     div .label {
       font-size: 18px;
       opacity: .78;
+    }
+  }
+  hr {
+    border: none;
+    border-bottom: 1px solid @color-font-default-sub;
+  }
+  .function-line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 24px 0;
+    .function-button {
+      font-size: 18px;
+      text-decoration: none;
+      border-radius: .35em;
+      padding: 8px 12px;
+      opacity: .68;
+      transition: .1s;
+      cursor: pointer;
+      &:hover {
+        background-color: @background-btn-default;
+        color: @background-btn-highlight;
+      }
     }
   }
 }
