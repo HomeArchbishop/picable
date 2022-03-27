@@ -3,7 +3,6 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import appDefaultConfig from './configs/app.config.json'
-import Store from 'electron-store'
 import fs from 'fs'
 import path from 'path'
 
@@ -14,12 +13,6 @@ const appRuntimeConfigFilePath = isDevelopment
   : path.resolve(__dirname, './runtime/configs/app.config.json')
 const appRuntimeConfig = fs.existsSync(appRuntimeConfigFilePath) ? JSON.parse(fs.readFileSync(appRuntimeConfigFilePath).toString()) : {}
 const appConfig = { ...appDefaultConfig, ...appRuntimeConfig }
-
-const store = new Store()
-
-if (store.get('__is')) {
-  store.clear()
-}
 
 function createFolder (to) {
   const sep = path.sep
@@ -54,7 +47,7 @@ async function createWindow () {
     y: appConfig.window.y,
     frame: false,
     titleBarStyle: 'hiddenInset',
-    transparent: true,
+    show: false,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true
@@ -69,6 +62,10 @@ async function createWindow () {
     }
   })
 
+  win.once('ready-to-show', () => {
+    win.show()
+  })
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL, { userAgent: 'okhttp/3.8.1' })
@@ -79,7 +76,14 @@ async function createWindow () {
     win.loadURL('app://./index.html', { userAgent: 'okhttp/3.8.1' })
   }
 
-  win.on('resize', e => {
+  win.on('resized', e => {
+    const sizeData = win.getContentBounds()
+    appConfig.window = sizeData
+    createFolder(appRuntimeConfigFilePath)
+    fs.writeFileSync(appRuntimeConfigFilePath, JSON.stringify(appConfig))
+  })
+
+  win.on('moved', e => {
     const sizeData = win.getContentBounds()
     appConfig.window = sizeData
     createFolder(appRuntimeConfigFilePath)
