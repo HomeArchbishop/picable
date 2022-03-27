@@ -4,11 +4,11 @@
       <form @submit.prevent="login()">
         <div class="input-div">
           <label>用户名</label>
-          <input type="text" v-model="username" ref="usernameInput">
+          <input type="text" v-model.trim="username" ref="usernameInput">
         </div>
         <div class="input-div">
           <label>密&emsp;码</label>
-          <input type="password" v-model="password" ref="passwordInput">
+          <input type="password" v-model.trim="password" ref="passwordInput">
         </div>
         <div class="function-div">
           <router-link to="/register" custom v-slot="{ navigate }">
@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    login: async function () {
+    async login () {
       // ENTER will submit the form and call this function
       // while the password is empty,
       // so it is necessary to judge the empty, and then handle it
@@ -64,7 +64,6 @@ export default {
       })
       this.$store.commit('storage/setToken', { nextToken })
       this.$router.push({ name: 'Home' })
-      // window.location.reload()
     }
   }
 }
