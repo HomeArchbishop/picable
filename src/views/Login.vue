@@ -60,18 +60,26 @@ export default {
       }
 
       // real login
-      const nextToken = await this.$api.authorize({
-        diversionUrl: this.diversionUrl, username: this.username, password: this.password
-      })
-      if (nextToken === false) {
-        swal({
-          title: '账号或密码错误',
-          icon: 'error'
+      this.$utils.showLoadingPica()
+      try {
+        const nextToken = await this.$api.authorize({
+          diversionUrl: this.diversionUrl, username: this.username, password: this.password
         })
-        return
+        if (nextToken === false) {
+          this.$utils.hideLoadingPica()
+          swal({
+            title: '账号或密码错误',
+            icon: 'error'
+          })
+          return
+        }
+        this.$store.commit('storage/setToken', { nextToken })
+        this.$router.push({ name: 'Home' })
+        // hide loading-pica animation
+        this.$utils.hideLoadingPica()
+      } catch {
+        this.$utils.hideLoadingPica()
       }
-      this.$store.commit('storage/setToken', { nextToken })
-      this.$router.push({ name: 'Home' })
     }
   }
 }
