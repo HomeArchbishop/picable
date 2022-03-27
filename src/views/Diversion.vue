@@ -28,14 +28,18 @@ export default {
       this.$utils.showLoadingPica()
       // check token
       this.$store.commit('storage/setDiversionIndex', { nextDiversionIndex })
-      const tokenResult = await this.$api.checkToken({ diversionUrl: this.diversionUrl, token: this.token })
-      if (tokenResult) {
-        this.$router.replace({ name: 'Home' })
-      } else {
-        this.$router.replace({ name: 'Login' })
+      try {
+        const tokenResult = await this.$api.checkToken({ diversionUrl: this.diversionUrl, token: this.token })
+        if (tokenResult) {
+          this.$router.replace({ name: 'Home' })
+        } else {
+          this.$router.replace({ name: 'Login' })
+        }
+        // hide loading-pica animation
+        this.$utils.hideLoadingPica()
+      } catch {
+        this.$utils.hideLoadingPica()
       }
-      // hide loading-pica animation
-      this.$utils.hideLoadingPica()
     }
   }
 }
