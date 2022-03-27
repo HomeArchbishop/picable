@@ -1,20 +1,21 @@
 <template>
   <div class="login-container">
     <div class="form-box">
-      <form @submit="login()">
+      <form @submit.prevent="login()">
         <div class="input-div">
           <label>用户名</label>
-          <input type="text" v-model="username">
+          <input type="text" v-model="username" ref="usernameInput">
         </div>
         <div class="input-div">
           <label>密&emsp;码</label>
-          <input type="password" v-model="password">
+          <input type="password" v-model="password" ref="passwordInput">
         </div>
         <div class="function-div">
           <router-link to="/register" custom v-slot="{ navigate }">
             <div class="sub-link" @click="navigate">去注册</div>
           </router-link>
           <div class="submit-btn" @click="login()">
+            <input type="submit" value="" style="display: none;">
             登录<font-awesome-icon icon="angle-right" />
           </div>
         </div>
@@ -45,6 +46,19 @@ export default {
   },
   methods: {
     login: async function () {
+      // ENTER will submit the form and call this function
+      // while the password is empty,
+      // so it is necessary to judge the empty, and then handle it
+
+      if (!this.username) {
+        this.$refs.usernameInput.focus()
+        return
+      } else if (!this.password) {
+        this.$refs.passwordInput.focus()
+        return
+      }
+
+      // real login
       const nextToken = await this.$api.authorize({
         diversionUrl: this.diversionUrl, username: this.username, password: this.password
       })
