@@ -28,8 +28,11 @@ async function authorize ({ diversionUrl, username, password }) {
   const subUrl = 'auth/sign-in'
   const body = { email: username, password }
   const respData = await sendPost({
-    diversionUrl, subUrl, body
+    diversionUrl, subUrl, body, excludeStatus: [400]
   })
+  if (respData.code === 400) {
+    return false
+  }
   return respData.data.token
 }
 

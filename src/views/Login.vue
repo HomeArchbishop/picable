@@ -28,6 +28,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import swal from 'sweetalert'
 
 library.add(faAngleRight)
 
@@ -62,6 +63,12 @@ export default {
       const nextToken = await this.$api.authorize({
         diversionUrl: this.diversionUrl, username: this.username, password: this.password
       })
+      if (nextToken === false) {
+        swal({
+          title: '账号或密码错误'
+        })
+        return
+      }
       this.$store.commit('storage/setToken', { nextToken })
       this.$router.push({ name: 'Home' })
     }
