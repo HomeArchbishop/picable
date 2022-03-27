@@ -61,21 +61,24 @@ const sendRequest = async function ({
       }
       swal({
         title: '哔咔报告错误',
-        text: `错误详情\n${JSON.stringify(error.response.data)}`
+        text: `错误详情\n${JSON.stringify(error.response.data)}`,
+        icon: 'error'
       })
     } else if (error.request) {
       // The request was made but no response was received
       swal({
         title: '啊嘞，请求错误诶...',
         text: `请尝试如下几种解决方案\n1.检查网络连接\n2.重启应用\n3.无法解决时，将此截图反馈给开发者\n
-          错误详情\n${JSON.stringify(error.message)}\n${JSON.stringify(error.request)}`
+          错误详情\n${JSON.stringify(error.message)}\n${JSON.stringify(error.request)}`,
+        icon: 'error'
       })
     } else {
       // Something happened in setting up the request that triggered an Error
       swal({
         title: '哔咔被玩坏了...',
         text: `发生未知错误\n
-          错误详情\n${JSON.stringify(error.message)}`
+          错误详情\n${JSON.stringify(error.message)}`,
+        icon: 'error'
       })
     }
     return Promise.reject(error)

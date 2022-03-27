@@ -180,6 +180,7 @@ export default {
       swal({
         title: '确定退出登录吗？',
         text: '您的浏览记录、下载将不会被删除',
+        icon: 'warning',
         buttons: {
           cancel: '取消',
           confirm: {
