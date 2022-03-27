@@ -1,6 +1,6 @@
 import { sendGet, sendPost, sendPut } from './https/request'
 import axios from 'axios'
-import extraCategoriesList from '../../config/extraCategories'
+import extraCategoriesList from '../../configs/extraCategories'
 /**
  * sorts
  * @type ua: 默认

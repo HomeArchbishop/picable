@@ -2,6 +2,8 @@
   "name": "picable",
   "version": "0.1.0",
   "private": true,
+  "description": "a great app for PicaComic",
+  "author": "拆家大主教",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -23,6 +25,7 @@
     "dayjs": "^1.10.7",
     "deepcopy": "^2.1.0",
     "dob-to-age": "^1.0.0",
+    "electron-store": "^8.0.1",
     "lodash": "^4.17.21",
     "sweetalert": "^2.1.2",
     "v-viewer": "^3.0.10",

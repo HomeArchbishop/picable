@@ -1,6 +1,6 @@
 import * as uuid from 'uuid'
 import * as crypto from 'crypto'
-import config from '../../../config'
+import config from '../../../configs'
 
 const apiKey = config.apiKey
 const shaKey = config.shaKey
