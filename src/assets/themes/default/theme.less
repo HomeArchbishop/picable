@@ -38,3 +38,19 @@
     background-color: @background-btn-default;
   }
 }
+
+/**
+ * sweet alert
+ * customed style
+**/
+.swal-button--confirm {
+  background-color: fade(@background-btn-highlight, 70%);
+  &:hover:not([disabled]) {
+    background-color: fade(@background-btn-highlight, 90%)
+  }
+}
+
+.swal-button {
+  outline: none;
+  box-shadow: none;
+}
