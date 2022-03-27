@@ -1,7 +1,7 @@
 import deepcopy from 'deepcopy'
 import { isObjectLike } from 'lodash'
 
-import config from '@/config'
+import config from '../../configs'
 
 export default {
   namespaced: true,

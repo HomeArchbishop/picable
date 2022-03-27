@@ -2,9 +2,36 @@
 
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-// import path from 'path'
-// import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+import appDefaultConfig from './configs/app.config.json'
+import Store from 'electron-store'
+import fs from 'fs'
+import path from 'path'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+const appRuntimeConfigFilePath = isDevelopment
+  ? path.resolve(__dirname, '../src/runtime/configs/app.config.json')
+  : path.resolve(__dirname, './runtime/configs/app.config.json')
+const appRuntimeConfig = fs.existsSync(appRuntimeConfigFilePath) ? JSON.parse(fs.readFileSync(appRuntimeConfigFilePath).toString()) : {}
+const appConfig = { ...appDefaultConfig, ...appRuntimeConfig }
+
+const store = new Store()
+
+if (store.get('__is')) {
+  store.clear()
+}
+
+function createFolder (to) {
+  const sep = path.sep
+  const folders = path.dirname(to).split(sep).reverse()
+  let p = ''
+  while (folders.length) {
+    p += folders.pop() + sep
+    if (!fs.existsSync(p)) {
+      fs.mkdirSync(p)
+    }
+  }
+}
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -19,12 +46,12 @@ async function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
     // icon: path.join(__dirname, '../static/favicons/favicon.icns'),
-    width: 800,
-    height: 600,
+    width: appConfig.window.width,
+    height: appConfig.window.height,
     minWidth: 800,
     minHeight: 600,
-    x: 0,
-    y: 0,
+    x: appConfig.window.x,
+    y: appConfig.window.y,
     frame: false,
     titleBarStyle: 'hiddenInset',
     transparent: true,
@@ -51,6 +78,13 @@ async function createWindow () {
     // Load the index.html when not in development
     win.loadURL('app://./index.html', { userAgent: 'okhttp/3.8.1' })
   }
+
+  win.on('resize', e => {
+    const sizeData = win.getContentBounds()
+    appConfig.window = sizeData
+    createFolder(appRuntimeConfigFilePath)
+    fs.writeFileSync(appRuntimeConfigFilePath, JSON.stringify(appConfig))
+  })
 }
 
 // Quit when all windows are closed.
