@@ -121,14 +121,6 @@ const routes = [
     }
   },
   {
-    path: '/game',
-    name: 'Game',
-    component: () => import('../views/Random'),
-    meta: {
-      title: '游戏区'
-    }
-  },
-  {
     path: '/knight',
     name: 'Knight',
     component: () => import('../views/Knight'),
@@ -142,6 +134,30 @@ const routes = [
     component: () => import('../views/Rank'),
     meta: {
       title: '排行榜'
+    }
+  },
+  {
+    path: '/game',
+    name: 'Game',
+    component: () => import('../views/Game'),
+    meta: {
+      title: '游戏区'
+    }
+  },
+  {
+    path: '/game-detail/:gameId',
+    name: 'GameDetail',
+    component: () => import('../views/GameDetail'),
+    meta: {
+      title: '游戏'
+    }
+  },
+  {
+    path: '/game-comments/:gameId',
+    name: 'GameComments',
+    component: () => import('../views/GameComments'),
+    meta: {
+      title: '游戏评论'
     }
   }
 ]

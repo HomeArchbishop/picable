@@ -241,31 +241,45 @@ async function appList (token) {
 }
 
 // 获取game列表
-async function gameList (token, page = 1) {
+async function gameList ({ diversionUrl, token, page = 1 }) {
   const subUrl = `games?page=${page}`
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data.games
 }
 
 // 获取某个game详情
-async function gameInfo (token, gameId) {
+async function gameInfo ({
+  diversionUrl, token, gameId
+}) {
   const subUrl = `games/${gameId}`
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data.game
 }
 
 // 获取某个game评论
-async function gameComments (token, gameId, page = 1) {
+async function gameComments ({
+  diversionUrl, token, gameId, page = 1
+}) {
   const subUrl = `games/${gameId}/comments?page=${page}`
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data
 }
 
 // 爱心某个game
-async function gameLike (token, gameId) {
+async function gameLike ({
+  diversionUrl, token, gameId
+}) {
   const subUrl = `games/${gameId}/like`
   const body = { gameId }
-  const json = await sendPost(diversionUrl, subUrl, body, token)
+  const json = await sendPost({
+    diversionUrl, subUrl, body, token
+  })
   return json.data.action
 }
 
