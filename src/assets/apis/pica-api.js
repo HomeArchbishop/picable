@@ -296,9 +296,11 @@ async function rank ({ diversionUrl, token, tt }) {
 }
 
 // 骑士榜
-async function knightRank (token) {
+async function knightRank ({ diversionUrl, token }) {
   const subUrl = 'comics/knight-leaderboard'
-  const json = await sendGet(diversionUrl, subUrl, token)
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return json.data.users
 }
 

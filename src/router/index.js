@@ -1,8 +1,14 @@
 import { isObjectLike } from 'lodash'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '../store'
+// import { showLoadingPica, hideLoadingPica } from '../assets/utils/controlLoadingPica'
 
 const routes = [
+  {
+    path: '/--loading--',
+    name: 'Loading',
+    component: {}
+  },
   {
     path: '/',
     name: 'Diversion',
@@ -125,7 +131,7 @@ const routes = [
   {
     path: '/knight',
     name: 'Knight',
-    component: () => import('../views/Random'),
+    component: () => import('../views/Knight'),
     meta: {
       title: '骑士榜'
     }
@@ -166,12 +172,11 @@ router.beforeEach((to, from, next) => {
   return next()
 })
 
-// router.afterEach((to, from, next) => {
-//   // change window title
-//   store.commit('runtime/setWindowTitle', {
-//     nextTitle: to.meta.title || ''
-//   })
-//   next()
-// })
+router.afterEach((to, from) => {
+  // change window title
+  store.commit('runtime/setWindowTitle', {
+    nextTitle: to.meta.title || ''
+  })
+})
 
 export default router
