@@ -1,9 +1,9 @@
 <template>
 <div class="wrap">
   <div class="window-header-container">
-    <nav-bar v-if="$route.name !== 'Diversion' && $route.name !== 'Login'" />
+    <nav-bar v-if="$route.name !== 'Diversion' && $route.name !== 'Login' && $route.name !== 'AppLock'" />
   </div>
-  <side-bar v-if="$route.name !== 'Diversion' && $route.name !== 'Login'" />
+  <side-bar v-if="$route.name !== 'Diversion' && $route.name !== 'Login' && $route.name !== 'AppLock'" />
   <div class="app-main-root-container">
     <router-view v-slot="{ Component }">
       <transition>

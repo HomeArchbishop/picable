@@ -4,6 +4,8 @@ export default {
     token: 'e',
     diversionIndex: 2,
     blurOutOfFocus: false,
+    hasAppLock: true,
+    appLockPassword: '',
     sort: 'ua' // ['ua', 'da', 'dd', 'ld', 'vd']
   },
   mutations: {
@@ -15,6 +17,12 @@ export default {
     },
     setSort (state, { nextSort }) {
       state.sort = nextSort
+    },
+    setHasAppLock (state, { nextState }) {
+      state.hasAppLock = nextState
+    },
+    setAppLockPassword (state, { nextAppLockPassword }) {
+      state.appLockPassword = nextAppLockPassword
     }
   },
   actions: {}

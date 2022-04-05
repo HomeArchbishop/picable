@@ -1,7 +1,7 @@
 <template>
   <div class="diversion-container">
     <h2>请选择分流</h2>
-    <b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/>
+    <!--<b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/>-->
     <!--因为安全策略，暂不支持切换分流。请科学上网-->
     <div class="diversion-list">
       <div class="diversion-btn" @click="chose(0)">分流一</div>
