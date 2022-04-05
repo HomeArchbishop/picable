@@ -1,0 +1,181 @@
+<template>
+  <div class="setting-container">
+    <div class="info-item">
+      <div>
+        <div class="label">失焦模糊</div>
+      </div>
+      <div>
+        <toggle-button :isChecked="blurOutOfFocus" @click="$store.commit('storage/setBlurOutOfFocus', { nextState: !blurOutOfFocus })" />
+      </div>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">应用锁</div>
+      </div>
+      <div>
+        <toggle-button :isChecked="hasAppLock" @click="$store.commit('storage/setHasAppLock', { nextState: !hasAppLock })" />
+      </div>
+    </div>
+    <div class="info-item" v-if='hasAppLock'>
+      <div>
+        <div class="label">应用锁密码</div>
+      </div>
+      <div>
+        <div v-if="!isChangingAppLockPassword">
+          {{ isShowOriginAppLockPassword ? appLockPassword : ('*').repeat(appLockPassword.length) }}
+          <font-awesome-icon :icon="isShowOriginAppLockPassword ? 'eye-slash' : 'eye'"
+            @click="isShowOriginAppLockPassword = !isShowOriginAppLockPassword"
+          />|
+          <font-awesome-icon icon="pen" @click="isChangingAppLockPassword = true" v-if="!isChangingAppLockPassword" />
+        </div>
+        <form v-else @submit="changeAppLockPassword()">
+          <input type="text" v-model="nextAppLockPassword">
+          <div class="submit-btn" @click="changeAppLockPassword()">修改</div>|
+          <div class="submit-btn" @click="isChangingAppLockPassword=false">取消</div>
+        </form>
+      </div>
+    </div>
+    <br><hr><br>
+    <div class="info-item">
+      <div>
+        <div class="label">软件版本</div>
+      </div>
+      <div>{{ packageJSON.version }}</div>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">软件许可证</div>
+      </div>
+      <div>{{ packageJSON.license }}</div>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">GitHub地址</div>
+      </div>
+      <a :href="packageJSON.repository.github" target="_blank">{{ packageJSON.repository.github }}</a>
+    </div>
+    <br><hr><br>
+    <div>
+      <h3>开发者碎碎念</h3>
+      <p>
+        感谢您使用「Picable」。我本来是自用的，后来把这个项目发出来，希望大家能够喜欢。如果Star一下当然更好啦，一个Star能够让我兴奋好久😚。
+      </p>
+      <p>
+        「Picable」中并没有添加广告，只是为了提升电脑端的阅读体验。但我们不愿看到未来发生悲剧。还望各位力所能及时，多多在手机端「点广告，救哔咔」。
+      </p>
+      <br><hr><br>
+      <h3>声明</h3>
+      <p>
+        Picable（下称“本软件”）是<strong><u>非官方</u></strong>的免费哔咔漫画客户端。
+      </p>
+      <p>
+        本软件提供的内容仅用于个人学习、研究或欣赏。通过使用本站内容随之而来的风险与本站无关
+      </p>
+      <p>
+        使用者可将本软件及其源码依据MIT开源协议使用。
+      </p>
+      <p>
+        本软件不提供任何形式的保证。所有与使用本站相关的直接风险均由用户承担。
+      </p>
+      <p>
+        当您使用本软件时，说明您已经同意并接受本页面的所有信息。
+      </p>
+    </div>
+  </div>
+</template>
+
+<script>import { library } from '@fortawesome/fontawesome-svg-core'
+import { faEye, faEyeSlash, faPen } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import ToggleButton from '../components/ToggleButton'
+import { mapState } from 'vuex'
+
+library.add(faEye, faEyeSlash, faPen)
+
+export default {
+  name: 'Setting',
+  components: {
+    ToggleButton,
+    FontAwesomeIcon
+  },
+  data () {
+    return {
+      isShowOriginAppLockPassword: false,
+      isChangingAppLockPassword: false,
+      nextAppLockPassword: this.$store.state.storage.appLockPassword,
+      packageJSON: require('../../package.json')
+    }
+  },
+  computed: {
+    ...mapState({
+      blurOutOfFocus: state => state.storage.blurOutOfFocus,
+      hasAppLock: state => state.storage.hasAppLock,
+      appLockPassword: state => state.storage.appLockPassword
+    })
+  },
+  methods: {
+    changeAppLockPassword () {
+      this.$store.commit('storage/setAppLockPassword', { nextAppLockPassword: this.nextAppLockPassword })
+      this.isChangingAppLockPassword = false
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+@import '~@/assets/themes/config';
+@import '~@/assets/themes/@{theme-name}/theme';
+.setting-container {
+  .info-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 24px 0;
+    div .label {
+      font-size: 18px;
+      opacity: .78;
+    }
+    form {
+      input {
+        display: inline-block;
+        padding: 0 5px;
+        font-size: 20px;
+        padding: 0 10px 0 0;
+        width: 10em;
+        font-size: 18px;
+        font-family: inherit;
+        border: none;
+        border-bottom: 2px solid @color-line-default-sub;
+        box-sizing: content-box;
+        background-color: transparent;
+        outline: none;
+        transition: .2s;
+        text-align: right;
+        &:focus {
+          border-bottom: 2px solid @color-line-default;
+        }
+      }
+      .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 3px 4px 3px;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(110%);
+        }
+        .hoverable-btn()
+      }
+    }
+  }
+  hr {
+    border: none;
+    border-bottom: 1px solid @color-font-default-sub;
+  }
+}
+</style>

@@ -16,7 +16,7 @@
           <font-awesome-icon icon="eye-slash" />
         </div>
       </router-link>
-      <router-link to="/" custom v-slot="{ navigate }">
+      <router-link :to="{ name: 'Setting' }" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="gear" />
         </div>

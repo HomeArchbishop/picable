@@ -4,6 +4,10 @@
   "private": true,
   "description": "a great app for PicaComic",
   "author": "拆家大主教",
+  "license": "MIT",
+  "repository": {
+    "github": "https://github.com/HomeArchbishop/picable"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

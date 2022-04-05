@@ -62,7 +62,9 @@
       <hr>
       <div class="function-line">
         <div class="function-button"><font-awesome-icon icon="pen" /> 编辑资料</div>
-        <div class="function-button"><font-awesome-icon icon="gear" /> 设置</div>
+        <router-link :to="{ name: 'Setting' }" custom v-slot="{ navigate }">
+          <div class="function-button" @click="navigate"><font-awesome-icon icon="gear" /> 设置</div>
+        </router-link>
         <div class="function-button" @click="logout()"><font-awesome-icon icon="right-from-bracket" /> 退出登录</div>
       </div>
     </div>
