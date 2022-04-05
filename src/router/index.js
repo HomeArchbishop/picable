@@ -3,16 +3,23 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '../store'
 // import { showLoadingPica, hideLoadingPica } from '../assets/utils/controlLoadingPica'
 
+import AppLock from '../views/AppLock'
+import Diversion from '../views/Diversion'
+
 const routes = [
   {
-    path: '/--loading--',
-    name: 'Loading',
-    component: {}
+    path: '/',
+    name: 'AppLock',
+    component: AppLock,
+    beforeEnter: (to, from, next) => {
+      to.meta.from = from
+      next()
+    }
   },
   {
-    path: '/',
+    path: '/diversion',
     name: 'Diversion',
-    component: () => import('../views/Diversion')
+    component: Diversion
   },
   {
     path: '/home',

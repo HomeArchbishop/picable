@@ -6,7 +6,12 @@
           <font-awesome-icon icon="user-alt" />
         </div>
       </router-link>
-      <router-link to="/" custom v-slot="{ navigate }">
+      <router-link :to="{ name: 'AppLock' }" custom v-slot="{ navigate }" v-if="$store.state.storage.hasAppLock">
+        <div class="common-btn" @click="navigate">
+          <font-awesome-icon icon="lock" />
+        </div>
+      </router-link>
+      <router-link :to="{ name: 'Diversion' }" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="eye-slash" />
         </div>
@@ -56,10 +61,10 @@
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHouse, faArrowLeft, faEyeSlash, faUserAlt, faGear, faMagnifyingGlass, faBook, faDownload, faBookmark, faEye } from '@fortawesome/free-solid-svg-icons'
+import { faHouse, faArrowLeft, faEyeSlash, faUserAlt, faGear, faMagnifyingGlass, faBook, faDownload, faBookmark, faEye, faLock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faHouse, faArrowLeft, faEyeSlash, faUserAlt, faGear, faMagnifyingGlass, faBook, faDownload, faBookmark, faEye)
+library.add(faHouse, faArrowLeft, faEyeSlash, faUserAlt, faGear, faMagnifyingGlass, faBook, faDownload, faBookmark, faEye, faLock)
 
 export default {
   name: 'SideBar',
