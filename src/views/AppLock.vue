@@ -50,7 +50,7 @@ export default {
     },
     shiftPage () {
       console.log(this.$route)
-      if (this.$route.meta.from.fullPath === this.$route.fullPath) {
+      if (this.$route.meta.from?.fullPath === this.$route.fullPath) {
         this.$router.replace({ name: 'Diversion' })
       } else {
         this.$router.back()

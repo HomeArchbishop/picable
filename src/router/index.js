@@ -12,7 +12,7 @@ const routes = [
     name: 'AppLock',
     component: AppLock,
     beforeEnter: (to, from, next) => {
-      to.meta.from = from
+      to.meta.from = from || {}
       next()
     }
   },
@@ -165,6 +165,14 @@ const routes = [
     component: () => import('../views/GameComments'),
     meta: {
       title: '游戏评论'
+    }
+  },
+  {
+    path: '/setting',
+    name: 'Setting',
+    component: () => import('../views/Setting'),
+    meta: {
+      title: '设置'
     }
   }
 ]
