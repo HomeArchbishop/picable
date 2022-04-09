@@ -64,24 +64,8 @@ export default {
 
 <style lang="less">
 @import '~@/assets/themes/config';
+@import '~@/assets/themes/@{theme-name}/root';
 @import '~@/assets/themes/@{theme-name}/theme';
-
-body {
-  padding: 0;
-  margin: 0;
-  font-family: ChineseFont, EnglishFont, Apple Color Emoji, Segoe UI Emoji, system-ui, sans-serif;
-  color: @color-font-default;
-  background: @background-main;
-  overflow: scroll;
-
-  &.blur {
-    filter: blur(30px);
-  }
-}
-
-* {
-  box-sizing: border-box !important;
-}
 
 .wrap {
   width: 100%;
