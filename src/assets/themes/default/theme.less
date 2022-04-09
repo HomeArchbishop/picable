@@ -23,59 +23,10 @@
 
 @shadow-card-default: 0 0 8px 2px @color-shadow;
 
-a {
-  color: @color-theme;
-}
-
-@font-face {
-  font-family: 'ChineseFont';
-  src: url('~@/assets/fonts/FZJuZXFJF.ttf');
-}
-@font-face {
-  font-family: 'EnglishFont';
-  src: url('~@/assets/fonts/ZillaSlab.ttf');
-}
-
 .hoverable-btn {
   border-radius: .75em;
   transition: .2s;
   &:hover {
     background-color: @background-btn-default;
   }
-}
-
-/**
- * sweet alert
- * customed style
-**/
-.swal-button--confirm {
-  background-color: fade(@background-btn-highlight, 70%);
-  &:hover:not([disabled]) {
-    background-color: fade(@background-btn-highlight, 90%)
-  }
-}
-
-.swal-button {
-  outline: none;
-  box-shadow: none;
-}
-
-.swal-icon {
-  width: 100%;
-  height: 200px;
-  border: none;
-  border-radius: 0;
-  * {
-    display: none;
-  }
-}
-
-.swal-icon--error {
-  background: url('../../img/loading/1.png') center center no-repeat;
-  background-size: auto 100%;
-}
-
-.swal-icon--warning {
-  background: url('../../img/loading/10.png') center center no-repeat;
-  background-size: auto 100%;
 }

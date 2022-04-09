@@ -1,0 +1,66 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: ChineseFont, EnglishFont, Apple Color Emoji, Segoe UI Emoji, system-ui, sans-serif;
+  font-display: block;
+  color: @color-font-default;
+  background: @background-main;
+  overflow: scroll;
+
+  &.blur {
+    filter: blur(30px);
+  }
+}
+
+div {
+  box-sizing: border-box !important;
+}
+
+a {
+  color: @color-theme;
+}
+
+@font-face {
+  font-family: 'ChineseFont';
+  src: url('~@/assets/fonts/FZJuZXFJF.ttf');
+}
+@font-face {
+  font-family: 'EnglishFont';
+  src: url('~@/assets/fonts/ZillaSlab.ttf');
+}
+
+/**
+ * sweet alert
+ * customed style
+**/
+.swal-button--confirm {
+  background-color: fade(@background-btn-highlight, 70%);
+  &:hover:not([disabled]) {
+    background-color: fade(@background-btn-highlight, 90%)
+  }
+}
+
+.swal-button {
+  outline: none;
+  box-shadow: none;
+}
+
+.swal-icon {
+  width: 100%;
+  height: 200px;
+  border: none;
+  border-radius: 0;
+  * {
+    display: none;
+  }
+}
+
+.swal-icon--error {
+  background: url('../../img/loading/1.png') center center no-repeat;
+  background-size: auto 100%;
+}
+
+.swal-icon--warning {
+  background: url('../../img/loading/10.png') center center no-repeat;
+  background-size: auto 100%;
+}
