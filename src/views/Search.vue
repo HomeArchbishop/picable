@@ -12,7 +12,7 @@
         </tag-item>
       </div>
     </div>
-    <div class="display-card" v-if="inputKeyword">
+    <div class="display-card" v-if="_kw">
       <div class="menu-area">
         <div class="sort-list">
           <div class="sort-item" @click.stop="changeSort(item.code)" :class="{ current: sort === item.code }"

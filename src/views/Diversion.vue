@@ -1,6 +1,6 @@
 <template>
   <div class="diversion-container">
-    <h2>请选择分流</h2>
+    <!--<h2>请选择分流</h2>-->
     <!--<b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/>-->
     <!--因为安全策略，暂不支持切换分流。请科学上网-->
     <div class="diversion-list">
@@ -56,6 +56,9 @@ export default {
   justify-content: center;
   height: 70vh;
   opacity: .89;
+  h2 {
+    font-weight: normal;
+  }
 }
 .diversion-list {
   display: flex;

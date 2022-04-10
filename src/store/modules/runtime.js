@@ -22,6 +22,7 @@ export default {
       { code: 'D7', name: '周排' },
       { code: 'D30', name: '月排' }
     ],
+    currentTt: 'H24',
     searchKeyword: '',
     savedScrollPositions: {}
   },
@@ -37,6 +38,9 @@ export default {
     },
     setWindowTitle (state, { nextTitle }) {
       state.windowTitle = deepcopy(nextTitle)
+    },
+    setCurrentTt (state, { nextCurrentTt }) {
+      state.currentTt = '' + nextCurrentTt
     },
     setSearchKeyword (state, { nextSearchKeyword }) {
       state.searchKeyword = '' + nextSearchKeyword

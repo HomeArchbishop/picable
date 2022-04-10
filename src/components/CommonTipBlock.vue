@@ -25,6 +25,7 @@ export default {
   user-select: none;
   cursor: default;
   transition: .2s;
+  opacity: .78;
   &.hoverable {
     cursor: pointer;
     &:hover {

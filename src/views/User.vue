@@ -236,12 +236,13 @@ export default {
           margin-left: 20px;
           .username {
             font-size: 26px;
-            font-weight: 600;
             margin-bottom: 2px;
+            opacity: 1;
           }
           .sub-info {
             display: flex;
             flex-direction: row;
+            opacity: .8;
             .gender-badge {
               margin-right: 4px;
             }
