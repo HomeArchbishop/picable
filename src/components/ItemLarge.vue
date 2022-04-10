@@ -61,6 +61,7 @@ export default {
   padding: 10px;
   box-shadow: @shadow-card-default;
   border-radius: .75em;
+  font-weight: 300;
   cursor: pointer;
   .img-div {
     display: flex;
@@ -86,7 +87,7 @@ export default {
     line-height: 25px;
     .title {
       font-size: 18px;
-      font-weight: 700;
+      font-weight: normal;
     }
     .description {
       color: @color-font-default-sub;

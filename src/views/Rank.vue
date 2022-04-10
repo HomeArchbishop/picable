@@ -1,6 +1,7 @@
 <template>
   <div class="rank-container">
     <div class="display-card">
+      <h1><span class="title-highlight-span">排行：</span>{{ $store.state.runtime.ttList.find(({ code }) => code === tt).name }}</h1>
       <div class="menu-area">
         <div class="tt-list">
           <div class="tt-item" @click.stop="changeTt(item.code)" :class="{ current: tt === item.code }"
@@ -36,13 +37,15 @@ export default {
       H24List: [],
       D7List: [],
       D30List: [],
-      tt: 'H24', // H24 D7 D30
       isSearching: false
     }
   },
   computed: {
     rankList () {
       return this[`${this.tt}List`]
+    },
+    tt () {
+      return this.$store.state.runtime.currentTt // H24 D7 D30
     }
   },
   methods: {
@@ -59,8 +62,8 @@ export default {
       // change state.
       this.isSearching = false
     },
-    changeTt: async function (tt = 'H24') {
-      this.tt = tt
+    async changeTt (tt = 'H24') {
+      this.$store.commit('runtime/setCurrentTt', { nextCurrentTt: tt })
     }
   },
   watch: {
@@ -82,6 +85,9 @@ export default {
 .rank-container {
   .display-card {
     width: 100%;
+    .title-highlight-span {
+      color: @color-font-default-highlight;
+    }
     .menu-area {
       width: 100%;
       padding: 15px;

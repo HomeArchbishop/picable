@@ -22,6 +22,7 @@
   }
   &:hover {
     transform: scale(110%);
+    color: lighten(@color-font-default, 20%);
     background: lighten(@background-btn-highlight, 15%);
   }
 }

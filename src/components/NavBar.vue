@@ -72,7 +72,7 @@ export default {
     }
     .window-title {
       font-size: 18px;
-      font-weight: 700;
+      // font-weight: 700;
     }
   }
 }

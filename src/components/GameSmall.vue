@@ -90,7 +90,7 @@ export default {
     }
   }
   .title {
-    font-weight: 800;
+    // font-weight: 800;
     font-size: 16px;
     padding: 0 6px;
     margin-top: 4px;

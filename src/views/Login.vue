@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
     <div class="form-box">
+      <h1 class="highlight">PICA登录</h1>
       <form @submit.prevent="login()">
         <div class="input-div">
           <label>用户名</label>
@@ -99,6 +100,11 @@ export default {
 .form-box {
   display: flex;
   flex-direction: column;
+  .highlight {
+    width: 100%;
+    text-align: left;
+    color: @color-font-default-highlight;
+  }
   .input-div {
     display: flex;
     flex-direction: row;

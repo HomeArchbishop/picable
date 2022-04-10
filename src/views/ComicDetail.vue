@@ -382,6 +382,7 @@ export default {
       color: @color-font-default-sub;
       padding-right: 2em;
       position: relative;
+      font-weight: 300;
     }
 
     .toggle-btn { /* btn that toggle all description or tags */

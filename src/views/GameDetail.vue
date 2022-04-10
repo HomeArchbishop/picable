@@ -226,6 +226,7 @@ export default {
       color: @color-font-default-sub;
       padding-right: 2em;
       position: relative;
+      font-weight: 300;
     }
     .toggle-btn { /* btn that toggle all description or tags */
       display: inline-block;
@@ -299,9 +300,9 @@ export default {
       width: fit-content;
       min-width: 4em;
       font-size: 20px;
-      font-weight: 900;
       margin-bottom: -4px;
-      border-bottom: 3px solid @color-font-default-sub;
+      border-bottom: 3px solid fade(@color-font-default-sub, 50%);
+      opacity: .78;
       &::before {
         content: '>';
         margin-right: 4px;
@@ -339,9 +340,9 @@ export default {
       width: fit-content;
       min-width: 4em;
       font-size: 20px;
-      font-weight: 900;
       margin-bottom: -4px;
-      border-bottom: 3px solid @color-font-default-sub;
+      border-bottom: 3px solid fade(@color-font-default-sub, 50%);
+      opacity: .78;
       &::before {
         content: '>';
         margin-right: 4px;
