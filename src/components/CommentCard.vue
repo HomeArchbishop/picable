@@ -12,13 +12,13 @@
         <div class="info-bar">
           <div>
             <div class="name">
-              {{ item._user.name.substr(0, 20) + (item._user.name.slice(20) ? '...' : '') }}
+              {{ (item._user?.name.substr(0, 20) || '未知用户') + (item._user?.name.slice(20) ? '...' : '') }}
             </div>
-            <div v-if="['m', 'f'].includes(item._user.gender)">&emsp;</div>
-            <font-awesome-icon :icon="{ m: 'mars', f: 'venus' }[item._user.gender]"
-              v-if="['m', 'f'].includes(item._user.gender)" class="gender-badge"
+            <div v-if="['m', 'f'].includes(item._user?.gender)">&emsp;</div>
+            <font-awesome-icon :icon="{ m: 'mars', f: 'venus' }[item._user?.gender]"
+              v-if="['m', 'f'].includes(item._user?.gender)" class="gender-badge"
             />
-            &emsp;Lv{{ item._user.level }} [{{ item._user.title }}]
+            <span v-if="item._user">&emsp;Lv{{ item._user?.level }} [{{ item._user?.title }}]</span>
           </div>
           <div>{{ createdTime }}</div>
         </div>
