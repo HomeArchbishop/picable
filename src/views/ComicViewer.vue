@@ -125,12 +125,23 @@ export default {
       // TODO to be finished
       // const container = this.$refs.container
       // container.scrollTo(0, container.scrollHeight)
+    },
+    async recordRecentComic () {
+      const currentRecentComicIdList = await window.electronAPI.existRuntimeFile({ file: './recentComicIdList.json' })
+        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './recentComicIdList.json' })).reverse()
+        : []
+      const recentComicIdSet = new Set(currentRecentComicIdList)
+      recentComicIdSet.delete(this.comicId)
+      recentComicIdSet.add(this.comicId)
+      const recentComicIdList = Array.from(recentComicIdSet).reverse()
+      window.electronAPI.writeRuntimeFile({ file: './recentComicIdList.json', content: JSON.stringify(recentComicIdList) })
     }
   },
   created () {
     this.updateRecentStorage()
     this.updateNewPicturePage()
     this.getEpisodesList()
+    this.recordRecentComic()
   }
 }
 </script>

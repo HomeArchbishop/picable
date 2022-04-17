@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import appDefaultConfig from './configs/app.config.json'
 import fs from 'fs'
@@ -8,9 +8,10 @@ import path from 'path'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-const appRuntimeConfigFilePath = isDevelopment
-  ? path.resolve(__dirname, '../src/runtime/configs/app.config.json')
-  : path.resolve(__dirname, './runtime/configs/app.config.json')
+const appRuntimeDirPath = isDevelopment
+  ? path.resolve(__dirname, '../src/runtime')
+  : path.resolve(__dirname, './runtime')
+const appRuntimeConfigFilePath = path.resolve(appRuntimeDirPath, 'configs/app.config.json')
 const appRuntimeConfig = fs.existsSync(appRuntimeConfigFilePath) ? JSON.parse(fs.readFileSync(appRuntimeConfigFilePath).toString()) : {}
 const appConfig = { ...appDefaultConfig, ...appRuntimeConfig }
 
@@ -50,7 +51,8 @@ async function createWindow () {
     show: false,
     webPreferences: {
       webSecurity: false,
-      nodeIntegration: true
+      nodeIntegration: true,
+      preload: path.resolve(__dirname, 'preload.js')
 
       // Required for Spectron testing
       // enableRemoteModule: !!process.env.IS_TEST
@@ -88,6 +90,23 @@ async function createWindow () {
     appConfig.window = sizeData
     createFolder(appRuntimeConfigFilePath)
     fs.writeFileSync(appRuntimeConfigFilePath, JSON.stringify(appConfig))
+  })
+
+  ipcMain.handle('write-runtime-file', async (event, { file, content }) => {
+    const fileResolvedPath = path.resolve(appRuntimeDirPath, './database', file)
+    createFolder(fileResolvedPath)
+    fs.writeFileSync(fileResolvedPath, content)
+  })
+
+  ipcMain.handle('read-runtime-file', async (event, { file }) => {
+    const fileResolvedPath = path.resolve(appRuntimeDirPath, './database', file)
+    const content = fs.readFileSync(fileResolvedPath)
+    return content.toString()
+  })
+
+  ipcMain.handle('exist-runtime-file', async (event, { file }) => {
+    const fileResolvedPath = path.resolve(appRuntimeDirPath, './database', file)
+    return fs.existsSync(fileResolvedPath)
   })
 }
 
