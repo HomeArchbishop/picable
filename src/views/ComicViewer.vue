@@ -81,10 +81,13 @@ export default {
       console.log(pictureObjectResults)
       this.pictureListDocsList.push(...pictureObjectResults.pages.docs)
       this.episodesTitle = pictureObjectResults.ep.title
-      this.pictureLoadingStateMap = pictureObjectResults.pages.docs.reduce((p, c) => {
-        p[c._id] = false
-        return p
-      }, {})
+      this.pictureLoadingStateMap = {
+        ...this.pictureLoadingStateMap,
+        ...pictureObjectResults.pages.docs.reduce((p, c) => {
+          p[c._id] = false
+          return p
+        }, {})
+      }
       if (pictureObjectResults.pages.page === pictureObjectResults.pages.pages) {
         this.isAll = true
       } else {
