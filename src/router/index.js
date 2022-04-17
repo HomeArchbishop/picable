@@ -55,7 +55,10 @@ const routes = [
   {
     path: '/comic/:comicId/:order',
     name: 'ComicViewer',
-    component: () => import('../views/ComicViewer')
+    component: () => import('../views/ComicViewer'),
+    meta: {
+      scrollBehavior: false
+    }
   },
   {
     path: '/comic-comments/:comicId',
@@ -181,6 +184,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
   scrollBehavior (to, from) {
+    if (!to.meta.scrollBehavior) { return false }
     if (to.name === from.name) { return false }
     const x = isObjectLike(store.state.runtime.savedScrollPositions[to.name])
       ? store.state.runtime.savedScrollPositions[to.name].x : 0
