@@ -73,8 +73,15 @@ const routes = [
     name: 'Favourite',
     component: () => import('../views/Favourite'),
     meta: {
-      keepAlive: true,
       title: '收藏'
+    }
+  },
+  {
+    path: '/recent',
+    name: 'Recent',
+    component: () => import('../views/Recent'),
+    meta: {
+      title: '最近'
     }
   },
   {

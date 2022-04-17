@@ -2,6 +2,7 @@ module.exports = {
   runtimeCompiler: true,
   pluginOptions: {
     electronBuilder: {
+      preload: 'src/preload.js',
       builderOptions: {
         nsis: {},
         asar: false,

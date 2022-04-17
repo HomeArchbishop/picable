@@ -50,7 +50,7 @@
           <font-awesome-icon icon="bookmark" />
         </div>
       </router-link>
-      <router-link to="/" custom v-slot="{ navigate }">
+      <router-link :to="{ name: 'Recent' }" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="eye" />
         </div>
