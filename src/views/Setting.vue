@@ -13,7 +13,7 @@
         <div class="label">应用锁</div>
       </div>
       <div>
-        <toggle-button :isChecked="hasAppLock" @click="$store.commit('storage/setHasAppLock', { nextState: !hasAppLock })" />
+        <toggle-button :isChecked="hasAppLock" @click="toggleAppLock()" />
       </div>
     </div>
     <div class="info-item" v-if='hasAppLock'>
@@ -28,7 +28,7 @@
           />|
           <font-awesome-icon icon="pen" @click="isChangingAppLockPassword = true" v-if="!isChangingAppLockPassword" />
         </div>
-        <form v-else @submit="changeAppLockPassword()">
+        <form v-else @submit.prevent="changeAppLockPassword()">
           <input type="text" v-model="nextAppLockPassword">
           <div class="submit-btn" @click="changeAppLockPassword()">修改</div>|
           <div class="submit-btn" @click="isChangingAppLockPassword=false">取消</div>
@@ -89,6 +89,7 @@ import { faEye, faEyeSlash, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ToggleButton from '../components/ToggleButton'
 import { mapState } from 'vuex'
+import swal from 'sweetalert'
 
 library.add(faEye, faEyeSlash, faPen)
 
@@ -114,6 +115,16 @@ export default {
     })
   },
   methods: {
+    toggleAppLock () {
+      this.$store.commit('storage/setHasAppLock', { nextState: !this.hasAppLock })
+      if (this.hasAppLock) {
+        swal({
+          title: '已开启应用锁，请牢记密码',
+          text: `密码：${this.appLockPassword}\n记不住的话，可不好找回哦～`,
+          icon: 'info'
+        })
+      }
+    },
     changeAppLockPassword () {
       this.$store.commit('storage/setAppLockPassword', { nextAppLockPassword: this.nextAppLockPassword })
       this.isChangingAppLockPassword = false
