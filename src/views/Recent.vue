@@ -52,6 +52,7 @@ export default {
       this.nextPage += 1
       if (!this.recentComicIdList.length) {
         this.isFounAny = false
+        this.isUpdating = false
       }
       for (const index in recentComicOfNextPage) {
         this.$api.info({
