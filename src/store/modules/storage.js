@@ -4,8 +4,8 @@ export default {
     token: 'e',
     diversionIndex: 2,
     blurOutOfFocus: false,
-    hasAppLock: true,
-    appLockPassword: '1212',
+    hasAppLock: false,
+    appLockPassword: '123',
     sort: 'ua' // ['ua', 'da', 'dd', 'ld', 'vd']
   },
   mutations: {
