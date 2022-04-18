@@ -2,15 +2,17 @@
   <div class="comic-viewer-container">
     <div class="display-card">
       <div class="img-container">
-        <img v-for="item in pictureListDocsList" :key="item._id"
-          :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
-          v-show="pictureLoadingStateMap[item._id] === true"
-          @load="pictureLoadingStateMap[item._id] = true"
-        >
-        <div v-for="(item, index) in pictureListDocsList" :key="'placeholder' + item._id"
-          class="img-placeholder"
-          v-show="pictureLoadingStateMap[item._id] === false"
-        >{{ index + 1 }}</div>
+        <div v-for="(item, index) in pictureListDocsList" :key="item._id">
+          <img
+            :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
+            v-show="pictureLoadingStateMap[item._id] === true"
+            @load="pictureLoadingStateMap[item._id] = true"
+          >
+          <div
+            class="img-placeholder"
+            v-show="pictureLoadingStateMap[item._id] === false"
+          >{{ index + 1 }}</div>
+        </div>
         <div v-for="index in 8" :key="'empty-placeholder' + index"
           class="img-placeholder"
           v-show="pictureListDocsList.length === 0"
