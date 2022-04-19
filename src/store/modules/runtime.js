@@ -22,6 +22,11 @@ export default {
       { code: 'D7', name: '周排' },
       { code: 'D30', name: '月排' }
     ],
+    favouriteTypeList: [
+      { code: 'comic', name: '漫画' },
+      { code: 'author', name: '作者' },
+      { code: 'chinese', name: '汉化组' }
+    ],
     currentTt: 'H24',
     searchKeyword: '',
     savedScrollPositions: {}

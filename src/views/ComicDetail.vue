@@ -17,6 +17,11 @@
           <div>
             作者：
             <div class="line-link" @click="navigate">{{ comicDetailObject.author || '未知' }}</div>
+            <div class="line-btn" v-if="comicDetailObject.author && comicDetailObject.author !== '未知'" @click="toggleFavouriteAuthor()"
+              :class="{ active: favouriteAuthorList.includes(comicDetailObject.author) }"
+            >
+              {{ favouriteAuthorList.includes(comicDetailObject.author) ? '已收藏' : '收藏' }}
+            </div>
           </div>
         </router-link>
         <router-link custom v-slot="{ navigate }"
@@ -24,6 +29,11 @@
           <div>
             汉化：
             <div class="line-link" @click="navigate"> {{ comicDetailObject.chineseTeam || '未知' }}</div>
+            <div class="line-btn" v-if="comicDetailObject.chineseTeam && comicDetailObject.chineseTeam !== '未知'" @click="toggleFavouriteChinese()"
+              :class="{ active: favouriteChineseList.includes(comicDetailObject.chineseTeam) }"
+            >
+              {{ favouriteChineseList.includes(comicDetailObject.chineseTeam) ? '已收藏' : '收藏' }}
+            </div>
           </div>
         </router-link>
         <div>指名：{{ comicDetailObject.viewsCount }}次</div>
@@ -187,7 +197,7 @@ export default {
     }
   },
   methods: {
-    getComicDetail: async function () {
+    async getComicDetail () {
       // change state.
       this.isRequestingDetail = true
       // call api.
@@ -202,7 +212,7 @@ export default {
       // change state.
       this.isRequestingDetail = false
     },
-    getEpisodesList: async function () {
+    async getEpisodesList () {
       this.isRequestingEpisodes = true
       const episodesObject = await this.$api.episodes({
         diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page: this.nextEpisodesPage
@@ -213,7 +223,7 @@ export default {
       console.log(this.episodesList)
       this.isRequestingEpisodes = false
     },
-    toggleFavourite: async function () {
+    async toggleFavourite () {
       if (this.isRequestingFavourite) { return }
       // change state.
       this.isRequestingFavourite = true
@@ -225,7 +235,7 @@ export default {
       // change state.
       this.isRequestingFavourite = false
     },
-    toggleLike: async function () {
+    async toggleLike () {
       if (this.isRequestingLike) { return }
       // change state.
       this.isRequestingLike = true
@@ -238,11 +248,11 @@ export default {
       // change state.
       this.isRequestingLike = false
     },
-    toggleDownload: async function () {
+    async toggleDownload () {
       this.isChoosingPackZip && await this.togglePack()
       this.$set(this, 'isChoosingDownLoad', !this.isChoosingDownLoad)
     },
-    toggleDownloadChosenList: async function (orderNum) {
+    async toggleDownloadChosenList (orderNum) {
       const order = String(orderNum)
       if (this.episodesDownloadedList.includes(String(order))) { return }
       const chosenSet = new Set(this.episodesDownloadChosenList)
@@ -251,11 +261,11 @@ export default {
         : chosenSet.add(order)
       this.$set(this, 'episodesDownloadChosenList', Array.from(chosenSet))
     },
-    togglePack: async function () {
+    async togglePack () {
       this.isChoosingDownLoad && await this.toggleDownload()
       this.$set(this, 'isChoosingPackZip', !this.isChoosingPackZip)
     },
-    download: async function () {
+    async download () {
       this.toggleDownload()
       this.episodesDownloadChosenList.forEach(episodesOrder => {
         this.$api.download(this.token, this.comicId, episodesOrder)
@@ -265,49 +275,65 @@ export default {
           })
       })
     },
-    packZip: async function (episodesOrder) {
+    async packZip (episodesOrder) {
       if (episodesOrder === undefined) { return }
       const downloadZipUrl = await this.$api.downloadZipUrl(this.comicId, episodesOrder)
       const downloadZipWindow = window.open(downloadZipUrl)
       downloadZipWindow.document.title = '漫画下载'
     },
-    getDownloadedList: async function () {
+    async getDownloadedList () {
       const downloadInfo = await this.$api.downloadInfo()
       console.log(downloadInfo)
       const episodesDownloadedList = downloadInfo[this.comicId] || []
       this.$set(this, 'episodesDownloadedList', [...episodesDownloadedList])
     },
-    toggleDescriptionPreview: async function () {
+    async toggleDescriptionPreview () {
       this.isDescriptionPreview = !this.isDescriptionPreview
     },
-    toggleFavouriteAuthor: async function () {
-      const authorName = this.comicDetailObject.author
-      if (!authorName) { return }
-      const state = await this.$api.favouriteAuthor(authorName)
-      console.log(state)
-      await this.getFavouriteAuthorList()
+    async toggleFavouriteAuthor () {
+      const currentFavouriteAuthorList = await window.electronAPI.existRuntimeFile({ file: './favouriteAuthorList.json' })
+        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteAuthorList.json' })).reverse()
+        : []
+      const favouriteAuthorSet = new Set(currentFavouriteAuthorList)
+      if (favouriteAuthorSet.has(this.comicDetailObject.author)) {
+        favouriteAuthorSet.delete(this.comicDetailObject.author)
+      } else {
+        favouriteAuthorSet.add(this.comicDetailObject.author)
+      }
+      const favouriteAuthorList = Array.from(favouriteAuthorSet).reverse()
+      await window.electronAPI.writeRuntimeFile({ file: './favouriteAuthorList.json', content: JSON.stringify(favouriteAuthorList) })
+      this.getFavouriteAuthorList()
     },
-    getFavouriteAuthorList: async function () {
-      const list = await this.$api.favouriteAuthorList()
-      this.$set(this, 'favouriteAuthorList', list)
+    async getFavouriteAuthorList () {
+      this.favouriteAuthorList = await window.electronAPI.existRuntimeFile({ file: './favouriteAuthorList.json' })
+        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteAuthorList.json' }))
+        : []
     },
-    toggleFavouriteChinese: async function () {
-      const chineseName = this.comicDetailObject.chineseTeam
-      if (!chineseName) { return }
-      const state = await this.$api.favouriteChinese(chineseName)
-      console.log(state)
-      await this.getFavouriteChineseList()
+    async toggleFavouriteChinese () {
+      const currentFavouriteChineseList = await window.electronAPI.existRuntimeFile({ file: './favouriteChineseList.json' })
+        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteChineseList.json' })).reverse()
+        : []
+      const favouriteChineseSet = new Set(currentFavouriteChineseList)
+      if (favouriteChineseSet.has(this.comicDetailObject.chineseTeam)) {
+        favouriteChineseSet.delete(this.comicDetailObject.chineseTeam)
+      } else {
+        favouriteChineseSet.add(this.comicDetailObject.chineseTeam)
+      }
+      const favouriteChineseList = Array.from(favouriteChineseSet).reverse()
+      await window.electronAPI.writeRuntimeFile({ file: './favouriteChineseList.json', content: JSON.stringify(favouriteChineseList) })
+      this.getFavouriteChineseList()
     },
-    getFavouriteChineseList: async function () {
-      const list = await this.$api.favouriteChineseList()
-      this.$set(this, 'favouriteChineseList', list)
+    async getFavouriteChineseList () {
+      this.favouriteChineseList = await window.electronAPI.existRuntimeFile({ file: './favouriteChineseList.json' })
+        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteChineseList.json' }))
+        : []
     }
   },
   created () {
     this.getComicDetail()
     this.getEpisodesList()
-    // this.getFavouriteAuthorList()
-    // this.getFavouriteChineseList()
+    this.getFavouriteAuthorList()
+    this.getFavouriteChineseList()
     // this.getDownloadedList()
   }
 }
@@ -361,6 +387,31 @@ export default {
         &:hover {
           color: @color-font-default-highlight;
           text-decoration: underline;
+        }
+      }
+      .line-btn {
+        display: inline-flex;
+        background: @background-btn-default;
+        border-radius: .75em;
+        margin: 2px;
+        margin-left: 10px;
+        padding: 4px 9px;
+        font-size: 14px;
+        line-height: 1em;
+        cursor: pointer;
+        transition: .2s;
+        font-weight: 300;
+        &:nth-last-child(1) {
+          margin-right: 0;
+        }
+        &.active {
+          color: lighten(@color-font-default, 20%);
+          background: lighten(@background-btn-highlight, 25%);
+        }
+        &:hover {
+          transform: scale(110%);
+          color: lighten(@color-font-default, 20%);
+          background: lighten(@background-btn-highlight, 15%);
         }
       }
     }
