@@ -14,6 +14,7 @@
   margin: 2px;
   padding: 4px 9px;
   font-size: 14px;
+  font-weight: 300;
   line-height: 1em;
   cursor: pointer;
   transition: .2s;

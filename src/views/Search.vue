@@ -167,13 +167,16 @@ export default {
         height: 48px;
         padding: 18px 26px;
         padding-left: 1em;
-        font-size: 20px;
+        font-size: 1.2em;
+        color: @color-font-default-sub;
         background: transparent;
         border-radius: 20px;
         border: 2px solid @color-line-default-sub;
         font-family: inherit;
+        transition: .2s;
         &:focus {
           box-shadow: 0 0 3px 0 inset @color-line-default-sub;
+          color: darken(@color-font-default-sub, 30%);
         }
         outline: none;
       }
