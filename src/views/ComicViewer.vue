@@ -2,7 +2,7 @@
   <div class="comic-viewer-container">
     <div class="display-card">
       <div class="img-container">
-        <div v-for="(item, index) in pictureListDocsList" :key="item._id">
+        <div v-for="(item, index) in pictureListDocsList" :key="item._id" :id="`pic${index + 1}`">
           <img
             :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
             v-show="pictureLoadingStateMap[item._id] === true"
@@ -33,17 +33,38 @@
         <common-tip-block v-if="isUpdating" :waiting="true">正在加载</common-tip-block>
       </div>
       <div class="space-placeholder" v-if="pictureListDocsList.length === 0"></div>
+      <div ref="bottomAnchor"></div>
+      <div class="tool-bar" v-if="pictureListDocsList.length !== 0">
+        <div class="tool-btn" @click="scrollToTop()">
+          <font-awesome-icon icon="arrow-up" />
+        </div>
+        <div class="pic-link-btn" v-for="num in pictureListDocsList.length" :key="num"
+          :num="num" :length="unhoverPicLinkBtnLength"
+          @mouseover="picLinkBtnActiveNum = num" @mouseout="picLinkBtnActiveNum = NaN"
+          :style="{ height: unhoverPicLinkBtnLength }"
+          @click="scrollToPic(num)"
+        ></div>
+        <div class="tool-btn" @click="scrollToBottom()">
+          <font-awesome-icon icon="arrow-down" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import CommonTipBlock from '../components/CommonTipBlock'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faArrowDown, faArrowUp)
 
 export default {
   name: 'ComicViewer',
   components: {
-    CommonTipBlock
+    CommonTipBlock,
+    FontAwesomeIcon
   },
   data () {
     return {
@@ -53,7 +74,8 @@ export default {
       episodesTitle: '加载中...',
       nextPage: 1,
       isAll: false,
-      isUpdating: false
+      isUpdating: false,
+      picLinkBtnActiveNum: NaN
     }
   },
   computed: {
@@ -66,10 +88,13 @@ export default {
     },
     epsOrder () {
       return this.$route.params.order
+    },
+    unhoverPicLinkBtnLength () {
+      return (300 - 80 - 20) / this.pictureListDocsList.length + 'px'
     }
   },
   methods: {
-    updateNewPicturePage: async function () {
+    async updateNewPicturePage () {
       // change states.
       this.isUpdating = true
       // call api to update
@@ -98,9 +123,6 @@ export default {
       // change states.
       this.isUpdating = false
     },
-    updateRecentStorage () {
-      // TODO update recent comic storage in vuex
-    },
     getEpisodesList: async function () {
       // TODO fit it to multi-pages later. Maybe share the same logic with download
     },
@@ -121,15 +143,36 @@ export default {
         }
       }
     },
-    scrollToTop: async function () {
+    async scrollToTop () {
       // TODO to be finished
-      // const container = this.$refs.container
-      // container.scrollTo(0, 0)
+      scrollTo(0, 0)
+      // const scrollInterval = setInterval(() => {
+      //   const speed = window.scrollY / 6
+      //   const formerScrollY = window.scrollY
+      //   scrollTo(0, formerScrollY - speed)
+      //   if (window.scrollY > formerScrollY - speed - 10) {
+      //     clearInterval(scrollInterval)
+      //   }
+      // }, 10)
     },
-    scrollToBottom: async function () {
+    async scrollToBottom () {
       // TODO to be finished
-      // const container = this.$refs.container
-      // container.scrollTo(0, container.scrollHeight)
+      scrollTo(0, this.$refs.bottomAnchor.offsetTop)
+      // const scrollInterval = setInterval(() => {
+      //   const speed = (this.$refs.bottomAnchor.offsetTop - window.scrollY) / 6
+      //   const formerScrollY = window.scrollY
+      //   scrollTo(0, formerScrollY + speed)
+      //   if (window.scrollY < formerScrollY + speed - 10) {
+      //     clearInterval(scrollInterval)
+      //   }
+      // }, 10)
+    },
+    async scrollToPic (num) {
+      if (num === 1) {
+        scrollTo(0, 0)
+      } else {
+        scrollTo(0, document.querySelector(`#pic${num}`).offsetTop)
+      }
     },
     async recordRecentComic () {
       const currentRecentComicIdList = await window.electronAPI.existRuntimeFile({ file: './recentComicIdList.json' })
@@ -143,7 +186,6 @@ export default {
     }
   },
   created () {
-    this.updateRecentStorage()
     this.updateNewPicturePage()
     this.getEpisodesList()
     this.recordRecentComic()
@@ -154,17 +196,22 @@ export default {
 <style lang="less" scoped>
 @import '~@/assets/themes/config';
 @import '~@/assets/themes/@{theme-name}/theme';
+
 .comic-viewer-container {
   .display-card {
     width: 100%;
     .img-container {
+      text-align: center;
       width: 100%;
       img {
         width: 100%;
+        max-width: 80vh;
       }
       .img-placeholder {
+        display: inline-block;
         text-align: center;
         width: 100%;
+        max-width: 80vh;
         padding: 160px 0;
         background: #535353;
         border-bottom: 1px solid darken(#535353, 10%);
@@ -181,6 +228,59 @@ export default {
     }
     .space-placeholder {
       height: 100000px;
+    }
+    .tool-bar {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      position: fixed;
+      height: 300px;
+      right: 20px;
+      top: 200px;
+      .pic-link-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: @background-btn-default;
+        width: 8px;
+        color: lighten(@color-font-default-sub, 70%);
+        cursor: pointer;
+        transition: .15s;
+        position: relative;
+        &:nth-child(2) {
+          border-top-left-radius: 50%;
+          border-top-right-radius: 50%;
+        }
+        &:nth-last-child(2) {
+          border-bottom-left-radius: 50%;
+          border-bottom-right-radius: 50%;
+        }
+        &:hover {
+          background-color: darken(@background-btn-default, 40%);
+          &::before {
+            display: block;
+            background: lighten(@background-btn-highlight, 15%);
+            position: absolute;
+            top: calc(50% - .5em - 4px);
+            right: 10px;
+            border-radius: .75em;
+            padding: 4px 8px;
+            content: attr(num);
+          }
+        }
+      }
+      .tool-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        background: @background-btn-default;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        cursor: pointer;
+      }
     }
   }
 }
