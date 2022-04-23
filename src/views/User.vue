@@ -65,6 +65,9 @@
         <router-link :to="{ name: 'Setting' }" custom v-slot="{ navigate }">
           <div class="function-button" @click="navigate"><font-awesome-icon icon="gear" /> 设置</div>
         </router-link>
+        <router-link :to="{ name: 'UserComments' }" custom v-slot="{ navigate }">
+          <div class="function-button" @click="navigate"><font-awesome-icon icon="comment" /> 我的评论</div>
+        </router-link>
         <div class="function-button" @click="logout()"><font-awesome-icon icon="right-from-bracket" /> 退出登录</div>
       </div>
     </div>
@@ -73,13 +76,13 @@
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import dobToAge from 'dob-to-age'
 import swal from 'sweetalert'
 import RadialProgressBar from 'vue-radial-progress'
 
-library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket)
+library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment)
 
 export default {
   name: 'User',
@@ -111,7 +114,7 @@ export default {
   },
   methods: {
     dobToAge,
-    getPersonInfo: async function () {
+    async getPersonInfo () {
       // change state.
       this.isRequestingPersonInfo = true
       // call api.
@@ -123,32 +126,7 @@ export default {
       // change state.
       this.isRequestingPersonInfo = false
     },
-    updateMyCommentsPage: async function () {
-      // change state.
-      this.$set(this, 'isRequestingMyComments', true)
-      // call api.
-      const myCommentsList = await this.$api.myComments(this.token, this.myCommentsCurrentPage)
-      this.myCommentsList.push(...myCommentsList.docs)
-      console.log(myCommentsList)
-      // change state.
-      this.$set(this, 'isRequestingMyComments', false)
-      // judge if empty.
-      if (!myCommentsList.pages) {
-        this.$set(this, 'isFoundAny', false)
-      }
-      // judge if is all, if not, then pageCount++.
-      if (+myCommentsList.page === +myCommentsList.pages) {
-        this.$set(this, 'isAll', true)
-      } else {
-        this.$set(this, 'myCommentsCurrentPage', this.myCommentsCurrentPage + 1)
-      }
-    },
-    refreshMyComments: async function () {
-      this.$set(this, 'myCommentsCurrentPage', 1)
-      this.$set(this, 'myCommentsList', [])
-      this.updateMyCommentsPage()
-    },
-    punch: async function () {
+    async punch () {
       if (this.personInfo.isPunched || this.isRequestingPunch) { return }
       // change state.
       this.isRequestingPunch = true
@@ -178,7 +156,7 @@ export default {
       // change state.
       this.isRequestingPunch = false
     },
-    logout: async function () {
+    async logout () {
       swal({
         title: '确定退出登录吗？',
         text: '您的浏览记录、下载将不会被删除',
@@ -200,7 +178,6 @@ export default {
   },
   created () {
     this.getPersonInfo()
-    // this.updateMyCommentsPage()
   }
 }
 </script>
