@@ -179,10 +179,12 @@ async function myFavourite ({ diversionUrl, token, page = 1 }) {
 }
 
 // 返回 我发表的评论
-async function myComments (token, page = 1) {
+async function myComments ({ diversionUrl, token, page = 1 }) {
   const subUrl = `users/my-comments?page=${page}`
-  const json = await sendGet(diversionUrl, subUrl, token)
-  return json.data.comments
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
+  return json.data
 }
 
 // 返回神魔推荐

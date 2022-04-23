@@ -124,6 +124,14 @@ const routes = [
     }
   },
   {
+    path: '/user-comments',
+    name: 'UserComments',
+    component: () => import('../views/UserComments'),
+    meta: {
+      title: '我的评论'
+    }
+  },
+  {
     path: '/link',
     name: 'Link',
     props: route => ({ link: route.query.link }),
