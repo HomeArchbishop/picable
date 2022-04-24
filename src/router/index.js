@@ -5,10 +5,16 @@ import store from '../store'
 
 import AppLock from '../views/AppLock'
 import Diversion from '../views/Diversion'
+import Buffer from '../views/Buffer'
 
 const routes = [
   {
     path: '/',
+    name: 'Buffer',
+    component: Buffer
+  },
+  {
+    path: '/app-lock',
     name: 'AppLock',
     component: AppLock,
     beforeEnter: (to, from, next) => {

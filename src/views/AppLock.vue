@@ -8,7 +8,6 @@
         </div>
         <div class="function-div">
           <div class="submit-btn" @click="unlockApp()">
-            <input type="submit" value="" style="display: none;">
             解锁<font-awesome-icon icon="angle-right" />
           </div>
         </div>
@@ -50,16 +49,13 @@ export default {
     },
     shiftPage () {
       console.log(this.$route)
-      if (this.$route.meta.from?.fullPath === this.$route.fullPath) {
+      if (!this.$route.meta.from?.name) {
+        this.$router.replace({ name: 'Diversion' })
+      } else if (this.$route.meta.from.fullPath === this.$route.fullPath || this.$route.meta.from.name === 'Buffer') {
         this.$router.replace({ name: 'Diversion' })
       } else {
-        this.$router.back()
+        this.$router.replace({ name: this.$route.meta.from.name })
       }
-    }
-  },
-  created () {
-    if (!this.$store.state.storage.hasAppLock) {
-      this.$router.replace({ name: 'Diversion' })
     }
   },
   mounted () {
