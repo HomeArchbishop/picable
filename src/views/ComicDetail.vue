@@ -307,42 +307,18 @@ export default {
       this.isDescriptionPreview = !this.isDescriptionPreview
     },
     async toggleFavouriteAuthor () {
-      const currentFavouriteAuthorList = await window.electronAPI.existRuntimeFile({ file: './favouriteAuthorList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteAuthorList.json' })).reverse()
-        : []
-      const favouriteAuthorSet = new Set(currentFavouriteAuthorList)
-      if (favouriteAuthorSet.has(this.comicDetailObject.author)) {
-        favouriteAuthorSet.delete(this.comicDetailObject.author)
-      } else {
-        favouriteAuthorSet.add(this.comicDetailObject.author)
-      }
-      const favouriteAuthorList = Array.from(favouriteAuthorSet).reverse()
-      await window.electronAPI.writeRuntimeFile({ file: './favouriteAuthorList.json', content: JSON.stringify(favouriteAuthorList) })
+      await this.$api.favouriteAuthor(this.comicDetailObject.author)
       this.getFavouriteAuthorList()
     },
     async getFavouriteAuthorList () {
-      this.favouriteAuthorList = await window.electronAPI.existRuntimeFile({ file: './favouriteAuthorList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteAuthorList.json' }))
-        : []
+      this.favouriteAuthorList = await this.$api.favouriteAuthorList()
     },
     async toggleFavouriteChinese () {
-      const currentFavouriteChineseList = await window.electronAPI.existRuntimeFile({ file: './favouriteChineseList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteChineseList.json' })).reverse()
-        : []
-      const favouriteChineseSet = new Set(currentFavouriteChineseList)
-      if (favouriteChineseSet.has(this.comicDetailObject.chineseTeam)) {
-        favouriteChineseSet.delete(this.comicDetailObject.chineseTeam)
-      } else {
-        favouriteChineseSet.add(this.comicDetailObject.chineseTeam)
-      }
-      const favouriteChineseList = Array.from(favouriteChineseSet).reverse()
-      await window.electronAPI.writeRuntimeFile({ file: './favouriteChineseList.json', content: JSON.stringify(favouriteChineseList) })
+      await this.$api.favouriteChinese(this.comicDetailObject.chineseTeam)
       this.getFavouriteChineseList()
     },
     async getFavouriteChineseList () {
-      this.favouriteChineseList = await window.electronAPI.existRuntimeFile({ file: './favouriteChineseList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteChineseList.json' }))
-        : []
+      this.favouriteChineseList = await this.$api.favouriteChineseList()
     }
   },
   watch: {

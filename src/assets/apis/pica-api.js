@@ -238,10 +238,12 @@ const downloadZipUrl = async function (comicId, episodesOrder) {
 }
 
 // 获取小程序列表
-async function appList (token) {
+async function appList ({ diversionUrl, token }) {
   const subUrl = 'pica-apps'
-  const json = await sendGet(diversionUrl, subUrl, token)
-  return json.data.apps
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
+  return json.data
 }
 
 // 获取game列表
@@ -288,10 +290,12 @@ async function gameLike ({
 }
 
 // 聊天频道
-async function chatRoomList (token) {
+async function chatRoomList ({ diversionUrl, token }) {
   const subUrl = 'chat'
-  const json = await sendGet(diversionUrl, subUrl, token)
-  return json.data.chatList
+  const json = await sendGet({
+    diversionUrl, subUrl, token
+  })
+  return json.data
 }
 
 // 发送评论
@@ -323,10 +327,12 @@ async function knightRank ({ diversionUrl, token }) {
 }
 
 // 设置头衔
-async function setTitle (token, userId, title) {
+async function setTitle ({ diversionUrl, token, userId, title }) {
   const subUrl = `users/${userId}/title`
   const body = { title }
-  const json = await sendPut(diversionUrl, subUrl, body, token)
+  const json = await sendPut({
+    diversionUrl, subUrl, body, token
+  })
   return json
 }
 
@@ -369,33 +375,10 @@ async function childrenComments ({ diversionUrl, token, commentId, page = 1 }) {
   return json.data.comments
 }
 
-const favouriteAuthor = async function (author) {
-  const state = await sendGet(backendApiUrl, `favouriteAuthor?author=${author}`)
-  return state // 'favourite' | 'un_favourite'
-}
-
-const favouriteAuthorList = async function () {
-  const list = await sendGet(backendApiUrl, 'favouriteAuthorList')
-  console.log(list)
-  return list
-}
-
-const favouriteChinese = async function (author) {
-  const state = await sendGet(backendApiUrl, `favouriteChinese?author=${author}`)
-  return state // 'favourite' | 'un_favourite'
-}
-
-const favouriteChineseList = async function () {
-  const list = await sendGet(backendApiUrl, 'favouriteChineseList')
-  console.log(list)
-  return list
-}
-
 export {
   checkToken, authorize, categories, comics, info, episodes, picture,
   recommend, keyword, searchCategories, searchTag, search, like, comments, favourite,
   personInfo, myFavourite, myComments, shenMoCollections, punch, randomComic, appList,
   gameList, gameInfo, gameComments, gameLike, chatRoomList, sendComments, rank, knightRank,
-  setTitle, register, commentLike, childrenComments, favouriteAuthor, favouriteAuthorList,
-  favouriteChinese, favouriteChineseList, download, downloadInfo, downloadZipUrl
+  setTitle, register, commentLike, childrenComments, download, downloadInfo, downloadZipUrl
 }

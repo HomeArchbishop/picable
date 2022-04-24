@@ -142,9 +142,7 @@ export default {
       // change states.
       this.isUpdatingAuthor = true
       // call api to update.
-      this.favouriteAuthorList = await window.electronAPI.existRuntimeFile({ file: './favouriteAuthorList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteAuthorList.json' }))
-        : []
+      this.favouriteAuthorList = await this.$api.favouriteAuthorList()
       this.isFoundAnyAuthor = !!this.favouriteAuthorList.length
       // change states.
       this.isUpdatingAuthor = false
@@ -154,9 +152,7 @@ export default {
       // change states.
       this.isUpdatingChinese = true
       // call api to update.
-      this.favouriteChineseList = await window.electronAPI.existRuntimeFile({ file: './favouriteChineseList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './favouriteChineseList.json' }))
-        : []
+      this.favouriteChineseList = await this.$api.favouriteChineseList()
       this.isFoundAnyChinese = !!this.favouriteChineseList.length
       // change states.
       this.isUpdatingChinese = false
