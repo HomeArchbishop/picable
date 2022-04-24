@@ -299,10 +299,12 @@ async function chatRoomList ({ diversionUrl, token }) {
 }
 
 // 发送评论
-async function sendComments (token, bookId, content = '') {
-  const subUrl = `comics/${bookId}/comments`
+async function sendComments ({ diversionUrl, token, comicId, content }) {
+  const subUrl = `comics/${comicId}/comments`
   const body = { content }
-  const json = await sendPost(diversionUrl, subUrl, body, token)
+  const json = await sendPost({
+    diversionUrl, subUrl, body, token
+  })
   return json.message
   // json { code: 200, message:'success' | string, error? }
 }
