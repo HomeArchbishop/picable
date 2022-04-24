@@ -124,11 +124,6 @@ export default {
       })
       console.log(resData)
     }
-  },
-  watch: {
-    'registerData.birthday' (nextVal) {
-      console.log(nextVal)
-    }
   }
 }
 </script>
