@@ -97,27 +97,28 @@
         </common-tip-block>
       </div>
     </div>
-    <!--
-    <div class="download-episodes-area" v-if="!isRequestingDetail && isChoosingDownLoad">
-      <div class="tip">请选择要下载的章节</div>
-      <div class="tip sub">（由于官方接口的问题，不能保证下载的成功与完整）</div>
-      <div class="download-episodes-list">
-        <div class="download-episodes-item" v-for="item in episodesList" :key="item.order"
-          :class="{
-            chosen: episodesDownloadChosenList.includes(String(item.order)) &&
-              !episodesDownloadedList.includes(String(item.order)),
-            downloaded: episodesDownloadedList.includes(String(item.order))
-          }"
-          @click.stop="toggleDownloadChosenList(item.order)">{{ item.title }}</div>
+    <div class="episodes-card" v-if="!isRequestingDetail && isChoosingDownLoad">
+      <h2>请选择要下载的章节<small>（由于官方接口的问题，不能保证下载的成功与完整）</small></h2>
+      <div class="episodes-list">
+        <div class="episodes-item" :class="{ chosen: episodesDownloadChosenList.includes('' + item.order) }"
+          @click="toggleDownloadChosenList(item.order)" v-for="item in episodesList" :key="item.order"
+        >
+          {{ item.title }}
+        </div>
       </div>
-      <div class="btn-div">
-        <div class="btn" @click.stop="toggleDownload()">取消</div>
-        <div class="btn" @click.stop="download()"
-          :class="{
-            disable: !episodesDownloadChosenList.length
-          }">下载</div>
+      <div class="state-line">
+        <common-tip-block v-if="isRequestingEpisodes" :waiting="true">加载中...</common-tip-block>
+        <common-tip-block v-if="!isEpisodesListEnd & !isRequestingEpisodes"
+          :clickable="true" @click="getEpisodesList()"
+        >
+          加载更多
+        </common-tip-block>
+        <common-tip-block v-if="episodesDownloadChosenList.length" :clickable="true" @click="download()">
+          开始下载
+        </common-tip-block>
       </div>
     </div>
+    <!--
     <div class="pack-episodes-area" v-if="!isRequestingDetail && isChoosingPackZip">
       <div class="tip">请选择要打包的章节</div>
       <div class="tip sub">（仅支持已下载的章节）</div>
@@ -131,14 +132,6 @@
       </div>
       <div class="btn-div">
         <div class="btn" @click.stop="togglePack()">取消</div>
-      </div>
-    </div>
-    <div class="action-area" v-if="!isRequestingDetail">
-      <div class="action-btn" v-if="comicDetailObject.author">
-        <label>收藏作者</label>
-      </div>
-      <div class="action-btn" v-if="comicDetailObject.chineseTeam">
-        <label>收藏汉化组</label>
       </div>
     </div>
     -->
@@ -160,6 +153,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import TagItem from '../components/TagItem'
 import CommonTipBlock from '../components/CommonTipBlock'
 import ItemSmall from '../components/ItemSmall.vue'
+import swal from 'sweetalert'
 
 library.add(faHeart, faEye, faCommentDots, faBookmark, faDownload, faFileZipper, faAngleDown, faAngleUp)
 
@@ -266,30 +260,31 @@ export default {
     },
     async toggleDownload () {
       this.isChoosingPackZip && await this.togglePack()
-      this.$set(this, 'isChoosingDownLoad', !this.isChoosingDownLoad)
+      this.isChoosingDownLoad = !this.isChoosingDownLoad
     },
     async toggleDownloadChosenList (orderNum) {
       const order = String(orderNum)
-      if (this.episodesDownloadedList.includes(String(order))) { return }
+      if (this.episodesDownloadedList.includes(order)) { return }
       const chosenSet = new Set(this.episodesDownloadChosenList)
       chosenSet.has(order)
         ? chosenSet.delete(order)
         : chosenSet.add(order)
-      this.$set(this, 'episodesDownloadChosenList', Array.from(chosenSet))
+      this.episodesDownloadChosenList = Array.from(chosenSet)
     },
     async togglePack () {
       this.isChoosingDownLoad && await this.toggleDownload()
-      this.$set(this, 'isChoosingPackZip', !this.isChoosingPackZip)
+      this.isChoosingPackZip = !this.isChoosingPackZip
     },
     async download () {
-      this.toggleDownload()
-      this.episodesDownloadChosenList.forEach(episodesOrder => {
-        this.$api.download(this.token, this.comicId, episodesOrder)
-          .then(downloadRes => {
-            console.log('download', episodesOrder, downloadRes)
-            this.getDownloadedList()
-          })
-      })
+      swal('下载功能暂未公测哦，请静候更新')
+      // this.toggleDownload()
+      // this.episodesDownloadChosenList.forEach(episodesOrder => {
+      //   this.$api.download(this.token, this.comicId, episodesOrder)
+      //     .then(downloadRes => {
+      //       console.log('download', episodesOrder, downloadRes)
+      //       this.getDownloadedList()
+      //     })
+      // })
     },
     async packZip (episodesOrder) {
       if (episodesOrder === undefined) { return }
@@ -531,6 +526,9 @@ export default {
         }
         &:hover {
           transform: scale(110%)
+        }
+        &.chosen {
+          background: lighten(@background-btn-highlight, 25%);
         }
       }
     }

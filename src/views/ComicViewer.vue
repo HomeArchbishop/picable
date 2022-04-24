@@ -201,14 +201,15 @@ export default {
   .display-card {
     width: 100%;
     .img-container {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       width: 100%;
       img {
         width: 100%;
         max-width: 80vh;
       }
       .img-placeholder {
-        display: inline-block;
         text-align: center;
         width: 100%;
         max-width: 80vh;
