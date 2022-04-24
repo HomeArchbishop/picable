@@ -83,10 +83,12 @@ async function picture ({ diversionUrl, token, comicId, epsOrder, page = 1 }) {
 }
 
 // 返回「看了這本子的人也在看」数组
-async function recommend (token, bookId) {
-  const subUrl = `comics/${bookId}/recommendation`
-  const respData = await sendGet(diversionUrl, subUrl, token)
-  return respData.data.comics
+async function recommend ({ diversionUrl, token, comicId }) {
+  const subUrl = `comics/${comicId}/recommendation`
+  const respData = await sendGet({
+    diversionUrl, subUrl, token
+  })
+  return respData.data
 }
 
 // 返回「大家都在搜」关键词数组
