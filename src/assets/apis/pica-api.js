@@ -337,7 +337,7 @@ async function setTitle ({ diversionUrl, token, userId, title }) {
 }
 
 // 注册
-async function register (registerData) {
+async function register ({ diversionUrl, data }) {
   // data = {
   //    "email": email,
   //    "password": password,
@@ -352,8 +352,10 @@ async function register (registerData) {
   //    "question3": question3
   // }
   const subUrl = 'auth/register'
-  const body = { ...registerData }
-  const json = await sendPost(diversionUrl, subUrl, body, null)
+  const body = { ...data }
+  const json = await sendPost({
+    diversionUrl, subUrl, body
+  })
   return json.data
 }
 

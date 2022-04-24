@@ -41,7 +41,7 @@ export default {
     },
     currentValue: {
       set (newVal) {
-        this.$emit('checkChange', newVal)
+        this.$emit('check-change', newVal)
       },
       get () {
         return this.checkedValue
@@ -58,13 +58,10 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
   justify-content: space-between;
-  height: 40px;
   font-size: 20px;
   .radio-option {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     position: relative;
     height: 100%;
     label {
@@ -88,17 +85,16 @@ export default {
       box-sizing: border-box;
       content: '';
       border: 1px solid @color-line-default;
+      border-radius: .78em;
       width: 26px;
       height: 26px;
-      margin-right: 4px;
       position: relative;
       cursor: pointer;
-      -webkit-transition: all 250ms ease;
-      transition: all 250ms ease;
+      transition: 200ms;
     }
     input[type = "radio"]:checked + label::before {
       background-color: @background-btn-highlight;
-      box-shadow: inset 0 0 0 4px @color-shadow;
+      box-shadow: inset 0 0 0 3px @color-shadow;
     }
   }
 }
