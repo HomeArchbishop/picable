@@ -15,6 +15,15 @@
           加载更多
         </common-tip-block>
       </div>
+      <div class="tool-bar">
+        <div class="tool-btn" @click="toggleSendCommentCard()">
+          <font-awesome-icon icon="comment" />
+        </div>
+      </div>
+      <div class="send-card" v-if="isShowSendCard">
+        <textarea v-model="myCommentText" placeholder="在此输入你的伟论..."></textarea>
+        <div class="send-btn" @click="sendComments()">发送<font-awesome-icon icon="angle-right" /></div>
+      </div>
     </div>
   </div>
 </template>
@@ -22,10 +31,16 @@
 <script>
 import CommentCard from '../components/CommentCard.vue'
 import CommonTipBlock from '../components/CommonTipBlock'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faComment, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import swal from 'sweetalert'
+
+library.add(faComment, faAngleRight)
 
 export default {
   name: 'Comments',
-  components: { CommentCard, CommonTipBlock },
+  components: { CommentCard, CommonTipBlock, FontAwesomeIcon },
   data () {
     return {
       commentInput: '',
@@ -34,7 +49,9 @@ export default {
       isUpdating: false,
       commentsList: [],
       topCommentsList: [],
-      nextPage: 1
+      nextPage: 1,
+      isShowSendCard: false,
+      myCommentText: ''
     }
   },
   computed: {
@@ -43,7 +60,7 @@ export default {
     }
   },
   methods: {
-    updatePage: async function () {
+    async updatePage () {
       if (this.isAll) { return }
       // change state.
       this.isUpdating = true
@@ -64,33 +81,34 @@ export default {
       // change state.
       this.isUpdating = false
     },
-    sendComments: async function () {
-      if (!this.commentInput) {
-        this.$refs.commentInput.focus()
-        return
-      }
+    async toggleSendCommentCard () {
+      this.isShowSendCard = !this.isShowSendCard
+    },
+    async sendComments () {
+      if (!this.myCommentText) { return }
       // call api.
       // - tip: sendState: 'success' | string
-      const sendState = await this.$api.sendComments(this.token, this.comicId, this.commentInput)
+      const sendState = await this.$api.sendComments({
+        diversionUrl: this.diversionUrl,
+        token: this.token,
+        comicId: this.comicId,
+        content: this.myCommentText
+      })
+      console.log(sendState)
       // judge state.
       if (sendState === 'success') {
-        this.$set(this, 'commentInput', '')
-        this.$dialog({
+        this.myCommentText = ''
+        this.isShowSendCard = false
+        swal({
           title: '发送成功',
-          content: '评论刷新页面后可见。',
-          autoClose: 3000
+          text: '评论刷新页面后可见',
+          icon: 'info'
         })
       } else {
-        const _this = this
-        this.$dialog({
+        swal({
           title: '发送失败',
-          content: '请重新发送。',
-          confirm () {
-            _this.$refs.commentInput.focus()
-          },
-          close () {
-            _this.$refs.commentInput.focus()
-          }
+          content: '请重新发送',
+          icon: 'error'
         })
       }
     }
@@ -102,7 +120,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import '~@/assets/themes/config';
+@import '~@/assets/themes/@{theme-name}/theme';
 .comic-comments-container {
+  position: relative;
   .display-card {
      width: 100%;
     .tip-layer {
@@ -110,6 +131,75 @@ export default {
       flex-direction: row;
       justify-content: center;
       margin-top: 10px;
+    }
+  }
+  .tool-bar {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: fixed;
+    right: 15px;
+    bottom: 40px;
+    .tool-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      background: @background-btn-default;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+  }
+  .send-card {
+    position: fixed;
+    right: 60px;
+    bottom: 40px;
+    width: 400px;
+    height: 300px;
+    background: @background-main;
+    opacity: .8;
+    border: 2px solid @color-line-default;
+    border-radius: .75em;
+    padding: 1em 1em calc(1em + 60px) 1em;
+    text-align: right;
+    textarea {
+      display: block;
+      width: 100%;
+      height: 100%;
+      font-size: 20px;
+      font-size: 18px;
+      font-family: inherit;
+      box-sizing: border-box;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      transition: .2s;
+      resize: none;
+    }
+    .send-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 40px;
+      padding: 2px 1px 2px 5px;
+      margin-top: 20px;
+      font-size: 20px;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      cursor: pointer;
+      border-radius: .75em;
+      transition: .2s;
+      opacity: 1;
+      background-color: @background-btn-default;
+      &:hover {
+        transform: scale(110%);
+        background-color: darken(@background-btn-default, 20%);
+      }
     }
   }
 }
