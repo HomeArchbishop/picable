@@ -2,7 +2,7 @@
   <div class="comic-viewer-container">
     <div class="display-card">
       <div class="img-container">
-        <div v-for="(item, index) in pictureListDocsList" :key="item._id" :id="`pic${index + 1}`">
+        <div v-for="(item, index) in pictureListDocsList" :key="item._id" :id="`pic${index + 1}`" class="img-group">
           <img
             :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
             v-show="pictureLoadingStateMap[item._id] === true"
@@ -22,11 +22,9 @@
         <common-tip-block v-if="!isUpdating && !isAll" :clickable="true" @click="updateNewPicturePage()">
           加载更多
         </common-tip-block>
-        <!--
-        <common-tip-block v-if="isAll && episodesList.length" :clickable="true">
+        <common-tip-block v-if="isAll && hasNextEpisodes" :clickable="true" @click="nextEpisodes()">
           看到底了 下一章节
         </common-tip-block>
-        -->
         <common-tip-block v-else-if="isAll" :clickable="true" @click="backToDetail()">
           看到底了 回到目录
         </common-tip-block>
@@ -70,8 +68,7 @@ export default {
     return {
       pictureListDocsList: [],
       pictureLoadingStateMap: {},
-      episodesList: [],
-      episodesTitle: '加载中...',
+      hasNextEpisodes: false,
       nextPage: 1,
       isAll: false,
       isUpdating: false,
@@ -79,10 +76,6 @@ export default {
     }
   },
   computed: {
-    currentEpisodeIndex () {
-      return this.episodesList.findIndex((item = {}) =>
-        `${item.order}` === `${this.comicOrder}`) || 0
-    },
     comicId () {
       return this.$route.params.comicId
     },
@@ -107,7 +100,6 @@ export default {
       })
       console.log(pictureObjectResults)
       this.pictureListDocsList.push(...pictureObjectResults.pages.docs)
-      this.episodesTitle = pictureObjectResults.ep.title
       this.pictureLoadingStateMap = {
         ...this.pictureLoadingStateMap,
         ...pictureObjectResults.pages.docs.reduce((p, c) => {
@@ -123,25 +115,30 @@ export default {
       // change states.
       this.isUpdating = false
     },
-    getEpisodesList: async function () {
-      // TODO fit it to multi-pages later. Maybe share the same logic with download
-    },
-    nextEpisodes: async function () {
-      // TODO to be finished after `getEpisodesList()` is done
-    },
-    backToDetail: async function () {
-      this.$router.push({ name: 'ComicDetail', params: { comicId: this.comicId } })
-    },
-    nextAction: async function () {
-      if (!this.isUpdating && !this.isAll) {
-        this.updateNewPicturePage()
-      } else if (this.isAll && this.episodesList.length) {
-        if (this.episodesList.length && this.currentEpisodeIndex) {
-          this.nextEpisodes()
-        } else {
-          this.backToDetail()
+    async judgeHasNextEpisodes () {
+      let episodesObject
+      let page = 1
+      while (!episodesObject || episodesObject.page < episodesObject.pages) {
+        episodesObject = await this.$api.episodes({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page
+        })
+        console.log(episodesObject)
+        for (const { order } of (episodesObject.docs || [])) {
+          if (order === +this.epsOrder - 1) {
+            this.hasNextEpisodes = true
+            console.log(this.hasNextEpisodes)
+            return
+          }
         }
+        page++
       }
+      this.hasNextEpisodes = false
+    },
+    async nextEpisodes () {
+      this.$router.push({ name: 'ComicViewer', params: { comicId: this.comicId, order: +this.epsOrder - 1 } })
+    },
+    async backToDetail () {
+      this.$router.push({ name: 'ComicDetail', params: { comicId: this.comicId } })
     },
     async scrollToTop () {
       // TODO to be finished
@@ -185,10 +182,20 @@ export default {
       window.electronAPI.writeRuntimeFile({ file: './recentComicIdList.json', content: JSON.stringify(recentComicIdList) })
     }
   },
+  watch: {
+    epsOrder (nextValue) {
+      if (!nextValue) { return }
+      // init $data.
+      Object.assign(this.$data, this.$options.data())
+      this.updateNewPicturePage()
+      this.judgeHasNextEpisodes()
+      scrollTo(0, 0)
+    }
+  },
   created () {
     this.updateNewPicturePage()
-    this.getEpisodesList()
     this.recordRecentComic()
+    this.judgeHasNextEpisodes()
   }
 }
 </script>
@@ -205,11 +212,18 @@ export default {
       flex-direction: column;
       align-items: center;
       width: 100%;
+      .img-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
       img {
         width: 100%;
         max-width: 80vh;
       }
       .img-placeholder {
+        display: block;
         text-align: center;
         width: 100%;
         max-width: 80vh;

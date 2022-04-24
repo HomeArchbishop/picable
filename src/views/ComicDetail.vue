@@ -84,7 +84,7 @@
     <div class="episodes-card" v-if="!isRequestingDetail && !isChoosingDownLoad && !isChoosingPackZip">
       <h2>章节列表</h2>
       <div class="episodes-list">
-        <router-link :to="{ name:'ComicViewer', params: { comicId, order: item.order } }" custom v-slot="{ navigate }"  v-for="item in episodesList" :key="item.order" >
+        <router-link :to="{ name: 'ComicViewer', params: { comicId, order: item.order } }" custom v-slot="{ navigate }"  v-for="item in episodesList" :key="item.order" >
           <div class="episodes-item" @click="navigate">{{ item.title }}</div>
         </router-link>
       </div>
