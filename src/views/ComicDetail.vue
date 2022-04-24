@@ -142,6 +142,14 @@
       </div>
     </div>
     -->
+    <div class="recommend-card" v-if="recommendComicList.length">
+      <h2>看了這本子的人也在看</h2>
+      <div class="comic-list">
+        <item-small v-for="item in recommendComicList" :key="item._id" :item="item"
+          :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -151,6 +159,7 @@ import { faHeart, faEye, faCommentDots, faBookmark, faDownload, faFileZipper, fa
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import TagItem from '../components/TagItem'
 import CommonTipBlock from '../components/CommonTipBlock'
+import ItemSmall from '../components/ItemSmall.vue'
 
 library.add(faHeart, faEye, faCommentDots, faBookmark, faDownload, faFileZipper, faAngleDown, faAngleUp)
 
@@ -159,6 +168,7 @@ export default {
   components: {
     FontAwesomeIcon,
     TagItem,
+    ItemSmall,
     CommonTipBlock
   },
   data () {
@@ -171,6 +181,7 @@ export default {
       episodesPackChosenList: [],
       favouriteAuthorList: [],
       favouriteChineseList: [],
+      recommendComicList: [],
       isFavourite: false,
       isLiked: false,
       isRequestingDetail: true,
@@ -247,6 +258,11 @@ export default {
       this.comicDetailObject.likesCount = this.comicDetailObject.likesCount + (likeAction === 'like' ? 1 : -1)
       // change state.
       this.isRequestingLike = false
+    },
+    async getRecommendComic () {
+      this.recommendComicList = (await this.$api.recommend({
+        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
+      })).comics
     },
     async toggleDownload () {
       this.isChoosingPackZip && await this.togglePack()
@@ -329,11 +345,24 @@ export default {
         : []
     }
   },
-  created () {
+  watch: {
+    comicId (nextValue) {
+      if (!nextValue) { return }
+      // init $data.
+      Object.assign(this.$data, this.$options.data())
+      this.getComicDetail()
+      this.getEpisodesList()
+      this.getFavouriteAuthorList()
+      this.getFavouriteChineseList()
+      this.getRecommendComic()
+    }
+  },
+  mounted () {
     this.getComicDetail()
     this.getEpisodesList()
     this.getFavouriteAuthorList()
     this.getFavouriteChineseList()
+    this.getRecommendComic()
     // this.getDownloadedList()
   }
 }
@@ -550,6 +579,21 @@ export default {
           transform: scale(110%);
         }
       }
+    }
+  }
+  .recommend-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    h2 {
+      margin-bottom: 10px;
+      margin-top: 60px;
+    }
+    .comic-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
   }
 }
