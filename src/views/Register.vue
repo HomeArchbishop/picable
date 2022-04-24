@@ -68,6 +68,7 @@ import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import swal from 'sweetalert'
 import CheckRadio from '../components/CheckRadio'
+import dobToAge from 'dob-to-age'
 
 library.add(faAngleRight)
 
@@ -119,10 +120,33 @@ export default {
           return
         }
       }
+      if (dobToAge(this.registerData.birthday) < 18) {
+        swal({
+          title: '未满18周岁',
+          text: '成年了再来吧',
+          icon: 'warning'
+        })
+        return
+      }
+      if (this.registerData.password.length < 8) {
+        swal({
+          title: '密码长度应不小于8',
+          icon: 'warning'
+        })
+        return
+      }
       const resData = await this.$api.register({
         diversionUrl: this.diversionUrl, data: this.registerData
       })
-      console.log(resData)
+      if (resData.code === 200) {
+        swal({
+          title: '注册成功',
+          text: '请前往登录',
+          icon: 'info'
+        }).then(() => {
+          this.$router.push({ name: 'Login' })
+        })
+      }
     }
   }
 }

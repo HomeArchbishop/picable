@@ -356,7 +356,7 @@ async function register ({ diversionUrl, data }) {
   const json = await sendPost({
     diversionUrl, subUrl, body
   })
-  return json.data
+  return json
 }
 
 // 评论点赞
