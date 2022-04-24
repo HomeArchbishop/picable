@@ -54,6 +54,14 @@ const routes = [
     }
   },
   {
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/Register'),
+    meta: {
+      title: '注册'
+    }
+  },
+  {
     path: '/comic-detail/:comicId',
     name: 'ComicDetail',
     component: () => import('../views/ComicDetail')

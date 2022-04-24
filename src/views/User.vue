@@ -106,7 +106,7 @@ export default {
     avatarSrc () {
       return this.personInfo.avatar
         ? this.$utils.formatImgUrl(this.personInfo.avatar.fileServer, this.personInfo.avatar.path)
-        : '../../static/img/black.jpeg'
+        : require('../assets/img/black').black
     },
     level () {
       return Math.max(+this.personInfo.level, ~~(+this.personInfo.exp / 300) + 1)

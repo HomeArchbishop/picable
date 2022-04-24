@@ -1,7 +1,12 @@
 <template>
   <div class="login-container">
     <div class="form-box">
-      <h1 class="highlight">登录</h1>
+      <h1>
+        <span class="highlight">登录</span>
+        <router-link :to="{ name: 'Register' }" custom v-slot="{ navigate }">
+          <span class="sub-link" @click="navigate">去注册</span>
+        </router-link>
+      </h1>
       <form @submit.prevent="login()">
         <div class="input-div">
           <label>用户名</label>
@@ -12,9 +17,6 @@
           <input type="password" v-model.trim="password" ref="passwordInput">
         </div>
         <div class="function-div">
-          <router-link to="/register" custom v-slot="{ navigate }">
-            <div class="sub-link" @click="navigate">去注册</div>
-          </router-link>
           <div class="submit-btn" @click="login()">
             <input type="submit" value="" style="display: none;">
             登录<font-awesome-icon icon="angle-right" />
@@ -40,10 +42,8 @@ export default {
   },
   data () {
     return {
-      isUsernameInputFocused: false,
-      isPasswordInputFocused: false,
-      username: localStorage.username || '',
-      password: localStorage.password || ''
+      username: '',
+      password: ''
     }
   },
   methods: {
@@ -105,6 +105,17 @@ export default {
     text-align: left;
     color: @color-font-default-highlight;
   }
+  .sub-link {
+    font-size: .5em;
+    margin-left: 1em;
+    opacity: .4;
+    cursor: pointer;
+    transition: .2s;
+    &:hover {
+      text-decoration: underline;
+      opacity: .9;
+    }
+  }
   .input-div {
     display: flex;
     flex-direction: row;
@@ -115,6 +126,7 @@ export default {
     label {
       margin-right: 8px;
       font-size: 18px;
+      opacity: .78;
     }
     input {
       display: block;
@@ -136,20 +148,12 @@ export default {
     }
   }
   .function-div {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
+    text-align: right;
     width: 400px;
     height: 40px;
     margin-top: 20px;
-    .sub-link {
-      font-size: 16px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
     .submit-btn {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 100px;
@@ -161,11 +165,13 @@ export default {
       background-color: transparent;
       outline: none;
       cursor: pointer;
-
+      border-radius: .75em;
+      transition: .2s;
+      background-color: lighten(@background-btn-default, 20%);
       &:hover {
         transform: scale(110%);
+        background-color: @background-btn-default;
       }
-      .hoverable-btn()
     }
   }
 }

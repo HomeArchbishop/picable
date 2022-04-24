@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="if-wrap" v-else>
-    <div class="unit-group" v-for="collectionGroup in collectionsList" :key="collectionGroup.title">
+    <div class="unit-group" v-for="collectionGroup in collectionsList" :key="collectionGroup.title" v-show="collectionGroup.comics.length">
       <h2>{{ collectionGroup.title }}</h2>
       <div class="comic-list">
         <item-small v-for="item in collectionGroup.comics" :key="collectionsList.title + item._id" :item="item"

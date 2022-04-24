@@ -41,14 +41,6 @@ export default {
         this.$utils.hideLoadingPica()
       }
     }
-  },
-  mounted () {
-    this.$api.setTitle({
-      diversionUrl: this.diversionUrl,
-      token: this.token,
-      userId: '5ea832a48182b7596b4546e5',
-      title: '大主教'
-    }).then(console.log)
   }
 }
 </script>

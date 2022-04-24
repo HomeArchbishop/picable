@@ -1,9 +1,9 @@
 <template>
 <div class="wrap">
   <div class="window-header-container">
-    <nav-bar v-if="$route.name !== 'Diversion' && $route.name !== 'Login' && $route.name !== 'AppLock'" />
+    <nav-bar v-if="isShowBar" />
   </div>
-  <side-bar v-if="$route.name !== 'Diversion' && $route.name !== 'Login' && $route.name !== 'AppLock'" />
+  <side-bar v-if="isShowBar" />
   <div class="app-main-root-container">
     <router-view v-slot="{ Component }">
       <transition>
@@ -29,6 +29,12 @@ export default {
   data () {
     return {
       keepAliveList: []
+    }
+  },
+  computed: {
+    isShowBar () {
+      return typeof this.$route.name !== 'undefined' &&
+        !['Diversion', 'Login', 'AppLock', 'Register'].includes(this.$route.name)
     }
   },
   methods: {
