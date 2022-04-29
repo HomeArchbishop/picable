@@ -24,6 +24,7 @@ class Header {
       signature: this.createSignature(url, time, nonce, method),
       // host: 'picaapi.picacomic.com',  // TODO solve ths HOST safety problem
       authorization: auth,
+      token: auth,
       'app-channel': config['app-channel'],
       'api-key': apiKey,
       'app-version': config['app-version'],

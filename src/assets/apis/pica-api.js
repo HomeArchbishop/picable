@@ -1,6 +1,8 @@
 import { sendGet, sendPost, sendPut } from './https/request'
 import axios from 'axios'
 import extraCategoriesList from '../../configs/extraCategories'
+import configs from '../../configs'
+
 /**
  * sorts
  * @type ua: 默认
@@ -10,7 +12,7 @@ import extraCategoriesList from '../../configs/extraCategories'
  * @type vd: 最多指名
  */
 
-const diversionUrl = '//picaapi.picacomic.com/'
+// const diversionUrl = '//picaapi.picacomic.com/'
 
 const backendApiUrl = '//localhost:3825/'
 
@@ -46,12 +48,15 @@ async function categories ({ diversionUrl, token }) {
 }
 
 // 根据分类（cate）和标签返回漫画列表
-async function comics (token, page = 1,
-  title = '嗶咔漢化', tag = 'jk', sort = 'ua') {
+async function comics ({
+  diversionUrl, token, page = 1, title = '嗶咔漢化', tag = 'jk', sort = 'ua'
+}) {
   const titleEscaped = escape(title)
   const tagEscaped = escape(tag)
   const subUrl = `comics?page=${page}&c=${titleEscaped}&t=${tagEscaped}&s=${sort}`
-  const respData = await sendGet(diversionUrl, subUrl, token)
+  const respData = await sendGet({
+    diversionUrl, subUrl, token
+  })
   return respData.data.comics
 }
 
@@ -219,7 +224,7 @@ async function randomComic ({ diversionUrl, token }) {
 }
 
 // 下载
-async function download (token, comicId, episodesOrder) {
+async function download ({ diversionUrl, token, comicId, episodesOrder }) {
   const subUrl = `download?diversionUrl=${diversionUrl}&token=${token}&comicId=${comicId}&episodesOrder=${episodesOrder}`
   const downloadRes = (await axios.get(backendApiUrl + subUrl)).data
   return downloadRes
@@ -379,10 +384,29 @@ async function childrenComments ({ diversionUrl, token, commentId, page = 1 }) {
   return json.data.comments
 }
 
+// 锅贴
+async function postInfo ({ token, page = 1 }) {
+  const subUrl = `posts?offset=${page * 10 - 10}`
+  const json = await sendGet({
+    diversionUrl: configs.postBaseURL, subUrl, token
+  })
+  return json.data
+}
+
+// 锅贴评论
+async function postWebComments ({ token, postId, page = 1 }) {
+  const subUrl = `posts/${postId}/comments?offset=${page * 20 - 20}`
+  const json = await sendGet({
+    diversionUrl: configs.postBaseURL, subUrl, token
+  })
+  return json.data
+}
+
 export {
   checkToken, authorize, categories, comics, info, episodes, picture,
   recommend, keyword, searchCategories, searchTag, search, like, comments, favourite,
   personInfo, myFavourite, myComments, shenMoCollections, punch, randomComic, appList,
   gameList, gameInfo, gameComments, gameLike, chatRoomList, sendComments, rank, knightRank,
-  setTitle, register, commentLike, childrenComments, download, downloadInfo, downloadZipUrl
+  setTitle, register, commentLike, childrenComments, download, downloadInfo, downloadZipUrl,
+  postInfo, postWebComments
 }
