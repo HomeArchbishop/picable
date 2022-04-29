@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    getList: async function () {
+    async getList () {
       // change state.
       this.isRequestingCollections = true
       // call api.

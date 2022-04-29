@@ -72,7 +72,7 @@ export default {
     }
   },
   methods: {
-    updatePage: async function () {
+    async updatePage () {
       if (this.isAll) {
         return
       }
@@ -101,7 +101,7 @@ export default {
         this.nextPage = this.nextPage + 1
       }
     },
-    searchNew: async function () {
+    async searchNew () {
       // if: empty keyword, return.
       if (!this.inputKeyword) {
         if (!this.randomKeyword) { return }
@@ -115,12 +115,12 @@ export default {
       // else: a new search, ask for new page url.
       this.$router.push({ name: 'Search', query: { kw: this.inputKeyword } })
     },
-    getKeywordList: async function () {
+    async getKeywordList () {
       const nextKeywordList = await this.$api.keyword({ diversionUrl: this.diversionUrl, token: this.token })
       this.$store.commit('runtime/setKeywordList', { nextKeywordList })
       console.log(nextKeywordList)
     },
-    changeSort: async function (sortCode) {
+    async changeSort (sortCode) {
       if (this.sort === sortCode) {
         return
       }

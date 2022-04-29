@@ -49,7 +49,7 @@ export default {
     })
   },
   methods: {
-    getCategoryList: async function () {
+    async getCategoryList () {
       const categoryList = await this.$api.categories({
         diversionUrl: this.diversionUrl, token: this.token
       })
@@ -74,7 +74,7 @@ export default {
       })
     }
   },
-  created: async function () {
+  created () {
     if (!this.categoryList.length) {
       this.getCategoryList()
     }

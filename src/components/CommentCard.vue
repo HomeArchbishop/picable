@@ -100,7 +100,7 @@ export default {
     }
   },
   methods: {
-    commentLike: async function () {
+    async commentLike () {
       if (this.isAskLiked) { return }
       // change state.
       this.isAskLiked = true
@@ -117,7 +117,7 @@ export default {
       // change state.
       this.isAskLiked = false
     },
-    updateChildrenComments: async function () {
+    async updateChildrenComments () {
       if (this.isChildrenCommentAll || !this.item.commentsCount || this.isRequestingChildrenComment) { return }
       // change state.
       this.isRequestingChildrenComment = true
@@ -132,7 +132,7 @@ export default {
       // change state.
       this.isRequestingChildrenComment = false
     },
-    toggleChildrenComments: async function () {
+    async toggleChildrenComments () {
       this.isShowChildrenComment = !this.isShowChildrenComment
       // init first time we call for children comments.
       !this.childrenCommentList.length && this.updateChildrenComments()
