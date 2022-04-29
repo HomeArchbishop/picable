@@ -51,7 +51,7 @@ export default {
     })
   },
   methods: {
-    updatePage: async function () {
+    async updatePage () {
       if (this.isAll) { return }
       // change state.
       this.isSearching = true
@@ -78,7 +78,7 @@ export default {
         this.nextPage = this.nextPage + 1
       }
     },
-    changeSort: async function (sortCode) {
+    async changeSort (sortCode) {
       if (this.sort === sortCode) {
         return
       }

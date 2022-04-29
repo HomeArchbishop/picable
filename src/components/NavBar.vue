@@ -27,9 +27,6 @@ export default {
   name: 'SideBar',
   components: {
     FontAwesomeIcon
-  },
-  data () {
-    return {}
   }
 }
 </script>

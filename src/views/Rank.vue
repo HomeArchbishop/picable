@@ -49,7 +49,7 @@ export default {
     }
   },
   methods: {
-    updatePage: async function () {
+    async updatePage () {
       this[`${this.tt}List`] = []
       // change state.
       this.isSearching = true

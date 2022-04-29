@@ -32,7 +32,7 @@ export default {
     }
   },
   methods: {
-    updatePage: async function () {
+    async updatePage () {
       this.resultList = []
       // change state.
       this.isUpdating = true

@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    updatePage: async function () {
+    async updatePage () {
       if (this.isAll) { return }
       // change state.
       this.isUpdating = true
@@ -64,7 +64,7 @@ export default {
       // change state.
       this.isUpdating = false
     },
-    sendComments: async function () {
+    async sendComments () {
       if (!this.commentInput) {
         this.$refs.commentInput.focus()
         return
