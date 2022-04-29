@@ -58,7 +58,12 @@ export default {
       // set values in each data.
       this.categoryList.forEach(item => {
         if (item.isWeb) {
-          this.webList.push(item)
+          if (item.title !== '嗶咔鍋貼') {
+            this.webList.push(item)
+          } else {
+            item.toName = 'PostWeb'
+            this.appList.push(item)
+          }
           return
         }
         if (item.isApp) {

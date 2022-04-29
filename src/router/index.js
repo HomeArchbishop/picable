@@ -206,6 +206,14 @@ const routes = [
     meta: {
       title: '设置'
     }
+  },
+  {
+    path: '/post-web',
+    name: 'PostWeb',
+    component: () => import('../views/PostWeb'),
+    meta: {
+      title: '锅贴'
+    }
   }
 ]
 
