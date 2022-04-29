@@ -199,9 +199,6 @@ export default {
       },
       immediate: true
     }
-  },
-  created () {
-    this.updatePageComic()
   }
 }
 </script>
