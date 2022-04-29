@@ -106,8 +106,8 @@ async function keyword ({ diversionUrl, token }) {
 }
 
 // 分类搜索
-async function searchCategories ({ diversionUrl, token, categories, page = 1, sort = 'ua' }) {
-  const subUrl = `comics?page=${page}&c=${encodeURI(categories)}&s=${sort}`
+async function searchCategories ({ diversionUrl, token, category, page = 1, sort = 'ua' }) {
+  const subUrl = `comics?page=${page}&c=${encodeURI(category)}&s=${sort}`
   const respData = await sendGet({
     diversionUrl, subUrl, token
   })
