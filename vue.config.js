@@ -7,6 +7,13 @@ module.exports = {
     })
   },
   pluginOptions: {
+    css: {
+      loaderOptions: {
+        less: {
+          javascriptEnabled: true
+        }
+      }
+    },
     electronBuilder: {
       preload: 'src/preload.js',
       appId: 'com.picaable.app',

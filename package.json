@@ -8,6 +8,12 @@
   "repository": {
     "github": "https://github.com/HomeArchbishop/picable"
   },
+  "notice": {
+    "update": "https://homearchbishop.github.io/picable-notice",
+    "version": "https://homearchbishop.github.io/picable-notice/version/latest.json",
+    "announ:state": "https://homearchbishop.github.io/picable-notice/announcement/state.json",
+    "announ": "https://homearchbishop.github.io/picable-notice/announcement"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -26,6 +32,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "axios": "^0.25.0",
     "core-js": "^3.6.5",
+    "csshake": "^1.5.3",
     "dayjs": "^1.10.7",
     "deepcopy": "^2.1.0",
     "dob-to-age": "^1.0.0",

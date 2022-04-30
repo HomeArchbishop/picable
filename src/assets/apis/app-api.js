@@ -38,7 +38,12 @@ const favouriteChinese = async function (chineseTeam) {
   await window.electronAPI.writeRuntimeFile({ file: './favouriteChineseList.json', content: JSON.stringify(favouriteChineseList) })
 }
 
+const openBrowser = async function (url) {
+  window.electronAPI.openBrowser({ url })
+}
+
 export {
   favouriteAuthor, favouriteAuthorList,
-  favouriteChinese, favouriteChineseList
+  favouriteChinese, favouriteChineseList,
+  openBrowser
 }
