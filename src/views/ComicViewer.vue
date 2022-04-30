@@ -263,12 +263,12 @@ export default {
         transition: .15s;
         position: relative;
         &:nth-child(2) {
-          border-top-left-radius: 50%;
-          border-top-right-radius: 50%;
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
         }
         &:nth-last-child(2) {
-          border-bottom-left-radius: 50%;
-          border-bottom-right-radius: 50%;
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
         }
         &:hover {
           background-color: darken(@background-btn-default, 40%);
