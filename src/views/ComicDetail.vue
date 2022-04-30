@@ -135,7 +135,7 @@
       </div>
     </div>
     -->
-    <div class="recommend-card" v-if="recommendComicList.length">
+    <div class="recommend-card" v-if="recommendComicList.length && !isRequestingDetail">
       <h2>看了這本子的人也在看</h2>
       <div class="comic-list">
         <item-small v-for="item in recommendComicList" :key="item._id" :item="item"
