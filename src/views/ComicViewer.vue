@@ -124,7 +124,7 @@ export default {
         })
         console.log(episodesObject)
         for (const { order } of (episodesObject.docs || [])) {
-          if (order === +this.epsOrder - 1) {
+          if (order === +this.epsOrder + 1) {
             this.hasNextEpisodes = true
             console.log(this.hasNextEpisodes)
             return
@@ -135,7 +135,7 @@ export default {
       this.hasNextEpisodes = false
     },
     async nextEpisodes () {
-      this.$router.push({ name: 'ComicViewer', params: { comicId: this.comicId, order: +this.epsOrder - 1 } })
+      this.$router.push({ name: 'ComicViewer', params: { comicId: this.comicId, order: +this.epsOrder + 1 } })
     },
     async backToDetail () {
       this.$router.push({ name: 'ComicDetail', params: { comicId: this.comicId } })
