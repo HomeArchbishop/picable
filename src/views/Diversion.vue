@@ -1,26 +1,43 @@
 <template>
   <div class="diversion-container">
-    <!--<h2>请选择分流</h2>-->
-    <!--<b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/>-->
-    <!--因为安全策略，暂不支持切换分流。请科学上网-->
+    <h1 >
+      <span class="title-highlight-span">Picable</span>
+      <sup class="badge">@{{ packageJSON.version }}</sup>
+    </h1>
+    <!-- <b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/> -->
+    <!-- 因为安全策略，暂不支持切换分流。请科学上网 -->
     <div class="diversion-list">
       <div class="diversion-btn" @click="chose(0)">分流一</div>
-      <!--<div class="diversion-btn" @click="chose(1)">分流二</div>
-      <div class="diversion-btn" @click="chose(2)">分流三</div>-->
+      <!-- <div class="diversion-btn" @click="chose(1)">分流二</div>
+      <div class="diversion-btn" @click="chose(2)">分流三</div> -->
+    </div>
+    <div class="conner">
+      <span class="item shake-chunk" v-if="isNeedUpdate"
+        @click="$api.openBrowser(packageJSON.notice.update)"
+      >更新App</span>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import 'csshake'
 
 export default {
   name: 'Diversion',
+  data () {
+    return {
+      packageJSON: require('../../package.json')
+    }
+  },
   computed: {
     ...mapState({
       diversionUrlIndex: state => state.storage.diversionIndex,
       diversionUrlList: state => state.runtime.diversionUrlList
-    })
+    }),
+    isNeedUpdate () {
+      return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
+    }
   },
   methods: {
     async chose (nextDiversionIndex) {
@@ -56,8 +73,22 @@ export default {
   justify-content: center;
   height: 70vh;
   opacity: .89;
-  h2 {
-    font-weight: normal;
+  position: relative;
+  user-select: none;
+  cursor: default;
+  h1 {
+    display: flex;
+    cursor: default;
+    .title-highlight-span {
+      color: @color-font-default-highlight;
+      font-size: 60.6px;
+      font-weight: 800;
+    }
+    .badge {
+      color: @color-font-default-highlight;
+      height: fit-content;
+      font-size: .5em;
+    }
   }
 }
 .diversion-list {
@@ -75,6 +106,24 @@ export default {
     cursor: pointer;
     &:not(:nth-child(1)) {
       margin-top: 12px;
+    }
+  }
+}
+
+.conner {
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  .item {
+    display: inline-block;
+    color: #999;
+    &::content {
+      content: '';
+    }
+    &:not(:nth-child(1))::before {
+      content: '| ';
     }
   }
 }

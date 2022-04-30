@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { ipcMain, shell } from 'electron'
 import fs from 'fs'
 import path from 'path'
 import { createFolder } from './createFolder'
@@ -19,5 +19,9 @@ export function ipcMainStart (appRuntimeDirPath) {
   ipcMain.handle('exist-runtime-file', async (event, { file }) => {
     const fileResolvedPath = path.resolve(appRuntimeDirPath, './database', file)
     return fs.existsSync(fileResolvedPath)
+  })
+
+  ipcMain.handle('open-browser', async (event, { url }) => {
+    shell.openExternal(url)
   })
 }
