@@ -40,7 +40,12 @@
       <div>
         <div class="label">软件版本</div>
       </div>
-      <div>{{ packageJSON.version }}</div>
+      <div>
+        @{{ packageJSON.version }}
+        <a href="." v-if="isNeedUpdate"
+          @click.prevent="$api.openBrowser(packageJSON.notice.update)"
+        >前往更新</a>
+      </div>
     </div>
     <div class="info-item">
       <div>
@@ -52,7 +57,9 @@
       <div>
         <div class="label">GitHub地址</div>
       </div>
-      <a :href="packageJSON.repository.github" target="_blank">{{ packageJSON.repository.github }}</a>
+      <a href="."
+        @click.prevent="$api.openBrowser(packageJSON.repository.github)"
+      >{{ packageJSON.repository.github }}</a>
     </div>
     <br><hr><br>
     <div>
@@ -112,7 +119,10 @@ export default {
       blurOutOfFocus: state => state.storage.blurOutOfFocus,
       hasAppLock: state => state.storage.hasAppLock,
       appLockPassword: state => state.storage.appLockPassword
-    })
+    }),
+    isNeedUpdate () {
+      return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
+    }
   },
   methods: {
     toggleAppLock () {

@@ -11,7 +11,7 @@
           <font-awesome-icon icon="lock" />
         </div>
       </router-link>
-      <router-link :to="{ name: 'Diversion' }" custom v-slot="{ navigate }">
+      <router-link :to="{ name: 'HideSecret' }" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="eye-slash" />
         </div>

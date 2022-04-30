@@ -6,12 +6,18 @@ import store from '../store'
 import AppLock from '../views/AppLock'
 import Diversion from '../views/Diversion'
 import Buffer from '../views/Buffer'
+import HideSecret from '../views/HideSecret'
 
 const routes = [
   {
     path: '/',
     name: 'Buffer',
     component: Buffer
+  },
+  {
+    path: '/hide-secret',
+    name: 'HideSecret',
+    component: HideSecret
   },
   {
     path: '/app-lock',

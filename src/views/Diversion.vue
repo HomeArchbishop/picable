@@ -1,8 +1,7 @@
 <template>
   <div class="diversion-container">
     <h1 >
-      <span class="title-highlight-span">Picable</span>
-      <sup class="badge">@{{ packageJSON.version }}</sup>
+      <span class="title-highlight-span">PicAcg</span>
     </h1>
     <!-- <b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/> -->
     <!-- 因为安全策略，暂不支持切换分流。请科学上网 -->
@@ -14,7 +13,9 @@
     <div class="conner">
       <span class="item shake-chunk" v-if="isNeedUpdate"
         @click="$api.openBrowser(packageJSON.notice.update)"
-      >更新App</span>
+      >应用更新</span>
+      <br>
+      <span class="item">picable@{{ packageJSON.version }}</span>
     </div>
   </div>
 </template>
@@ -79,6 +80,10 @@ export default {
   h1 {
     display: flex;
     cursor: default;
+    // animation-name: shake;
+    animation-duration: .3s;
+    animation-delay: 1.3s;
+    animation-timing-function: ease;
     .title-highlight-span {
       color: @color-font-default-highlight;
       font-size: 60.6px;
@@ -122,9 +127,36 @@ export default {
     &::content {
       content: '';
     }
-    &:not(:nth-child(1))::before {
-      content: '| ';
-    }
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  5% {
+    transform: translateX(-20px);
+  }
+  25% {
+    transform: translateX(-40px);
+  }
+  45% {
+    transform: translateX(-20px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  55% {
+    transform: translateX(20px);
+  }
+  75% {
+    transform: translateX(40px);
+  }
+  95% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 </style>
