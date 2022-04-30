@@ -40,11 +40,11 @@
           <font-awesome-icon icon="book" />
         </div>
       </router-link>
-      <router-link to="/" custom v-slot="{ navigate }">
+      <!-- <router-link to="/" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="download" />
         </div>
-      </router-link>
+      </router-link> -->
       <router-link :to="{ name: 'Favourite' }" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="bookmark" />
