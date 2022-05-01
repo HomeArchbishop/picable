@@ -17,7 +17,11 @@ const routes = [
   {
     path: '/hide-secret',
     name: 'HideSecret',
-    component: HideSecret
+    component: HideSecret,
+    beforeEnter: (to, from, next) => {
+      to.meta.from = from || {}
+      next()
+    }
   },
   {
     path: '/app-lock',

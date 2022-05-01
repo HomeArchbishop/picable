@@ -3,20 +3,20 @@
     <div class="display-card">
       <div class="img-container">
         <div v-for="(item, index) in pictureListDocsList" :key="item._id" :id="`pic${index + 1}`" class="img-group">
-          <img
-            :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
-            v-show="pictureLoadingStateMap[item._id] === true"
-            @load="pictureLoadingStateMap[item._id] = true"
-          >
+          <div class="img-layer">
+            <img
+              :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
+              v-show="pictureLoadingStateMap[item._id] === true"
+              :_id="item._id"
+              @load="pictureLoadingStateMap[item._id] = true"
+              @wheel="imgWheel"
+            >
+          </div>
           <div
             class="img-placeholder"
             v-show="pictureLoadingStateMap[item._id] === false"
           >{{ index + 1 }}</div>
         </div>
-        <div v-for="index in 8" :key="'empty-placeholder' + index"
-          class="img-placeholder"
-          v-show="pictureListDocsList.length === 0"
-        >{{ index }}</div>
       </div>
       <div class="tip-layer">
         <common-tip-block v-if="!isUpdating && !isAll" :clickable="true" @click="updateNewPicturePage()">
@@ -30,9 +30,11 @@
         </common-tip-block>
         <common-tip-block v-if="isUpdating" :waiting="true">正在加载</common-tip-block>
       </div>
-      <div class="space-placeholder" v-if="pictureListDocsList.length === 0"></div>
       <div ref="bottomAnchor"></div>
       <div class="tool-bar" v-if="pictureListDocsList.length !== 0">
+        <div class="tool-btn" @click="backToDetail()">
+          <font-awesome-icon icon="paperclip" />
+        </div>
         <div class="tool-btn" @click="scrollToTop()">
           <font-awesome-icon icon="arrow-up" />
         </div>
@@ -53,10 +55,10 @@
 <script>
 import CommonTipBlock from '../components/CommonTipBlock'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown, faArrowUp, faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faArrowDown, faArrowUp)
+library.add(faArrowDown, faArrowUp, faPaperclip)
 
 export default {
   name: 'ComicViewer',
@@ -72,7 +74,8 @@ export default {
       nextPage: 1,
       isAll: false,
       isUpdating: false,
-      picLinkBtnActiveNum: NaN
+      picLinkBtnActiveNum: NaN,
+      imgScale: {}
     }
   },
   computed: {
@@ -180,6 +183,21 @@ export default {
       recentComicIdSet.add(this.comicId)
       const recentComicIdList = Array.from(recentComicIdSet).reverse()
       window.electronAPI.writeRuntimeFile({ file: './recentComicIdList.json', content: JSON.stringify(recentComicIdList) })
+    },
+    async imgWheel (e) {
+      if (!e.ctrlKey) { return } // stand for scroll, not scale
+      const dom = e.path[0]
+      const layerDom = e.path[1]
+      const lastScale = this.imgScale[dom._id] || 1
+      const nextScale = Math.max(lastScale - e.deltaY * 0.05, 1)
+      this.imgScale[dom._id] = nextScale
+      dom.style.transform = (`
+        scale(${nextScale})
+        translateX(${dom.width / nextScale / 2 * (nextScale - 1)}px)
+        translateY(${dom.height / nextScale / 2 * (nextScale - 1)}px)
+      `)
+      console.log(dom.width / nextScale / 2 * (nextScale - 1))
+      layerDom.scrollTo(e.layerX - e.offsetX, e.layerY - e.offsetY)
     }
   },
   watch: {
@@ -217,22 +235,28 @@ export default {
         flex-direction: column;
         align-items: center;
         width: 100%;
-      }
-      img {
-        width: 100%;
-        max-width: 80vh;
-      }
-      .img-placeholder {
-        display: block;
-        text-align: center;
-        width: 100%;
-        max-width: 80vh;
-        padding: 160px 0;
-        background: #535353;
-        border-bottom: 1px solid darken(#535353, 10%);
-        color: rgb(183, 188, 192);
-        font-size: 14em;
-        user-select: none;
+        .img-layer {
+          overflow: scroll;
+          img {
+            width: 100%;
+            max-width: 80vh;
+          }
+          &::-webkit-scrollbar {
+            display: none;
+          }
+        }
+        .img-placeholder {
+          display: block;
+          text-align: center;
+          width: 100%;
+          max-width: 80vh;
+          padding: 160px 0;
+          background: #535353;
+          border-bottom: 1px solid darken(#535353, 10%);
+          color: rgb(183, 188, 192);
+          font-size: 14em;
+          user-select: none;
+        }
       }
     }
     .tip-layer {
@@ -241,15 +265,12 @@ export default {
       justify-content: center;
       margin-top: 10px;
     }
-    .space-placeholder {
-      height: 100000px;
-    }
     .tool-bar {
       display: flex;
       align-items: center;
       flex-direction: column;
       position: fixed;
-      height: 300px;
+      height: 350px;
       right: 20px;
       top: 200px;
       .pic-link-btn {
@@ -262,7 +283,7 @@ export default {
         cursor: pointer;
         transition: .15s;
         position: relative;
-        &:nth-child(2) {
+        &:nth-child(3) {
           border-top-left-radius: 8px;
           border-top-right-radius: 8px;
         }
