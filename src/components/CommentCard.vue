@@ -14,13 +14,13 @@
             <div class="name">
               {{ (item._user?.name.substr(0, 20) || '未知用户') + (item._user?.name.slice(20) ? '...' : '') }}
             </div>
-            <div v-if="['m', 'f'].includes(item._user?.gender)">&emsp;</div>
             <font-awesome-icon :icon="{ m: 'mars', f: 'venus' }[item._user?.gender]"
               v-if="['m', 'f'].includes(item._user?.gender)" class="gender-badge"
             />
-            <span v-if="item._user">&emsp;Lv{{ item._user?.level }} [{{ item._user?.title }}]</span>
+            <span class="level" v-if="item._user">Lv.{{ item._user?.level }} </span>
+            <span class="user-title" v-if="item._user">{{ item._user?.title }}</span>
           </div>
-          <div>{{ createdTime }}</div>
+          <div class="time">{{ createdTime }}</div>
         </div>
       </div>
       <div class="words-row">
@@ -194,13 +194,31 @@ export default {
         justify-content: space-between;
         width: 100%;
         margin-left: 14px;
-        .name {
-          font-size: 1.1em;
-        }
         div {
           display: flex;
           flex-direction: row;
           align-items: baseline;
+          :not(:nth-child(1)) {
+            margin-left: .8em;
+          }
+          .name {
+            font-size: 1.1em;
+          }
+          .level {
+            color: @color-font-default-highlight;
+          }
+          .user-title {
+            background: @color-line-default-highlight-2;
+            padding: 4px 8px;
+            border-radius: 1em;
+            line-height: 1em;
+            color: lighten(@color-line-default-sub, 90%);
+            font-size: .9em;
+          }
+        }
+        .time {
+          color: @color-line-default-sub;
+          font-size: .9em;
         }
       }
     }

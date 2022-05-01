@@ -36,7 +36,7 @@ export default {
       isRequestingCollections: true,
       collectionsList: [
         { title: '本子妹推薦' },
-        { title: '本子母推薦(曬黑/日燒)' },
+        { title: '本子母推薦' },
         { title: '本子神推薦' },
         { title: '本子魔推薦' }
       ]
