@@ -10,6 +10,7 @@ import { createFolder } from './electron/createFolder'
 import { checkUpdate } from './electron/checkUpdate'
 import { ipcMainStart } from './electron/ipcMain'
 import { checkAnnouncement } from './electron/checkAnnouncement'
+import { registerGlobalShortcut } from './electron/registerGlobalShortcut'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -171,6 +172,7 @@ app.on('ready', async () => {
     app.dock.setMenu(dockMenu)
     // app.dock.setIcon(path.join(__dirname, '../static/favicons/Mac/mac-16x16.png'))
   }
+  registerGlobalShortcut(app)
   createWindow().then(win => {
     checkUpdate()
     checkAnnouncement()
