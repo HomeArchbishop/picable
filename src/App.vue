@@ -19,6 +19,7 @@
 <script>
 import SideBar from '@/components/SideBar'
 import NavBar from '@/components/NavBar'
+import { startListener } from './assets/js/addEventListener'
 
 export default {
   name: 'App',
@@ -34,7 +35,7 @@ export default {
   computed: {
     isShowBar () {
       return typeof this.$route.name !== 'undefined' &&
-        !['Diversion', 'Login', 'AppLock', 'Register'].includes(this.$route.name)
+        !['Diversion', 'Login', 'AppLock', 'Register', 'HideSecret'].includes(this.$route.name)
     }
   },
   methods: {
@@ -59,6 +60,9 @@ export default {
         this.keepAliveList.push(to.name)
       }
     }
+  },
+  beforeCreate () {
+    startListener(this.$router, this.$route)
   },
   created () {
     console.log(this.diversionUrl)
