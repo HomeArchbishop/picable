@@ -39,7 +39,7 @@
     <div class="post-comment" v-if="isShowComment && (commentList.length || isRequestingComment)">
       <post-web-comment-card v-for="item in commentList" :key="item._id" :commentItem="item" />
       <div class="tip-layer">
-        <common-tip-block v-if="isRequestingComment" :waiting="true">子评论加载中...</common-tip-block>
+        <common-tip-block v-if="isRequestingComment" :waiting="true">评论加载中...</common-tip-block>
         <common-tip-block v-if="!isRequestingComment"
           :clickable="true" @click="toggleComments()"
         >

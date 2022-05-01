@@ -196,7 +196,7 @@ export default {
         translateX(${dom.width / nextScale / 2 * (nextScale - 1)}px)
         translateY(${dom.height / nextScale / 2 * (nextScale - 1)}px)
       `)
-      console.log(dom.width / nextScale / 2 * (nextScale - 1))
+      // console.log(dom.width / nextScale / 2 * (nextScale - 1))
       layerDom.scrollTo(e.layerX - e.offsetX, e.layerY - e.offsetY)
     }
   },
