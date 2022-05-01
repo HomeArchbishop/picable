@@ -62,7 +62,7 @@ export default {
     }
   },
   beforeCreate () {
-    startListener(this.$router, this.$route)
+    startListener(this)
   },
   created () {
     console.log(this.diversionUrl)

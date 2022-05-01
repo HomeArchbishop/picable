@@ -54,7 +54,7 @@ export default {
       } else if (this.$route.meta.from.fullPath === this.$route.fullPath || this.$route.meta.from.name === 'Buffer') {
         this.$router.replace({ name: 'Diversion' })
       } else {
-        this.$router.replace({ name: this.$route.meta.from.name })
+        this.$router.replace(this.$route.meta.from.fullPath)
       }
     }
   },
