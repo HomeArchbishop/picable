@@ -13,6 +13,10 @@
             >
           </div>
           <div
+            class="page-tip"
+            v-if="pictureLoadingStateMap[item._id] === true"
+          >{{ index + 1 }}</div>
+          <div
             class="img-placeholder"
             v-show="pictureLoadingStateMap[item._id] === false"
           >{{ index + 1 }}</div>
@@ -235,21 +239,34 @@ export default {
         flex-direction: column;
         align-items: center;
         width: 100%;
+        max-width: 80vh;
+        position: relative;
         .img-layer {
           overflow: scroll;
           img {
             width: 100%;
-            max-width: 80vh;
           }
           &::-webkit-scrollbar {
             display: none;
           }
         }
+        .img-layer:not(:hover) + .page-tip {
+          opacity: 0;
+        }
+        .page-tip {
+          position: absolute;
+          right: calc(100% + 4px);
+          bottom: 10px;
+          font-size: 2em;
+          color: @color-font-default-sub;
+          transition: .2s;
+          user-select: none;
+          cursor: default;
+        }
         .img-placeholder {
           display: block;
           text-align: center;
           width: 100%;
-          max-width: 80vh;
           padding: 160px 0;
           background: #535353;
           border-bottom: 1px solid darken(#535353, 10%);
