@@ -6,20 +6,25 @@
           <div class="img-layer">
             <img
               :src="$utils.formatImgUrl(item.media.fileServer, item.media.path)"
-              v-show="pictureLoadingStateMap[item._id] === true"
+              v-show="pictureLoadingStateMap[item._id]"
               :_id="item._id"
               @load="pictureLoadingStateMap[item._id] = true"
+              @error="pictureLoadingErrorMap[item._id] = true"
               @wheel="imgWheel"
             >
           </div>
           <div
             class="page-tip"
-            v-if="pictureLoadingStateMap[item._id] === true"
+            v-if="pictureLoadingStateMap[item._id]"
           >{{ index + 1 }}</div>
           <div
             class="img-placeholder"
-            v-show="pictureLoadingStateMap[item._id] === false"
-          >{{ index + 1 }}</div>
+            :class="{ 'load-error': pictureLoadingErrorMap[item._id] }"
+            v-show="!pictureLoadingStateMap[item._id]"
+          >
+            <span class="page">{{ index + 1 }}</span>
+            <!-- <span class="error-tip">x</span> -->
+          </div>
         </div>
       </div>
       <div class="tip-layer">
@@ -74,6 +79,7 @@ export default {
     return {
       pictureListDocsList: [],
       pictureLoadingStateMap: {},
+      pictureLoadingErrorMap: {},
       hasNextEpisodes: false,
       nextPage: 1,
       isAll: false,
@@ -273,6 +279,23 @@ export default {
           color: rgb(183, 188, 192);
           font-size: 14em;
           user-select: none;
+          &.load-error .page {
+            // text-decoration: line-through;
+            // text-decoration-color: fade(@color-font-default-highlight, 80%);
+            position: relative;
+            &::after {
+              content: '+';
+              color: fade(@color-font-default-highlight, 80%);
+              position: absolute;
+              transform: rotateZ(45deg);
+              bottom: .7em;
+              left: 100%;
+              font-size: 4 / 14em;
+            }
+          }
+          .page {
+            width: 100%;
+          }
         }
       }
     }
