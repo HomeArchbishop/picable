@@ -97,6 +97,7 @@ const routes = [
     name: 'Favourite',
     component: () => import('../views/Favourite'),
     meta: {
+      keepAlive: true,
       title: '收藏'
     }
   },
@@ -231,7 +232,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
   scrollBehavior (to, from) {
-    if (!to.meta.scrollBehavior) { return false }
+    if (to.meta.scrollBehavior === false) { return false }
     if (to.name === from.name) { return false }
     const x = isObjectLike(store.state.runtime.savedScrollPositions[to.name])
       ? store.state.runtime.savedScrollPositions[to.name].x : 0

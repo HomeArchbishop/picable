@@ -98,11 +98,13 @@ export default {
   components: { ItemLarge, CommonTipBlock, FontAwesomeIcon },
   data () {
     return {
+      isPageFirstEnter: true,
       favouriteComicList: [],
       favouriteAuthorList: [],
       favouriteChineseList: [],
+      favouriteComicTotalCnt: 0,
       currentType: 'comic', // ? 'comic' | 'author' | 'chinese'
-      initState: this.$store.state.runtime.favouriteTypeList.reduce((p, c) => { p[c.code] = false; return p }, {}),
+      typeInitState: { comic: false, author: false, chinese: false },
       nextPage: 1, // for 'comic' type
       isUpdating: true, // for 'comic' type
       isAll: false, // for 'comic' type
@@ -126,6 +128,7 @@ export default {
         diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
       })
       this.favouriteComicList.push(...myFavouriteListObject.docs)
+      this.favouriteComicTotalCnt = myFavouriteListObject.total
       if (myFavouriteListObject.page === myFavouriteListObject.pages) {
         this.isAll = true
       } else {
@@ -186,7 +189,7 @@ export default {
       handler (nextType) {
         switch (nextType) {
           case 'comic':
-            this.initState[nextType] === false && this.updatePageComic()
+            this.typeInitState[nextType] === false && this.updatePageComic()
             break
           case 'author':
             this.updatePageAuthor()
@@ -195,9 +198,24 @@ export default {
             this.updatePageChinese()
             break
         }
-        this.initState[nextType] = true
+        this.typeInitState[nextType] = true
       },
       immediate: true
+    }
+  },
+  async activated () {
+    if (this.isPageFirstEnter) {
+      this.isPageFirstEnter = false
+      return
+    }
+    const myFavouriteListObject = await this.$api.myFavourite({
+      diversionUrl: this.diversionUrl, token: this.token, page: 1
+    })
+    if (myFavouriteListObject.total !== this.favouriteComicTotalCnt) {
+      console.log('!!!!!')
+      const formerType = this.currentType
+      Object.assign(this.$data, this.$options.data(), { currentType: '', isPageFirstEnter: false })
+      this.currentType = formerType
     }
   }
 }
