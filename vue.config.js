@@ -20,7 +20,7 @@ module.exports = {
       productName: 'Picabale-dev_0.1.0_1',
       copyright: 'Copyright © 2022',
       win: {
-        icon: 'static/icons/favicon_64.ico'
+        icon: 'build/icons/win-512x512.ico'
       },
       builderOptions: {
         nsis: {},
