@@ -5,8 +5,9 @@ import router from './router'
 import store from './store'
 import apis from './assets/apis'
 import utils from './assets/utils'
+import VueDOMPurifyHTML from 'vue-dompurify-html'
 
-const app = createApp(App).use(store).use(router).use(apis).use(utils).mixin({
+const app = createApp(App).use(store).use(router).use(apis).use(utils).use(VueDOMPurifyHTML).mixin({
   computed: {
     ...mapState({
       token: state => state.storage.token,

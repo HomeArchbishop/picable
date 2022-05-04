@@ -3,7 +3,7 @@
     <div class="display-card">
       <h2 class="title">小程序</h2>
       <div class="item-wrap" v-if="!appList.length && !webList.length">
-        <loading-item-small v-for="i in 12" :key="i" />
+        <loading-item-small v-for="i in 13" :key="i" />
       </div>
       <div class="item-wrap">
         <item-small v-for="item in webList" :key="item._id + item.title" :item="item"

@@ -225,6 +225,21 @@ const routes = [
     meta: {
       title: '锅贴'
     }
+  },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: () => import('../views/Chat'),
+    meta: {
+      keepAlive: true,
+      title: '哔咔聊天室'
+    }
+  },
+  {
+    path: '/chat-room',
+    name: 'ChatRoom',
+    props: route => ({ url: route.query.url, chatname: route.query.name }),
+    component: () => import('../views/ChatRoom')
   }
 ]
 
