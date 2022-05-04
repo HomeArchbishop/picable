@@ -1,0 +1,42 @@
+name: Blog CI/CD
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths-ignore:
+      - README.md
+      - LICENSE
+
+jobs:
+  build-production:
+
+    runs-on: macos-latest   # 和所使用的操作系统及服务器系统无关
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+    - uses: actions/checkout@v2   # 第一步，检出仓库副本
+
+    - name: Use Node.js ${{ matrix.node-version }} #规定node.js版本(可不配置)
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies  # 第二步，安装依赖
+      run: npm install
+
+    - name: Build                 # 第三步，打包代码
+      run: npm run electron:build --if-present
+
+    - name: Create Release # 创建Release，可以在仓库看到一个个版本
+      id: create_release
+      uses: actions/create-release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }} # (tag)标签名称
+        release_name: Release ${{ github.ref }}
+        draft: false # 是否是草稿
+        prerelease: false # 是否是预发布
