@@ -1,13 +1,6 @@
 <p align="center"><img width="180" src="./static/logos/logo-256x256.png" alt="Pica-comic logo"></p>
 
-<h1 align="center">🍑Picable哔咔漫画客户端
-	<sup style="
-		background: #d66e9e55;
-    border-radius: .35em;
-    font-size: .5em;
-		padding: 0 10px;
-	">@0.1.0</sup>
-</h1>
+<h1 align="center">🍑Picable哔咔漫画客户端</h1>
 
 
 <p align="center">
@@ -15,9 +8,11 @@
   <a href="."><img src="https://img.shields.io/badge/npm-3.0.0%2B-green" alt="npm_v3+"></a>
   <a href="."><img src="https://img.shields.io/badge/LANG-JS/TS-gold" alt="lang:ts/js"></a>-->
   <a href="."><img src="https://img.shields.io/badge/state-under development-darkblue" alt="state: development"></a>
+  <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/HomeArchbishop/picable">
   <a href="."><img src="https://img.shields.io/badge/release-none-green" alt="release:none"></a>
   <a href="."><img src="https://img.shields.io/badge/Vue-^3.0.0-brightgreen" alt="Vue^3.0.0"></a>
   <a href="."><img src="https://img.shields.io/badge/electron-^13.0.0-75C0D0" alt="electron^13.0.0"></a>
+  <a href="."><img alt="GitHub license" src="https://img.shields.io/github/license/HomeArchbishop/picable"></a>
 </p>
 
 <h1 align="center">快开发完了...可以先watch一下哦😉</h1>
