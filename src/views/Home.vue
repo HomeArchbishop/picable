@@ -66,9 +66,6 @@ export default {
 @import '~@/assets/themes/config';
 @import '~@/assets/themes/@{theme-name}/theme';
 .home-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
   .unit-group {
     display: flex;
     flex-direction: column;
