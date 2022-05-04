@@ -26,7 +26,7 @@ module.exports = {
         nsis: {},
         asar: false,
         electronDownload: {
-          customDir: 'v13.0.0'
+          customDir: '13.0.0'
         }
       }
     }
