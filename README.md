@@ -6,7 +6,7 @@
     border-radius: .35em;
     font-size: .5em;
 		padding: 0 10px;
-	">0.1.0</sup>
+	">@0.1.0</sup>
 </h1>
 
 
@@ -20,6 +20,7 @@
   <a href="."><img src="https://img.shields.io/badge/electron-^13.0.0-75C0D0" alt="electron^13.0.0"></a>
 </p>
 
+<h1 align="center">快开发完了...可以先watch一下哦😉</h1>
 
 * 🍑旨在让PC（电脑）访问哔咔更加便捷，功能更加灵活人性化，为绅士淑女们提供极致的享受。
 * 🍓实现了官方的**绝大部分**功能，还添加了一些**个性化**功能，满足各位的日常需要绰绰有余😏。[功能列表>](#功能列表)
