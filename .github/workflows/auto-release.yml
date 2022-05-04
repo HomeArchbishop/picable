@@ -12,7 +12,7 @@ on:
 jobs:
   build-production:
 
-    runs-on: macos-latest   # 和所使用的操作系统及服务器系统无关
+    runs-on: windows-latest   # 和所使用的操作系统及服务器系统无关
     strategy:
       matrix:
         node-version: [16.x]
