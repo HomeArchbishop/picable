@@ -17,7 +17,7 @@ module.exports = {
     electronBuilder: {
       preload: 'src/preload.js',
       appId: 'com.picaable.app',
-      productName: 'Picabale-dev_0.1.0_1',
+      productName: 'Picabale',
       copyright: 'Copyright © 2022',
       win: {
         icon: 'build/icons/win-512x512.ico'
