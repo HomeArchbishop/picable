@@ -35,12 +35,35 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: npm run electron:build --if-present
 
-    - name: Create Release # 创建Release
-      id: create_release
-      uses: actions/create-release@master
+    - name: ls before rimraf
+      run: |
+        ls dist_electron
+
+    - name: cleanup artifacts for windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        npx rimraf "dist_electron/!(*.exe)"
+
+    - name: cleanup artifacts for macos
+      if: matrix.os == 'macos-latest'
+      run: |
+        npx rimraf "dist_electron/!(*.dmg)"
+
+    - name: ls after rimraf
+      run: |
+        ls dist_electron
+
+    # step6: upload artifacts
+    - name: upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: picable-${{ steps.get_version.outputs.VERSION }}-${{ matrix.os }}-Demo
+        path: dist_electron
+
+    # step7: create release
+    - name: release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "dist_electron/**"
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-      with:
-        tag_name: ${{ steps.get_version.outputs.VERSION }}-Demo
-        release_name: Release ${{ steps.get_version.outputs.VERSION }}-Demo
-        files: "build/**"
