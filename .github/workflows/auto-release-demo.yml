@@ -4,18 +4,18 @@ on:
   push:
     branches:
       - dev
-      - main
-    paths-ignore:
-      - README.md
-      - LICENSE
+    tags:
+      - 'v*'
 
 jobs:
-  build-production:
+  build-production-macos:
 
-    runs-on: windows-latest   # 和所使用的操作系统及服务器系统无关
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [16.x]
+        os: [windows-latest, macos-latest]
+        fail-fast: false
     steps:
     - uses: actions/checkout@v2   # 第一步，检出仓库副本
 
@@ -27,16 +27,20 @@ jobs:
     - name: Install dependencies  # 第二步，安装依赖
       run: npm install
 
-    - name: Build                 # 第三步，打包代码
+    - name: build windows app
+      if: matrix.os == 'windows-latest'
+      run: npm run electron:build --if-present
+ 
+    - name: build mac app
+      if: matrix.os == 'macos-latest'
       run: npm run electron:build --if-present
 
-    - name: Create Release # 创建Release，可以在仓库看到一个个版本
+    - name: Create Release # 创建Release
       id: create_release
       uses: actions/create-release@master
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       with:
-        tag_name: ${{ github.ref }} # (tag)标签名称
-        release_name: Release ${{ github.ref }}
-        draft: false # 是否是草稿
-        prerelease: false # 是否是预发布
+        tag_name: ${{ steps.get_version.outputs.VERSION }}-Demo
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}-Demo
+        files: "build/**"
