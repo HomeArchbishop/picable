@@ -15,7 +15,7 @@ jobs:
       matrix:
         node-version: [16.x]
         os: [windows-latest, macos-latest]
-        fail-fast: false
+
     steps:
     - uses: actions/checkout@v2   # 第一步，检出仓库副本
 
