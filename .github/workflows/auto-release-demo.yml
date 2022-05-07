@@ -8,7 +8,7 @@ on:
       - 'v*'
 
 jobs:
-  build-production-macos:
+  build-production:
 
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,6 +23,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Get version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
     - name: Install dependencies  # 第二步，安装依赖
       run: npm install
@@ -65,5 +69,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: "dist_electron/**"
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        name: Release ${{ steps.get_version.outputs.VERSION }}
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
