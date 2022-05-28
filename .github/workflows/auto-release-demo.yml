@@ -2,8 +2,6 @@ name: Blog CI/CD
 
 on:
   push:
-    branches:
-      - dev
     tags:
       - 'v*'
 

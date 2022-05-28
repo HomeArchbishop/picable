@@ -81,6 +81,7 @@ export default {
   width: 100%;
   padding: 0;
   margin: 0;
+  overflow: hidden;
 
   .window-header-container {
     display: flex;
@@ -94,6 +95,7 @@ export default {
     backdrop-filter: saturate(180%) blur(20px);
     z-index: 100;
     -webkit-app-region: drag;
+    overflow: hidden;
   }
 
   .app-main-root-container {
@@ -102,6 +104,7 @@ export default {
     z-index: 50;
     padding: (54px + 26px) 60px 30px (60px + 20px);
     margin: 0;
+    overflow: hidden;
   }
 }
 </style>

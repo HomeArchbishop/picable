@@ -45,6 +45,7 @@ export default {
   padding-left: 10vw;
   user-select: none;
   z-index: inherit;
+  overflow: hidden;
   .part-group {
     display: flex;
     flex-direction: row;

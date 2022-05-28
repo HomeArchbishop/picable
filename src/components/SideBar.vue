@@ -90,6 +90,7 @@ export default {
   left: 0;
   bottom: 0;
   z-index: 90;
+  overflow: hidden;
 }
 .upwards-btn-group {
   display: flex;
