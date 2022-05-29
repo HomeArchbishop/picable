@@ -7,7 +7,7 @@
   <!--<a href="."><img src="https://img.shields.io/badge/Node-6.0.0%2B-green" alt="node_6+"></a>
   <a href="."><img src="https://img.shields.io/badge/npm-3.0.0%2B-green" alt="npm_v3+"></a>
   <a href="."><img src="https://img.shields.io/badge/LANG-JS/TS-gold" alt="lang:ts/js"></a>-->
-  <a href="."><img src="https://img.shields.io/badge/state-under development-darkblue" alt="state: development"></a>
+  <a href="."><img src="https://img.shields.io/badge/state-be optimizating-darkblue" alt="state: optimization"></a>
   <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/HomeArchbishop/picable">
   <a href="."><img src="https://img.shields.io/badge/release-none-green" alt="release:none"></a>
   <a href="."><img src="https://img.shields.io/badge/Vue-^3.0.0-brightgreen" alt="Vue^3.0.0"></a>
@@ -15,7 +15,7 @@
   <a href="."><img alt="GitHub license" src="https://img.shields.io/github/license/HomeArchbishop/picable"></a>
 </p>
 
-<h1 align="center">快开发完了...可以先watch一下哦😉</h1>
+<h1 align="center">还有一些细节...但已经可以使用了哦😉</h1>
 
 * 🍑旨在让PC（电脑）访问哔咔更加便捷，功能更加灵活人性化，为绅士淑女们提供极致的享受。
 * 🍓实现了官方的**绝大部分**功能，还添加了一些**个性化**功能，满足各位的日常需要绰绰有余😏。[功能列表>](#功能列表)
