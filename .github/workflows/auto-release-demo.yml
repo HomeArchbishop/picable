@@ -1,4 +1,4 @@
-name: Blog CI/CD
+name: auto build release
 
 on:
   push:
