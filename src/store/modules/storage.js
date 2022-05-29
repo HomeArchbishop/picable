@@ -6,7 +6,8 @@ export default {
     blurOutOfFocus: false,
     hasAppLock: false,
     appLockPassword: '123',
-    sort: 'ua' // ['ua', 'da', 'dd', 'ld', 'vd']
+    sort: 'ua', // ['ua', 'da', 'dd', 'ld', 'vd']
+    bannedTags: []
   },
   mutations: {
     setDiversionIndex (state, { nextDiversionIndex }) {
@@ -26,6 +27,10 @@ export default {
     },
     setAppLockPassword (state, { nextAppLockPassword }) {
       state.appLockPassword = nextAppLockPassword
+    },
+    toggleBannedTag (state, { tag }) {
+      const set = new Set(state.bannedTags)
+      state.bannedTags = Array.from((set.delete(tag) || set.add(tag), set))
     }
   },
   actions: {}

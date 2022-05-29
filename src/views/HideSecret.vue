@@ -18,7 +18,7 @@
 
 <script>
 import MarkdownIt from 'markdown-it'
-import hiddenPoems from '../assets/text/hiddenPoems'
+import hiddenPoems from '../assets/lib/hiddenPoems'
 
 const md = new MarkdownIt()
 

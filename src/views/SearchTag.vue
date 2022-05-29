@@ -8,8 +8,9 @@
             v-for="item in $store.state.runtime.sortList" :key="item.code">{{ item.name }}</div>
         </div>
       </div>
+      <banned-tag-card />
       <div v-if="isFoundAny">
-        <item-large v-for="item in searchResultList" :key="item._id"
+        <item-large v-for="item in searchResultList.filter(o => !isComicBanned(o))" :key="item._id"
           :item="item" :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
         />
       </div>
@@ -31,10 +32,11 @@
 import { mapState } from 'vuex'
 import ItemLarge from '../components/ItemLarge'
 import CommonTipBlock from '../components/CommonTipBlock'
+import BannedTagCard from '../components/BannedTagCard'
 
 export default {
   name: 'SearchTag',
-  components: { ItemLarge, CommonTipBlock },
+  components: { ItemLarge, CommonTipBlock, BannedTagCard },
   props: ['t'],
   data () {
     return {
@@ -47,7 +49,8 @@ export default {
   },
   computed: {
     ...mapState({
-      sort: state => state.storage.sort
+      sort: state => state.storage.sort,
+      bannedTagList: state => state.storage.bannedTags
     })
   },
   methods: {
@@ -83,6 +86,14 @@ export default {
         return
       }
       this.$store.commit('storage/setSort', { nextSort: sortCode })
+    },
+    isComicBanned ({ categories = [] }) {
+      for (const cate of categories) {
+        if (this.bannedTagList.includes(cate)) {
+          return true
+        }
+      }
+      return false
     }
   },
   watch: {

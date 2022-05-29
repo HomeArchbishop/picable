@@ -19,8 +19,9 @@
             v-for="item in $store.state.runtime.sortList" :key="item.code">{{ item.name }}</div>
         </div>
       </div>
+      <banned-tag-card />
       <div v-if="isFoundAny">
-        <item-large v-for="item in searchResultList" :key="item._id"
+        <item-large v-for="item in searchResultList.filter(o => !isComicBanned(o))" :key="item._id"
           :item="item" :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
         />
       </div>
@@ -43,11 +44,12 @@ import { mapState } from 'vuex'
 import ItemLarge from '../components/ItemLarge'
 import TagItem from '../components/TagItem'
 import CommonTipBlock from '../components/CommonTipBlock'
+import BannedTagCard from '../components/BannedTagCard'
 
 export default {
   name: 'Search',
   props: ['kw'],
-  components: { ItemLarge, TagItem, CommonTipBlock },
+  components: { ItemLarge, TagItem, CommonTipBlock, BannedTagCard },
   data () {
     return {
       inputKeyword: '',
@@ -61,7 +63,8 @@ export default {
   computed: {
     ...mapState({
       keywordList: state => state.runtime.keywordList,
-      sort: state => state.storage.sort
+      sort: state => state.storage.sort,
+      bannedTagList: state => state.storage.bannedTags
     }),
     randomKeyword () {
       return this.keywordList[~~(Math.random() * this.keywordList.length)]
@@ -125,6 +128,14 @@ export default {
         return
       }
       this.$store.commit('storage/setSort', { nextSort: sortCode })
+    },
+    isComicBanned ({ categories = [] }) {
+      for (const cate of categories) {
+        if (this.bannedTagList.includes(cate)) {
+          return true
+        }
+      }
+      return false
     }
   },
   watch: {
