@@ -38,6 +38,7 @@
     "dob-to-age": "^1.0.0",
     "electron-store": "^8.0.1",
     "lodash": "^4.17.21",
+    "markdown-it": "^13.0.1",
     "mousetrap": "^1.6.5",
     "sweetalert": "^2.1.2",
     "v-viewer": "^3.0.10",

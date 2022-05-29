@@ -28,6 +28,7 @@ export default {
       { code: 'chinese', name: '汉化组' }
     ],
     currentTt: 'H24',
+    currentHiddenPoemTitle: '孔雀东南飞',
     searchKeyword: '',
     savedScrollPositions: {}
   },
@@ -46,6 +47,9 @@ export default {
     },
     setCurrentTt (state, { nextCurrentTt }) {
       state.currentTt = '' + nextCurrentTt
+    },
+    setCurrentHiddenPoemTitle (state, { nextHiddenPoemTitle }) {
+      state.currentHiddenPoemTitle = nextHiddenPoemTitle
     },
     setSearchKeyword (state, { nextSearchKeyword }) {
       state.searchKeyword = '' + nextSearchKeyword
