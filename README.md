@@ -7,7 +7,7 @@
   <!--<a href="."><img src="https://img.shields.io/badge/Node-6.0.0%2B-green" alt="node_6+"></a>
   <a href="."><img src="https://img.shields.io/badge/npm-3.0.0%2B-green" alt="npm_v3+"></a>
   <a href="."><img src="https://img.shields.io/badge/LANG-JS/TS-gold" alt="lang:ts/js"></a>-->
-  <a href="."><img src="https://img.shields.io/badge/state-be optimizating-darkblue" alt="state: optimization"></a>
+  <a href="."><img src="https://img.shields.io/badge/state-be optimizing-darkblue" alt="state: optimization"></a>
   <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/HomeArchbishop/picable">
   <a href="."><img src="https://img.shields.io/badge/release-none-green" alt="release:none"></a>
   <a href="."><img src="https://img.shields.io/badge/Vue-^3.0.0-brightgreen" alt="Vue^3.0.0"></a>
