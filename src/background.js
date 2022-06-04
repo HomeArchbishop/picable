@@ -35,9 +35,9 @@ async function createWindow () {
     minHeight: 600,
     x: appConfig.window.x,
     y: appConfig.window.y,
-    frame: false,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: true,
+    // frame: false,
+    titleBarStyle: 'hiddenInset',
+    // titleBarOverlay: true,
     show: false,
     backgroundColor: '#f6f6f6',
     webPreferences: {

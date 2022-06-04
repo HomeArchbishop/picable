@@ -15,9 +15,9 @@ jobs:
         os: [windows-latest, macos-latest]
 
     steps:
-    - uses: actions/checkout@v2   # 第一步，检出仓库副本
+    - uses: actions/checkout@v2   # 检出仓库副本
 
-    - name: Use Node.js ${{ matrix.node-version }} #规定node.js版本(可不配置)
+    - name: Use Node.js ${{ matrix.node-version }} # node.js版本
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
@@ -26,7 +26,7 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-    - name: Install dependencies  # 第二步，安装依赖
+    - name: Install dependencies
       run: npm install
 
     - name: build windows app

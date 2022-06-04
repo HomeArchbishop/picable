@@ -77,6 +77,10 @@ export default {
 @import '~@/assets/themes/@{theme-name}/root';
 @import '~@/assets/themes/@{theme-name}/theme';
 
+#app {
+  overflow: hidden;
+}
+
 .wrap {
   width: 100%;
   padding: 0;

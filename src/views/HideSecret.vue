@@ -63,7 +63,7 @@ export default {
     left: 40px;
     height: calc(100vh - 110px - 30px);
     overflow: scroll;
-    ::-webkit-scrollbar {
+    &::-webkit-scrollbar {
       display: none;
     }
     width: @content-card-width;
