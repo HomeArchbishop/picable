@@ -6,9 +6,9 @@
     <!-- <b>上次分流: 分流{{ ['一', '二', '三'][diversionUrlIndex] }}</b><br/> -->
     <!-- 因为安全策略，暂不支持切换分流。请科学上网 -->
     <div class="diversion-list">
-      <div class="diversion-btn" @click="chose(0)">分流一</div>
-      <!-- <div class="diversion-btn" @click="chose(1)">分流二</div>
-      <div class="diversion-btn" @click="chose(2)">分流三</div> -->
+      <div class="diversion-btn" @click="chose(0)" :class="{ loading: !$store.state.runtime.diversionUrlList[0] }">分流一</div>
+      <!-- <div class="diversion-btn" @click="chose(1)" :class="{ loading: !$store.state.runtime.diversionUrlList[1] }">分流二</div>
+      <div class="diversion-btn" @click="chose(2)" :class="{ loading: !$store.state.runtime.diversionUrlList[2] }">分流三</div> -->
     </div>
     <div class="conner">
       <span class="item shake-chunk" v-if="isNeedUpdate"
@@ -42,10 +42,14 @@ export default {
   },
   methods: {
     async chose (nextDiversionIndex) {
+      if (!this.$store.state.runtime.diversionUrlList[nextDiversionIndex]) {
+        return
+      }
       // show loading-pica animation
       this.$utils.showLoadingPica()
       // check token
       this.$store.commit('storage/setDiversionIndex', { nextDiversionIndex })
+      console.log(this.diversionUrl, nextDiversionIndex)
       try {
         const tokenResult = await this.$api.checkToken({ diversionUrl: this.diversionUrl, token: this.token })
         if (tokenResult) {
@@ -111,6 +115,10 @@ export default {
     cursor: pointer;
     &:not(:nth-child(1)) {
       margin-top: 12px;
+    }
+    &.loading {
+      opacity: .5;
+      cursor: wait;
     }
   }
 }

@@ -7,7 +7,8 @@ export default {
     hasAppLock: false,
     appLockPassword: '123',
     sort: 'ua', // ['ua', 'da', 'dd', 'ld', 'vd']
-    bannedTags: []
+    bannedTags: [],
+    isUseHttps: false
   },
   mutations: {
     setDiversionIndex (state, { nextDiversionIndex }) {
@@ -31,6 +32,9 @@ export default {
     toggleBannedTag (state, { tag }) {
       const set = new Set(state.bannedTags)
       state.bannedTags = Array.from((set.delete(tag) || set.add(tag), set))
+    },
+    setIsUseHttps (state, { isUseHttps }) {
+      state.isUseHttps = !!isUseHttps
     }
   },
   actions: {}

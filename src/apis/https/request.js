@@ -2,8 +2,7 @@ import Header from './header'
 import { resolveURL } from '../utils/resolveURL'
 import axios from 'axios'
 import swal from 'sweetalert'
-
-// const defultUrl = 'http://104.22.64.159/'
+import { resolveProtocol } from '../utils/resolveProtocol'
 
 // returns parsed json
 /*
@@ -40,18 +39,19 @@ const sendRequest = async function ({
   diversionUrl, subUrl, method, body, token = '', excludeStatus = []
 }) {
   const header = new Header(subUrl, method, token)
-  const url = resolveURL(diversionUrl, subUrl)
+
+  const url = resolveURL(resolveProtocol(diversionUrl), subUrl)
   console.log(method, url)
 
   const axiosOption = {
     headers: header.headers,
     url: subUrl,
-    baseURL: diversionUrl,
+    baseURL: resolveProtocol(diversionUrl),
     method,
     [method === 'POST' && 'data']: body
   }
-  const requstApp = axios.create()
-  requstApp.interceptors.response.use(/* status codes match 2xx */r => r, error => {
+  const requestApp = axios.create()
+  requestApp.interceptors.response.use(/* status codes match 2xx */r => r, error => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     if (error.response) {
       // The request was made and the server responded with a status code
@@ -83,7 +83,7 @@ const sendRequest = async function ({
     }
     return Promise.reject(error)
   })
-  const resp = await requstApp(axiosOption)
+  const resp = await requestApp(axiosOption)
 
   const respData = resp.data
   return respData

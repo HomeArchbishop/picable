@@ -32,6 +32,11 @@ export default {
     searchKeyword: '',
     savedScrollPositions: {}
   },
+  getters: {
+    currentDiversionUrl (state, getters, rootState) {
+      return state.diversionUrlList[rootState.storage.diversionIndex] || state.diversionUrlList[0]
+    }
+  },
   mutations: {
     setDiversionUrlList (state, { nextDiversionUrlList }) {
       state.diversionUrlList = deepcopy(nextDiversionUrlList)

@@ -1,5 +1,5 @@
 export default {
-  baseURL: 'https://picaapi.picacomic.com/',
+  baseURL: 'http://picaapi.picacomic.com',
   postBaseURL: 'https://post-api.wikawika.xyz/',
   accept: 'application/vnd.picacomic.com.v1+json',
   apiKey: 'C69BAF41DA5ABD1FFEDC6D2FEA56B',

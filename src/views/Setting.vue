@@ -35,10 +35,25 @@
         </form>
       </div>
     </div>
-    <br><hr><br>
+    <div class="hr-line">
+      <div class="topic">网络</div>
+      <hr>
+    </div>
     <div class="info-item">
       <div>
-        <div class="label">软件版本</div>
+        <div class="label">使用https</div>
+      </div>
+      <div>
+        <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
+      </div>
+    </div>
+    <div class="hr-line">
+      <div class="topic">软件信息</div>
+      <hr>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">版本</div>
       </div>
       <div>
         @{{ packageJSON.version }}
@@ -49,7 +64,7 @@
     </div>
     <div class="info-item">
       <div>
-        <div class="label">软件许可证</div>
+        <div class="label">开源许可证</div>
       </div>
       <div>{{ packageJSON.license }}</div>
     </div>
@@ -61,7 +76,9 @@
         @click.prevent="$api.openBrowser(packageJSON.repository.github)"
       >{{ packageJSON.repository.github }}</a>
     </div>
-    <br><hr><br>
+    <div class="hr-line">
+      <hr>
+    </div>
     <div>
       <h3>开发者碎碎念</h3>
       <p>
@@ -70,7 +87,11 @@
       <p>
         「Picable」中并没有添加广告，只是为了提升电脑端的阅读体验。但我们不愿看到未来发生悲剧。还望各位力所能及时，多多在手机端「点广告，救哔咔」。
       </p>
-      <br><hr><br>
+    </div>
+    <div class="hr-line">
+      <hr>
+    </div>
+    <div>
       <h3>声明</h3>
       <p>
         Picable（下称“本软件”）是<strong><u>非官方</u></strong>的免费哔咔漫画客户端。
@@ -91,7 +112,8 @@
   </div>
 </template>
 
-<script>import { library } from '@fortawesome/fontawesome-svg-core'
+<script>
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ToggleButton from '../components/ToggleButton'
@@ -118,7 +140,8 @@ export default {
     ...mapState({
       blurOutOfFocus: state => state.storage.blurOutOfFocus,
       hasAppLock: state => state.storage.hasAppLock,
-      appLockPassword: state => state.storage.appLockPassword
+      appLockPassword: state => state.storage.appLockPassword,
+      isUseHttps: state => state.storage.isUseHttps
     }),
     isNeedUpdate () {
       return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
@@ -138,6 +161,9 @@ export default {
     changeAppLockPassword () {
       this.$store.commit('storage/setAppLockPassword', { nextAppLockPassword: this.nextAppLockPassword })
       this.isChangingAppLockPassword = false
+    },
+    toggleIsUseHttps () {
+      this.$store.commit('storage/setIsUseHttps', { isUseHttps: !this.isUseHttps })
     }
   }
 }
@@ -194,9 +220,20 @@ export default {
       }
     }
   }
-  hr {
-    border: none;
-    border-bottom: 1px solid @color-font-default-sub;
+  .hr-line {
+    display: flex;
+    flex-direction: row;
+    .topic {
+      display: inline-block;
+      font-weight: 300;
+      font-size: small;
+    }
+    hr {
+      display: flex;
+      flex: 1;
+      border: none;
+      border-bottom: 1px solid @color-font-default-sub;
+    }
   }
 }
 </style>
