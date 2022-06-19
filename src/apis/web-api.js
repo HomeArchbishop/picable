@@ -2,7 +2,7 @@ import { isArray } from 'lodash'
 
 import { sendGet } from './https/request'
 
-import config from '../../configs'
+import config from '../configs'
 
 async function getDiversionUrlList () {
   const requestUrl = 'http://68.183.234.72/'

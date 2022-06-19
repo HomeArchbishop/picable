@@ -3,7 +3,7 @@ import { mapState } from 'vuex'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import apis from './assets/apis'
+import apis from './apis'
 import utils from './assets/utils'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 

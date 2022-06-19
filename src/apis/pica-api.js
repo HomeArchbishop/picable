@@ -1,7 +1,7 @@
 import { sendGet, sendPost, sendPut } from './https/request'
 import axios from 'axios'
-import extraCategoriesList from '../../configs/extraCategories'
-import configs from '../../configs'
+import extraCategoriesList from '../configs/extraCategories'
+import configs from '../configs'
 
 /**
  * sorts
@@ -11,8 +11,6 @@ import configs from '../../configs'
  * @type ld: 最多爱心
  * @type vd: 最多指名
  */
-
-// const diversionUrl = '//picaapi.picacomic.com/'
 
 const backendApiUrl = '//localhost:3825/'
 
