@@ -23,7 +23,7 @@ const appConfig = { ...appDefaultConfig, ...appRuntimeConfig }
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
+  { scheme: 'picable', privileges: { secure: true, standard: true } }
 ])
 
 async function createWindow () {
@@ -55,8 +55,8 @@ async function createWindow () {
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL, { userAgent: 'okhttp/3.8.1' })
     if (!process.env.IS_TEST) win.webContents.openDevTools(/* { mode: 'detach' } */)
   } else {
-    createProtocol('app')
-    win.loadURL('app://./index.html', { userAgent: 'okhttp/3.8.1' })
+    createProtocol('picable')
+    win.loadURL('picable://./index.html', { userAgent: 'okhttp/3.8.1' })
   }
 
   win.on('resized', e => {

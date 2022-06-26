@@ -153,7 +153,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import TagItem from '../components/TagItem'
 import CommonTipBlock from '../components/CommonTipBlock'
 import ItemSmall from '../components/ItemSmall.vue'
-import swal from 'sweetalert'
+import Swal from '../assets/utils/sweetalert-picable'
 
 library.add(faHeart, faEye, faCommentDots, faBookmark, faDownload, faFileZipper, faAngleDown, faAngleUp)
 
@@ -276,7 +276,7 @@ export default {
       this.isChoosingPackZip = !this.isChoosingPackZip
     },
     async download () {
-      swal('下载功能暂未公测哦，请静候更新')
+      Swal.fire('下载功能暂未公测哦，请静候更新')
       // this.toggleDownload()
       // this.episodesDownloadChosenList.forEach(episodesOrder => {
       //   this.$api.download(this.token, this.comicId, episodesOrder)

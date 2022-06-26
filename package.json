@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
     "mousetrap": "^1.6.5",
-    "sweetalert": "^2.1.2",
+    "sweetalert2": "^11.4.18",
     "v-viewer": "^3.0.10",
     "vue": "^3.0.0",
     "vue-dompurify-html": "^3.0.0-beta.3",

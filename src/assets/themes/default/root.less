@@ -59,44 +59,55 @@ h1, h2, h3, h4, h5, h6 {
  * sweet alert
  * customed style
  */
-.swal-button--confirm {
-  background-color: fade(@background-btn-highlight, 70%);
+
+.swal2-confirm,
+.swal2-deny,
+.swal2-cancel {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.swal2-confirm {
+  background-color: fade(@background-btn-highlight, 70%) !important;
   &:hover:not([disabled]) {
-    background-color: fade(@background-btn-highlight, 90%)
+    background-color: fade(@background-btn-highlight, 90%) !important;
+  }
+  &:focus {
+    box-shadow: 0 0 0 3px fade(@background-btn-highlight, 50%) !important;
   }
 }
 
-.swal-button {
-  outline: none;
-  box-shadow: none;
-}
-
-.swal-icon {
-  width: 100%;
-  height: 200px;
-  border: none;
-  border-radius: 0;
+.swal2-icon {
+  width: 100% !important;
+  height: 200px !important;
+  border: none !important;
+  border-radius: 0 !important;
   * {
-    display: none;
+    display: none !important;
   }
 }
 
-.swal-icon--info {
+.swal2-info {
   background: url('../../img/loading/10.png') center center no-repeat;
   background-size: auto 100%;
 }
 
-.swal-icon--error {
+.swal2-error {
   background: url('../../img/loading/1.png') center center no-repeat;
   background-size: auto 100%;
 }
 
-.swal-icon--warning {
+.swal2-warning {
   background: url('../../img/loading/10.png') center center no-repeat;
   background-size: auto 100%;
 }
 
-.swal-icon--success {
+.swal2-success {
   background: url('../../img/loading/10.png') center center no-repeat;
   background-size: auto 100%;
+}
+
+.swal2-container-custom {
+  text-align: unset !important;
+  margin: 1em 5em .3em !important;
 }

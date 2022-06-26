@@ -20,7 +20,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import swal from 'sweetalert'
+import Swal from '../assets/utils/sweetalert-picable'
 
 library.add(faAngleRight)
 
@@ -39,7 +39,7 @@ export default {
       if (this.password === this.$store.state.storage.appLockPassword) {
         this.shiftPage()
       } else {
-        swal({
+        Swal.fire({
           title: '密码错误',
           icon: 'error'
         }).then(() => {

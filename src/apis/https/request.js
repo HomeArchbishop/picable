@@ -1,7 +1,7 @@
 import Header from './header'
 import { resolveURL } from '../utils/resolveURL'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from '../../assets/utils/sweetalert-picable'
 import { resolveProtocol } from '../utils/resolveProtocol'
 
 // returns parsed json
@@ -48,6 +48,7 @@ const sendRequest = async function ({
     url: subUrl,
     baseURL: resolveProtocol(diversionUrl),
     method,
+    timeout: 6000,
     [method === 'POST' && 'data']: body
   }
   const requestApp = axios.create()
@@ -59,25 +60,25 @@ const sendRequest = async function ({
       if (excludeStatus.includes(error.response.status)) {
         return error.response
       }
-      swal({
+      Swal.fire({
         title: '哔咔报告错误',
-        text: `错误详情\n${JSON.stringify(error.response.data)}`,
+        html: `错误详情<br>${JSON.stringify(error.response.data)}`,
         icon: 'error'
       })
     } else if (error.request) {
       // The request was made but no response was received
-      swal({
+      Swal.fire({
         title: '啊嘞，请求错误诶...',
-        text: `请尝试如下几种解决方案\n1.检查网络连接\n2.重启应用\n3.无法解决时，将此截图反馈给开发者\n
-          错误详情\n${JSON.stringify(error.message)}\n${JSON.stringify(error.request)}`,
+        html: `请尝试如下几种解决方案<br>1.检查网络连接<br>2.重启应用<br>3.无法解决时，将此截图反馈给开发者<br>
+          错误详情<br>${JSON.stringify(error.message)}<br>${JSON.stringify(error.request)}`,
         icon: 'error'
       })
     } else {
       // Something happened in setting up the request that triggered an Error
-      swal({
+      Swal.fire({
         title: '哔咔被玩坏了...',
-        text: `发生未知错误\n
-          错误详情\n${JSON.stringify(error.message)}`,
+        html: `发生未知错误<br>
+          错误详情<br>${JSON.stringify(error.message)}`,
         icon: 'error'
       })
     }

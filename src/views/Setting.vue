@@ -47,6 +47,14 @@
         <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
       </div>
     </div>
+    <div class="info-item">
+      <div>
+        <div class="label">代理</div>
+      </div>
+      <div>
+        <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
+      </div>
+    </div>
     <div class="hr-line">
       <div class="topic">软件信息</div>
       <hr>
@@ -118,7 +126,7 @@ import { faEye, faEyeSlash, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ToggleButton from '../components/ToggleButton'
 import { mapState } from 'vuex'
-import swal from 'sweetalert'
+import Swal from '../assets/utils/sweetalert-picable'
 
 library.add(faEye, faEyeSlash, faPen)
 
@@ -151,9 +159,9 @@ export default {
     toggleAppLock () {
       this.$store.commit('storage/setHasAppLock', { nextState: !this.hasAppLock })
       if (this.hasAppLock) {
-        swal({
+        Swal.fire({
           title: '已开启应用锁，请牢记密码',
-          text: `密码：${this.appLockPassword}\n记不住的话，可不好找回哦～`,
+          html: `密码：${this.appLockPassword}<br>记不住的话，可不好找回哦～`,
           icon: 'info'
         })
       }
