@@ -1,14 +1,16 @@
 <template>
 <div class="home-container">
-  <div class="if-wrap" v-if="isRequestingCollections">
-    <div class="unit-group loading" v-for="collectionGroup in collectionsList" :key="'loading' + collectionGroup.title">
-      <h2>{{ collectionGroup.title }}</h2>
+  <div v-if="isRequestingCollections">
+    <div class="unit-group loading" v-for="collectionGroupIndex in 2" :key="'loading' + collectionGroupIndex">
+      <h2 class="loading-unit-group-title">
+        <div class="cover"></div>
+      </h2>
       <div class="comic-list">
-        <loading-item-small v-for="index in 4" :key="'loading' + collectionsList.title + index" />
+        <loading-item-small v-for="index in 4" :key="'loading' + collectionGroupIndex + index" />
       </div>
     </div>
   </div>
-  <div class="if-wrap" v-else>
+  <div v-else>
     <div class="unit-group" v-for="collectionGroup in collectionsList" :key="collectionGroup.title" v-show="collectionGroup.comics.length">
       <h2>{{ collectionGroup.title }}</h2>
       <div class="comic-list">
@@ -34,12 +36,7 @@ export default {
   data () {
     return {
       isRequestingCollections: true,
-      collectionsList: [
-        { title: '本子妹推薦' },
-        { title: '本子母推薦' },
-        { title: '本子神推薦' },
-        { title: '本子魔推薦' }
-      ]
+      collectionsList: []
     }
   },
   methods: {
@@ -70,12 +67,33 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
+    .loading-unit-group-title {
+      width: 8em;
+      background: #eee;
+      padding: 0;
+      .cover {
+        width: 100%;
+        height: 1.4em;
+        animation: loading 5s linear infinite;
+        background-image: linear-gradient(50deg, transparent, transparent, #fafafa 55%, transparent, transparent);
+        background-size: 400% 100%;
+        z-index: 3;
+      }
+    }
     .comic-list {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: 400% 50%
+  }
+  to {
+    background-position: 0% 50%
   }
 }
 </style>
