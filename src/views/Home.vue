@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <div v-else>
+  <div v-else-if="!collectionsList.every(group => group.comics.length === 0)">
     <div class="unit-group" v-for="collectionGroup in collectionsList" :key="collectionGroup.title" v-show="collectionGroup.comics.length">
       <h2>{{ collectionGroup.title }}</h2>
       <div class="comic-list">
@@ -20,18 +20,23 @@
       </div>
     </div>
   </div>
+  <div v-else class="tip-layer">
+    <common-tip-block>哔咔娘还不知道你的喜好哦，先去看点喜欢的本子吧</common-tip-block>
+  </div>
 </div>
 </template>
 
 <script>
 import LoadingItemSmall from '../components/LoadingItemSmall.vue'
 import ItemSmall from '../components/ItemSmall.vue'
+import CommonTipBlock from '../components/CommonTipBlock.vue'
 
 export default {
   name: 'Home',
   components: {
     LoadingItemSmall,
-    ItemSmall
+    ItemSmall,
+    CommonTipBlock
   },
   data () {
     return {
@@ -86,6 +91,12 @@ export default {
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
+  }
+  .tip-layer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
   }
 }
 @keyframes loading {
