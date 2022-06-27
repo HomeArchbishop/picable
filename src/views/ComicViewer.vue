@@ -29,7 +29,7 @@
           :class="{ loading: isUpdating }"
           @click="isAll && hasNextEpisodes ? nextEpisodes() : (isAll && backToDetail());(!isUpdating && !isAll && updateNewPicturePage())"
         >
-          <span v-if="!isUpdating && !isAll">加载更多</span>
+          <span v-if="!isUpdating && !isAll">点击加载更多</span>
           <span v-if="isAll && hasNextEpisodes">看到底了 下一章节</span>
           <span v-else-if="isAll">看到底了 回到目录</span>
           <span v-if="isUpdating">正在加载</span>
@@ -96,7 +96,7 @@ export default {
       pictureLoadingStateMap: {},
       pictureLoadingErrorMap: {},
       pictureLazyLoadHappenedMap: {},
-      pictureCurrentInSightIndex: 0,
+      pictureCurrentInSightIndexList: [],
       hasNextEpisodes: false,
       nextPage: 1,
       isAll: false,
@@ -108,7 +108,8 @@ export default {
   computed: {
     ...mapState({
       viewDirection: state => state.storage.imgViewerSettings.direction || 'column',
-      isUseLazyLoad: state => !!state.storage.imgViewerSettings.lazyLoad
+      isUseLazyLoad: state => !!state.storage.imgViewerSettings.lazyLoad,
+      isAutoUpdatePage: state => !!state.storage.imgViewerSettings.autoUpdatePage
     }),
     comicId () {
       return this.$route.params.comicId
@@ -122,6 +123,7 @@ export default {
   },
   methods: {
     async updateNewPicturePage () {
+      if (this.isUpdating) { return }
       // change states.
       this.isUpdating = true
       // call api to update
@@ -224,7 +226,9 @@ export default {
     },
     async imgScrollListener () {
       const imgGroups = Array.from(document.querySelectorAll('.img-group'))
+      const pictureExactInSight = []
       let hasTrue = false
+      // map the array and resolve the lazy-load
       for (const _index in imgGroups) {
         const index = +_index
         const el = imgGroups[index]
@@ -239,12 +243,19 @@ export default {
             this.pictureLazyLoadHappenedMap[this.pictureListDocsList[Math.max(0, index - 1)]._id] = true
           }
           hasTrue = true
+          pictureExactInSight.push(index)
           this.pictureLazyLoadHappenedMap[this.pictureListDocsList[index]._id] = true
         } else if (hasTrue === true) {
           this.pictureLazyLoadHappenedMap[this.pictureListDocsList[Math.min(imgGroups.length - 1, index + 1)]._id] = true
           this.pictureLazyLoadHappenedMap[this.pictureListDocsList[Math.min(imgGroups.length - 1, index + 2)]._id] = true
           break
         }
+      }
+      this.pictureCurrentInSightIndexList = [...pictureExactInSight]
+      // resolve the auto-update for new picture page
+      if (pictureExactInSight.includes(imgGroups.length - 1) && this.isAutoUpdatePage && !this.isAll) {
+        // within the last picture, then auto-update it
+        this.updateNewPicturePage()
       }
     }
   },

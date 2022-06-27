@@ -55,6 +55,14 @@
         <toggle-button :isChecked="isUseLazyLoad" @click="toggleIsUseLazyLoad()" />
       </div>
     </div>
+    <div class="info-item">
+      <div>
+        <div class="label">自动请求更多</div>
+      </div>
+      <div>
+        <toggle-button :isChecked="isAutoUpdatePage" @click="toggleIsAutoUpdatePage()" />
+      </div>
+    </div>
     <div class="hr-line">
       <div class="topic">网络</div>
       <hr>
@@ -173,7 +181,8 @@ export default {
       appLockPassword: state => state.storage.appLockPassword,
       isUseHttps: state => state.storage.isUseHttps,
       viewDirection: state => state.storage.imgViewerSettings.direction,
-      isUseLazyLoad: state => state.storage.imgViewerSettings.lazyLoad
+      isUseLazyLoad: state => state.storage.imgViewerSettings.lazyLoad,
+      isAutoUpdatePage: state => state.storage.imgViewerSettings.autoUpdatePage
     }),
     isNeedUpdate () {
       return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
@@ -202,6 +211,9 @@ export default {
     },
     toggleIsUseLazyLoad () {
       this.$store.commit('storage/setImgViewerSettings', { lazyLoad: !this.isUseLazyLoad })
+    },
+    toggleIsAutoUpdatePage () {
+      this.$store.commit('storage/setImgViewerSettings', { autoUpdatePage: !this.isAutoUpdatePage })
     }
   }
 }

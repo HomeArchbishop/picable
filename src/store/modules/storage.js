@@ -11,7 +11,8 @@ export default {
     isUseHttps: true,
     imgViewerSettings: {
       direction: 'column',
-      lazyLoad: true
+      lazyLoad: true,
+      autoUpdatePage: true
     }
   },
   mutations: {
@@ -40,12 +41,15 @@ export default {
     setIsUseHttps (state, { isUseHttps }) {
       state.isUseHttps = !!isUseHttps
     },
-    setImgViewerSettings (state, { direction, lazyLoad }) {
+    setImgViewerSettings (state, { direction, lazyLoad, autoUpdatePage }) {
       if (direction !== undefined) {
         state.imgViewerSettings.direction = direction || 'column'
       }
       if (lazyLoad !== undefined) {
         state.imgViewerSettings.lazyLoad = !!lazyLoad
+      }
+      if (autoUpdatePage !== undefined) {
+        state.imgViewerSettings.autoUpdatePage = !!autoUpdatePage
       }
     }
   },
