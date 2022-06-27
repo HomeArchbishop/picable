@@ -36,6 +36,26 @@
       </div>
     </div>
     <div class="hr-line">
+      <div class="topic">阅读</div>
+      <hr>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">翻页方向</div>
+      </div>
+      <div>
+        <check-radio valueStr="column|row" textStr="竖直|水平" @checkChange="changeViewDirection" :checkedValue="viewDirection" />
+      </div>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">懒加载</div>
+      </div>
+      <div>
+        <toggle-button :isChecked="isUseLazyLoad" @click="toggleIsUseLazyLoad()" />
+      </div>
+    </div>
+    <div class="hr-line">
       <div class="topic">网络</div>
       <hr>
     </div>
@@ -47,14 +67,14 @@
         <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
       </div>
     </div>
-    <div class="info-item">
+    <!-- <div class="info-item">
       <div>
         <div class="label">代理</div>
       </div>
       <div>
         <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
       </div>
-    </div>
+    </div> -->
     <div class="hr-line">
       <div class="topic">软件信息</div>
       <hr>
@@ -125,6 +145,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash, faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ToggleButton from '../components/ToggleButton'
+import CheckRadio from '../components/CheckRadio'
 import { mapState } from 'vuex'
 import Swal from '../assets/utils/sweetalert-picable'
 
@@ -134,7 +155,8 @@ export default {
   name: 'Setting',
   components: {
     ToggleButton,
-    FontAwesomeIcon
+    FontAwesomeIcon,
+    CheckRadio
   },
   data () {
     return {
@@ -149,7 +171,9 @@ export default {
       blurOutOfFocus: state => state.storage.blurOutOfFocus,
       hasAppLock: state => state.storage.hasAppLock,
       appLockPassword: state => state.storage.appLockPassword,
-      isUseHttps: state => state.storage.isUseHttps
+      isUseHttps: state => state.storage.isUseHttps,
+      viewDirection: state => state.storage.imgViewerSettings.direction,
+      isUseLazyLoad: state => state.storage.imgViewerSettings.lazyLoad
     }),
     isNeedUpdate () {
       return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
@@ -172,6 +196,12 @@ export default {
     },
     toggleIsUseHttps () {
       this.$store.commit('storage/setIsUseHttps', { isUseHttps: !this.isUseHttps })
+    },
+    changeViewDirection (nextVal) {
+      this.$store.commit('storage/setImgViewerSettings', { direction: nextVal })
+    },
+    toggleIsUseLazyLoad () {
+      this.$store.commit('storage/setImgViewerSettings', { lazyLoad: !this.isUseLazyLoad })
     }
   }
 }

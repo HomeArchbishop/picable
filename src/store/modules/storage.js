@@ -8,7 +8,11 @@ export default {
     appLockPassword: '123',
     sort: 'ua', // ['ua', 'da', 'dd', 'ld', 'vd']
     bannedTags: [],
-    isUseHttps: false
+    isUseHttps: true,
+    imgViewerSettings: {
+      direction: 'column',
+      lazyLoad: true
+    }
   },
   mutations: {
     setDiversionIndex (state, { nextDiversionIndex }) {
@@ -35,6 +39,14 @@ export default {
     },
     setIsUseHttps (state, { isUseHttps }) {
       state.isUseHttps = !!isUseHttps
+    },
+    setImgViewerSettings (state, { direction, lazyLoad }) {
+      if (direction !== undefined) {
+        state.imgViewerSettings.direction = direction || 'column'
+      }
+      if (lazyLoad !== undefined) {
+        state.imgViewerSettings.lazyLoad = !!lazyLoad
+      }
     }
   },
   actions: {}

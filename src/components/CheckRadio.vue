@@ -60,10 +60,11 @@ export default {
   align-items: center;
   width: 100%;
   justify-content: space-between;
-  font-size: 20px;
+  // font-size: 20px;
   .radio-option {
     position: relative;
     height: 100%;
+    margin-inline: 10px;
     label {
       display: flex;
       flex-direction: row;
@@ -84,17 +85,17 @@ export default {
       display: inline-flex;
       box-sizing: border-box;
       content: '';
-      border: 1px solid @color-line-default;
+      border: 1px solid @color-line-default-sub;
       border-radius: .78em;
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       position: relative;
       cursor: pointer;
       transition: 200ms;
     }
     input[type = "radio"]:checked + label::before {
-      background-color: @background-btn-highlight;
-      box-shadow: inset 0 0 0 3px @color-shadow;
+      background-color: lighten(@background-btn-highlight, 10%);
+      box-shadow: inset 0 0 0 2px @background-main;
     }
   }
 }
