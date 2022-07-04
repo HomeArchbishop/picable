@@ -10,7 +10,8 @@ export default {
     bannedTags: [],
     isUseHttps: true,
     imgViewerSettings: {
-      direction: 'column',
+      direction: 'column-scroll',
+      rl: 'lr', // left->right or right->left
       lazyLoad: true,
       autoUpdatePage: true
     }
@@ -41,15 +42,18 @@ export default {
     setIsUseHttps (state, { isUseHttps }) {
       state.isUseHttps = !!isUseHttps
     },
-    setImgViewerSettings (state, { direction, lazyLoad, autoUpdatePage }) {
+    setImgViewerSettings (state, { direction, lazyLoad, autoUpdatePage, rl }) {
       if (direction !== undefined) {
-        state.imgViewerSettings.direction = direction || 'column'
+        state.imgViewerSettings.direction = direction || 'column-scroll'
       }
       if (lazyLoad !== undefined) {
         state.imgViewerSettings.lazyLoad = !!lazyLoad
       }
       if (autoUpdatePage !== undefined) {
         state.imgViewerSettings.autoUpdatePage = !!autoUpdatePage
+      }
+      if (rl !== undefined) {
+        state.imgViewerSettings.rl = rl
       }
     }
   },

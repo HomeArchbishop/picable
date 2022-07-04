@@ -3,6 +3,7 @@ import { viewLargeImage } from './viewLargeImage'
 import { getCalendarTime } from './getCalendarTime'
 import { getDate } from './getDate'
 import { showLoadingPica, hideLoadingPica } from './controlLoadingPica'
+import { getImgReverseColor } from './getImgReverseColor'
 
 export default {
   install: (app) => {
@@ -12,7 +13,8 @@ export default {
       getCalendarTime,
       getDate,
       showLoadingPica,
-      hideLoadingPica
+      hideLoadingPica,
+      getImgReverseColor
     }
   }
 }

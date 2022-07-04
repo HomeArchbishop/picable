@@ -79,7 +79,7 @@ const routes = [
   {
     path: '/comic/:comicId/:order',
     name: 'ComicViewer',
-    component: () => import('../views/ComicViewer'),
+    component: () => import('../views/ComicViewer/ComicViewer'),
     meta: {
       scrollBehavior: false
     }

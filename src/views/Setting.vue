@@ -41,10 +41,18 @@
     </div>
     <div class="info-item">
       <div>
+        <div class="label">阅读方式</div>
+      </div>
+      <div>
+        <check-radio valueStr="column-scroll|row-scroll|row-slide" textStr="竖直|水平滑动|水平翻页" @checkChange="changeViewDirection" :checkedValue="viewDirection" />
+      </div>
+    </div>
+    <div class="info-item" v-if="/^row-slide/.test(viewDirection)">
+      <div>
         <div class="label">翻页方向</div>
       </div>
       <div>
-        <check-radio valueStr="column|row" textStr="竖直|水平" @checkChange="changeViewDirection" :checkedValue="viewDirection" />
+        <check-radio valueStr="rl|lr" textStr="从右到左|从左到右" @checkChange="changeViewRL" :checkedValue="viewRL" />
       </div>
     </div>
     <div class="info-item">
@@ -181,6 +189,7 @@ export default {
       appLockPassword: state => state.storage.appLockPassword,
       isUseHttps: state => state.storage.isUseHttps,
       viewDirection: state => state.storage.imgViewerSettings.direction,
+      viewRL: state => state.storage.imgViewerSettings.rl,
       isUseLazyLoad: state => state.storage.imgViewerSettings.lazyLoad,
       isAutoUpdatePage: state => state.storage.imgViewerSettings.autoUpdatePage
     }),
@@ -208,6 +217,9 @@ export default {
     },
     changeViewDirection (nextVal) {
       this.$store.commit('storage/setImgViewerSettings', { direction: nextVal })
+    },
+    changeViewRL (nextVal) {
+      this.$store.commit('storage/setImgViewerSettings', { rl: nextVal })
     },
     toggleIsUseLazyLoad () {
       this.$store.commit('storage/setImgViewerSettings', { lazyLoad: !this.isUseLazyLoad })
