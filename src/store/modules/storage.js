@@ -13,7 +13,8 @@ export default {
       direction: 'column-scroll',
       rl: 'lr', // left->right or right->left
       lazyLoad: true,
-      autoUpdatePage: true
+      autoUpdatePage: true,
+      autoFlipMs: 1500
     }
   },
   mutations: {
@@ -42,7 +43,7 @@ export default {
     setIsUseHttps (state, { isUseHttps }) {
       state.isUseHttps = !!isUseHttps
     },
-    setImgViewerSettings (state, { direction, lazyLoad, autoUpdatePage, rl }) {
+    setImgViewerSettings (state, { direction, lazyLoad, autoUpdatePage, rl, autoFlipMs }) {
       if (direction !== undefined) {
         state.imgViewerSettings.direction = direction || 'column-scroll'
       }
@@ -54,6 +55,9 @@ export default {
       }
       if (rl !== undefined) {
         state.imgViewerSettings.rl = rl
+      }
+      if (autoFlipMs !== undefined) {
+        state.imgViewerSettings.autoFlipMs = autoFlipMs
       }
     }
   },

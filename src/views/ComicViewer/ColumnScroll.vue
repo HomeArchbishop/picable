@@ -50,6 +50,11 @@
       <div class="tool-btn" @click="scrollToBottom()">
         <font-awesome-icon icon="arrow-down" />
       </div>
+      <div class="advanced-tool-btn" @click="toggleAutoFlip()" :class="{ actived: isAutoFlip }">
+        自动翻页
+        <input type="number" @click.stop v-if="isAutoFlip" @change="updateAutoFlipMs" v-model="autoFlipS">
+        <span v-if="isAutoFlip">秒</span>
+      </div>
     </div>
   </div>
 </template>
@@ -82,7 +87,10 @@ export default {
       isAll: false,
       isUpdating: false,
       picLinkBtnActiveNum: NaN,
-      imgScale: {}
+      imgScale: {},
+      isAutoFlip: false,
+      autoFlipS: this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000,
+      autoFlipTimer: ''
     }
   },
   computed: {
@@ -244,15 +252,36 @@ export default {
      */
     async keyboardFliping (command, e) {
       e.preventDefault()
+      this.flipNear(command)
+    },
+    async flipNear (command) {
       let nextPicIndex = NaN
+      const currentPictureIndex = Math.min(...this.pictureCurrentInSightList)
       if (command === 'lastPic') {
-        const currentPictureIndex = Math.min(...this.pictureCurrentInSightList)
         nextPicIndex = Math.max(0, -1 + currentPictureIndex)
       } else if (command === 'nextPic') {
-        const currentPictureIndex = Math.max(...this.pictureCurrentInSightList)
         nextPicIndex = Math.min(this.pictureListDocsList.length - 1, 1 + currentPictureIndex)
       }
       this.scrollToPic(nextPicIndex + 1)
+    },
+    async toggleAutoFlip () {
+      this.isAutoFlip = !this.isAutoFlip
+      if (this.isAutoFlip) {
+        this.useNewAutoFlip(this.autoFlipS)
+      } else {
+        clearInterval(this.autoFlipTimer)
+      }
+    },
+    async updateAutoFlipMs () {
+      this.autoFlipS = Math.max(0.2, Math.abs(this.autoFlipS))
+      this.$store.commit('storage/setImgViewerSettings', { autoFlipMs: this.autoFlipS * 1000 })
+      this.useNewAutoFlip(this.autoFlipS)
+    },
+    async useNewAutoFlip (s) {
+      clearInterval(this.autoFlipTimer)
+      this.autoFlipTimer = setInterval(() => {
+        this.flipNear('nextPic')
+      }, s * 1000)
     }
   },
   watch: {
@@ -367,7 +396,7 @@ export default {
       align-items: center;
       flex-direction: column;
       position: fixed;
-      height: 350px;
+      height: 550px;
       right: 20px;
       top: 200px;
       .pic-link-btn {
@@ -413,6 +442,45 @@ export default {
         margin-top: 5px;
         margin-bottom: 5px;
         cursor: pointer;
+      }
+      .advanced-tool-btn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        height: fit-content;
+        width: 40px;
+        border-radius: 40px;
+        background: @background-btn-default;
+        margin-left: 5px;
+        margin-right: 5px;
+        padding: 20px 0;
+        cursor: pointer;
+        user-select: none;
+        transition: .1s;
+        writing-mode: vertical-lr;
+        &.actived {
+          background: lighten(@background-btn-highlight, 15%);
+        }
+        input {
+          display: inline-block;
+          padding: 0;
+          width: 90%;
+          font-family: inherit;
+          border: none;
+          border-bottom: 1px solid @color-line-default-sub;
+          box-sizing: content-box;
+          background-color: transparent;
+          outline: none;
+          text-align: center;
+          transition: .2s;
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+          }
+          &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+          }
+        }
       }
     }
   }

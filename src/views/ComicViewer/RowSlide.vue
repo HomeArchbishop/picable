@@ -69,6 +69,11 @@
       <div class="tool-btn" @click="viewRL === 'rl' ? scrollToTop() : scrollToBottom()">
         <font-awesome-icon icon="arrow-right" />
       </div>
+      <div class="advanced-tool-btn" @click="toggleAutoFlip()" :class="{ actived: isAutoFlip }">
+        自动翻页
+        <input type="number" @click.stop v-if="isAutoFlip" @change="updateAutoFlipMs" v-model="autoFlipS">
+        <span v-if="isAutoFlip">秒</span>
+      </div>
     </div>
   </div>
 </template>
@@ -102,7 +107,10 @@ export default {
       isUpdating: false,
       picLinkBtnActiveNum: NaN,
       imgScale: {},
-      imgLayerRect: {}
+      imgLayerRect: {},
+      isAutoFlip: false,
+      autoFlipS: this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000,
+      autoFlipTimer: ''
     }
   },
   computed: {
@@ -288,6 +296,25 @@ export default {
         width: `${width}px`
       })
       this.imgLayerRect = { height, width }
+    },
+    async toggleAutoFlip () {
+      this.isAutoFlip = !this.isAutoFlip
+      if (this.isAutoFlip) {
+        this.useNewAutoFlip(this.autoFlipS)
+      } else {
+        clearInterval(this.autoFlipTimer)
+      }
+    },
+    async updateAutoFlipMs () {
+      this.autoFlipS = Math.max(0.2, Math.abs(this.autoFlipS))
+      this.$store.commit('storage/setImgViewerSettings', { autoFlipMs: this.autoFlipS * 1000 })
+      this.useNewAutoFlip(this.autoFlipS)
+    },
+    async useNewAutoFlip (s) {
+      clearInterval(this.autoFlipTimer)
+      this.autoFlipTimer = setInterval(() => {
+        this.flipNear('nextPic')
+      }, s * 1000)
     }
   },
   watch: {
@@ -476,8 +503,8 @@ export default {
     align-items: center;
     flex-direction: row;
     position: fixed;
-    width: 350px;
-    left: calc(50% - 350px / 2);
+    width: 550px;
+    left: calc(50% - $width / 2);
     bottom: 20px;
     .pic-link-btn {
       display: flex;
@@ -493,7 +520,7 @@ export default {
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;
       }
-      &:nth-last-child(2) {
+      &:nth-last-child(3) {
         border-bottom-right-radius: 8px;
         border-top-right-radius: 8px;
       }
@@ -522,6 +549,44 @@ export default {
       margin-left: 5px;
       margin-right: 5px;
       cursor: pointer;
+    }
+    .advanced-tool-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      // width: 190px;
+      height: 40px;
+      border-radius: 40px;
+      background: @background-btn-default;
+      margin-left: 5px;
+      margin-right: 5px;
+      padding: 0 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: .1s;
+      &.actived {
+        background: lighten(@background-btn-highlight, 15%);
+      }
+      input {
+        display: inline-block;
+        padding: 0;
+        width: 4em;
+        font-family: inherit;
+        border: none;
+        border-bottom: 1px solid @color-line-default-sub;
+        box-sizing: content-box;
+        background-color: transparent;
+        outline: none;
+        text-align: center;
+        transition: .2s;
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+        }
+        &::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+        }
+      }
     }
   }
 }
