@@ -1,8 +1,9 @@
 <template>
   <div class="comic-viewer-container">
-    <column-scroll v-if="viewDirection === 'column-scroll'" />
-    <row-scroll v-if="viewDirection === 'row-scroll'" />
-    <row-slide v-if="viewDirection === 'row-slide'" />
+    <column-scroll v-if="viewDirection === 'column-scroll'" @showSubViewSetting="isShowSubViewSetting = true" />
+    <row-scroll v-if="viewDirection === 'row-scroll'" @showSubViewSetting="isShowSubViewSetting = true" />
+    <row-slide v-if="viewDirection === 'row-slide'" @showSubViewSetting="isShowSubViewSetting = true" />
+    <sub-view-setting v-if="isShowSubViewSetting" @hideSubViewSetting="isShowSubViewSetting = false" />
   </div>
 </template>
 
@@ -11,27 +12,19 @@ import ColumnScroll from './ColumnScroll.vue'
 import RowScroll from './RowScroll.vue'
 import RowSlide from './RowSlide.vue'
 import { mapState } from 'vuex'
+import SubViewSetting from '../../components/SubViewSetting.vue'
 
 export default {
   name: 'ComicViewer',
   components: {
     ColumnScroll,
     RowScroll,
-    RowSlide
+    RowSlide,
+    SubViewSetting
   },
   data () {
     return {
-      pictureListDocsList: [],
-      pictureLoadingStateMap: {},
-      pictureLoadingErrorMap: {},
-      pictureLazyLoadHappenedMap: {},
-      pictureCurrentInSightList: [0],
-      hasNextEpisodes: false,
-      nextPage: 1,
-      isAll: false,
-      isUpdating: false,
-      picLinkBtnActiveNum: NaN,
-      imgScale: {}
+      isShowSubViewSetting: false
     }
   },
   computed: {

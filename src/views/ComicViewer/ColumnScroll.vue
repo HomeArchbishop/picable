@@ -55,6 +55,9 @@
         <input type="number" @click.stop v-if="isAutoFlip" @change="updateAutoFlipMs" v-model="autoFlipS">
         <span v-if="isAutoFlip">秒</span>
       </div>
+      <div class="tool-btn" @click="$emit('show-sub-view-setting')">
+        <font-awesome-icon icon="gear" />
+      </div>
     </div>
   </div>
 </template>
@@ -62,12 +65,12 @@
 <script>
 import CommonTipBlock from '../../components/CommonTipBlock'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faArrowDown, faArrowUp, faArrowLeft, faArrowRight, faPaperclip } from '@fortawesome/free-solid-svg-icons'
+import { faGear, faArrowDown, faArrowUp, faArrowLeft, faArrowRight, faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'vuex'
 import Mousetrap from 'mousetrap'
 
-library.add(faArrowDown, faArrowUp, faArrowLeft, faArrowRight, faPaperclip)
+library.add(faGear, faArrowDown, faArrowUp, faArrowLeft, faArrowRight, faPaperclip)
 
 export default {
   name: 'ColumnScroll',
@@ -398,7 +401,7 @@ export default {
       position: fixed;
       height: 550px;
       right: 20px;
-      top: 200px;
+      top: 60px;
       .pic-link-btn {
         display: flex;
         justify-content: center;
