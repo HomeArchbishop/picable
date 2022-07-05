@@ -14,8 +14,8 @@
             {{ description }}
           </span>
         </div>
-        <div class="author">作者：{{ item.author }}</div>
-        <div class="chineseTeam">汉化：{{ item.chineseTeam }}</div>
+        <div class="author" v-if="item.author">作者：{{ item.author }}</div>
+        <div class="chineseTeam" v-if="item.chineseTeam">汉化：{{ item.chineseTeam }}</div>
         <div class="tag-div">
           <router-link  v-for="tagName in item.tags" :key="tagName"
             :to="{ name: 'SearchTag', query: { t: tagName } }" custom v-slot="{ navigate }"
@@ -91,6 +91,7 @@ export default {
     }
     .description {
       color: @color-font-default-sub;
+      margin-bottom: 10px;
     }
     .tag-div {
       display: flex;
