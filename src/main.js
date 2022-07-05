@@ -18,6 +18,4 @@ const app = createApp(App).use(store).use(router).use(apis).use(utils).use(VueDO
   }
 })
 
-setTimeout(() => {
-  app.mount('#app')
-}, 200)
+app.mount('#app')
