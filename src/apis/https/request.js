@@ -49,7 +49,10 @@ const sendRequest = async function ({
     baseURL: resolveProtocol(diversionUrl),
     method,
     timeout: 6000,
-    [method === 'POST' && 'data']: body
+    [method === 'POST' && 'data']: body,
+    validateStatus (status) {
+      return (status >= 200 && status < 300) || excludeStatus.includes(status)
+    }
   }
   const requestApp = axios.create()
   requestApp.interceptors.response.use(/* status codes match 2xx */r => r, error => {
@@ -57,9 +60,6 @@ const sendRequest = async function ({
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      if (excludeStatus.includes(error.response.status)) {
-        return error.response
-      }
       Swal.fire({
         title: '哔咔报告错误',
         html: `错误详情<br>${JSON.stringify(error.response.data)}`,
