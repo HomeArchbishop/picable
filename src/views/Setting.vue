@@ -72,6 +72,18 @@
       </div>
     </div>
     <div class="hr-line">
+      <div class="topic">内容</div>
+      <hr>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">主页模块</div>
+      </div>
+      <div>
+        <a href="." @click.prevent="isShowHomePageModuleSubView = true">点击设置</a>
+      </div>
+    </div>
+    <div class="hr-line">
       <div class="topic">网络</div>
       <hr>
     </div>
@@ -153,32 +165,58 @@
         当您使用本软件时，说明您已经同意并接受本页面的所有信息。
       </p>
     </div>
+
+    <sub-view view-name="主页模块" title-highlight v-if="isShowHomePageModuleSubView" @hide="isShowHomePageModuleSubView = false">
+      <draggable-wrap v-model="homePageModuleSubViewDraggableItemList"
+        item-key="partName" handle=".handle" animation="200" ghostClass="drag-ghost"
+      >
+        <template #item="{ element }">
+          <div class="info-item draggable-item">
+            <div>
+              <div class="handle">
+                <font-awesome-icon icon="bars" />
+              </div>
+              <div class="label">{{ element.title }}</div>
+            </div>
+            <div>
+              <toggle-button :isChecked="homePageModule.part[element.partName]" @click="toggleHomePageModule(element.partName)" />
+            </div>
+          </div>
+        </template>
+      </draggable-wrap>
+      <small class="small-tip">【说明】订阅的项目将展示在主页，可拖动进行排序。由于网络原因（防火墙/反爬等），过多订阅可能会影响加载体验，请适当订阅。</small>
+    </sub-view>
   </div>
 </template>
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEye, faEyeSlash, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faEyeSlash, faPen, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import ToggleButton from '../components/ToggleButton'
 import CheckRadio from '../components/CheckRadio'
+import SubView from '../components/SubView.vue'
+import DraggableWrap from 'vuedraggable'
 import { mapState } from 'vuex'
 import Swal from '../assets/utils/sweetalert-picable'
 
-library.add(faEye, faEyeSlash, faPen)
+library.add(faEye, faEyeSlash, faPen, faBars)
 
 export default {
   name: 'Setting',
   components: {
     ToggleButton,
     FontAwesomeIcon,
-    CheckRadio
+    CheckRadio,
+    SubView,
+    DraggableWrap
   },
   data () {
     return {
       isShowOriginAppLockPassword: false,
       isChangingAppLockPassword: false,
       nextAppLockPassword: this.$store.state.storage.appLockPassword,
+      isShowHomePageModuleSubView: false,
       packageJSON: require('../../package.json')
     }
   },
@@ -191,10 +229,22 @@ export default {
       viewDirection: state => state.storage.imgViewerSettings.direction,
       viewRL: state => state.storage.imgViewerSettings.rl,
       isUseLazyLoad: state => state.storage.imgViewerSettings.lazyLoad,
-      isAutoUpdatePage: state => state.storage.imgViewerSettings.autoUpdatePage
+      isAutoUpdatePage: state => state.storage.imgViewerSettings.autoUpdatePage,
+      homePageModule: state => state.storage.homePageModule
     }),
     isNeedUpdate () {
       return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
+    },
+    homePageModuleSubViewDraggableItemList: {
+      get () {
+        const referTitle = { normalMei: '本子妹推荐', normalMu: '本子母推荐', rankH24: '每日排行榜', rankD7: '每周排行榜', rankD30: '每月排行榜' }
+        const order = this.$store.state.storage.homePageModule.order
+        return order.map(partName => ({ title: referTitle[partName], partName }))
+      },
+      set (value) {
+        const nextOrder = value.map(item => item.partName)
+        this.$store.commit('storage/setHomePageModuleOrder', { nextOrder })
+      }
     }
   },
   methods: {
@@ -226,6 +276,9 @@ export default {
     },
     toggleIsAutoUpdatePage () {
       this.$store.commit('storage/setImgViewerSettings', { autoUpdatePage: !this.isAutoUpdatePage })
+    },
+    toggleHomePageModule (key) {
+      this.$store.commit('storage/setHomePageModulePart', { key, nextValue: !this.homePageModule.part[key] })
     }
   }
 }
@@ -241,7 +294,14 @@ export default {
     align-items: center;
     justify-content: space-between;
     margin: 24px 0;
+    div .handle {
+      display: inline;
+      margin-right: 10px;
+      color: @color-font-default-sub;
+      cursor: move;
+    }
     div .label {
+      display: inline;
       font-size: 18px;
       opacity: .78;
     }
@@ -296,6 +356,12 @@ export default {
       border: none;
       border-bottom: 1px solid @color-font-default-sub;
     }
+  }
+  .drag-ghost {
+    opacity: 0.5;
+  }
+  .small-tip {
+    color: @color-font-default-sub;
   }
 }
 </style>

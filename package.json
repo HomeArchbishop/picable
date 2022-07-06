@@ -47,6 +47,7 @@
     "vue-dompurify-html": "^3.0.0-beta.3",
     "vue-radial-progress": "^0.3.2",
     "vue-router": "^4.0.0-0",
+    "vuedraggable": "^4.1.0",
     "vuex": "^4.0.0-0",
     "vuex-persistedstate": "^4.1.0"
   },

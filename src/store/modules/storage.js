@@ -15,6 +15,16 @@ export default {
       lazyLoad: true,
       autoUpdatePage: true,
       autoFlipMs: 1500
+    },
+    homePageModule: {
+      part: {
+        normalMei: true, // normal Mei recommandation
+        normalMu: true, // normal Mu recommandation
+        rankH24: true,
+        rankD7: false,
+        rankD30: false
+      },
+      order: ['normalMei', 'normalMu', 'rankH24', 'rankD7', 'rankD30']
     }
   },
   mutations: {
@@ -59,6 +69,12 @@ export default {
       if (autoFlipMs !== undefined) {
         state.imgViewerSettings.autoFlipMs = autoFlipMs
       }
+    },
+    setHomePageModulePart (state, { key, nextValue }) {
+      state.homePageModule.part[key] = nextValue
+    },
+    setHomePageModuleOrder (state, { nextOrder }) {
+      state.homePageModule.order = [...nextOrder]
     }
   },
   actions: {}
