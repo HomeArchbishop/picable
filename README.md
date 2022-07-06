@@ -53,7 +53,7 @@
 
 ## 开发者碎碎念
 
-**感谢大家看到这里。** 作为一个刚起步的开发者，想做点练手的东西，于是LSP的本性驱使我尝试这个idea。才开始项目名就叫pica-comic，非常的朴实，也是为了方便搜索。后来想想换个新名，那就叫Picable好了。`Picable = Pica + able`，也就是希望让这个项目变得越来越able。那么至于为什么不叫Pica+capable=Picapable呢，因为Picapable这个名字太长，会让人觉得不知所云（笑）。
+**感谢大家看到这里。** 作为一个刚起步的开发者，想做点练手的东西，于是LSP的本性驱使我尝试这个idea。才开始项目名就叫pica-comic，非常的朴实，也是为了方便搜索。后来想想换个新名，那就叫Picable好了。`Picable = Pica + able`，也就是希望让这个项目变得越来越able（笑）。
 
 **我把这个项目发出来，希望大家能够喜欢。不足之处万望赐教。** 如果Star一下当然更好啦，一个Star能够让我兴奋好久😚。
 
@@ -63,5 +63,5 @@
 
 MIT License
 
-Copyright (c) [2022-future] [拆家大主教 HomeArchbishop]
+Copyright (c) [2022] [拆家大主教 HomeArchbishop]
 
