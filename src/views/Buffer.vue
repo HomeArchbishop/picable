@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'Buffer',
-  beforeCreate () {
+  created () {
     console.log(window.location.href, this.$store.state.storage.hasAppLock)
     if (!this.$store.state.storage.hasAppLock) {
       this.$router.replace({ name: 'Diversion' })

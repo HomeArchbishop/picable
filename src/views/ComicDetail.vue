@@ -327,7 +327,7 @@ export default {
       this.getRecommendComic()
     }
   },
-  mounted () {
+  created () {
     this.getComicDetail()
     this.getEpisodesList()
     this.getFavouriteAuthorList()

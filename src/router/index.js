@@ -231,7 +231,6 @@ const routes = [
     name: 'Chat',
     component: () => import('../views/Chat'),
     meta: {
-      keepAlive: true,
       title: '哔咔聊天室'
     }
   },
