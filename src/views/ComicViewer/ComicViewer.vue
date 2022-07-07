@@ -3,7 +3,15 @@
     <column-scroll v-if="viewDirection === 'column-scroll'" @showSubViewSetting="isShowSubViewSetting = true" />
     <row-scroll v-if="viewDirection === 'row-scroll'" @showSubViewSetting="isShowSubViewSetting = true" />
     <row-slide v-if="viewDirection === 'row-slide'" @showSubViewSetting="isShowSubViewSetting = true" />
-    <sub-view-setting v-if="isShowSubViewSetting" @hideSubViewSetting="isShowSubViewSetting = false" />
+    <sub-view
+      view-name="设置"
+      title-highlight
+      v-if="isShowSubViewSetting"
+      @hide="isShowSubViewSetting = false"
+    >
+      <setting-view is-in-sub-view />
+      <small class="small-tip">【注】更多设置，请前往软件的设置页面</small>
+    </sub-view>
   </div>
 </template>
 
@@ -12,7 +20,8 @@ import ColumnScroll from './ColumnScroll.vue'
 import RowScroll from './RowScroll.vue'
 import RowSlide from './RowSlide.vue'
 import { mapState } from 'vuex'
-import SubViewSetting from '../../components/SubViewSetting.vue'
+import SubView from '../../components/SubView.vue'
+import SettingView from '../Setting.vue'
 
 export default {
   name: 'ComicViewer',
@@ -20,7 +29,8 @@ export default {
     ColumnScroll,
     RowScroll,
     RowSlide,
-    SubViewSetting
+    SubView,
+    SettingView
   },
   data () {
     return {
@@ -39,4 +49,7 @@ export default {
 @import '~@/assets/themes/config';
 @import '~@/assets/themes/@{theme-name}/theme';
 
+.small-tip {
+  color: @color-font-default-sub;
+}
 </style>
