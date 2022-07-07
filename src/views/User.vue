@@ -79,7 +79,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import dobToAge from 'dob-to-age'
-import Swal from '../assets/utils/sweetalert-picable'
+import Swal from '../plugins/sweetalert-picable'
 import RadialProgressBar from 'vue-radial-progress'
 
 library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment)

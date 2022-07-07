@@ -72,7 +72,7 @@
       </div>
     </div>
     <div class="hr-line">
-      <div class="topic">内容</div>
+      <div class="topic">自定义</div>
       <hr>
     </div>
     <div class="info-item">
@@ -81,6 +81,14 @@
       </div>
       <div>
         <a href="." @click.prevent="isShowHomePageModuleSubView = true">点击设置</a>
+      </div>
+    </div>
+    <div class="info-item">
+      <div>
+        <div class="label">快捷键</div>
+      </div>
+      <div>
+        <a href="." @click.prevent="isShowShortcutsSubView = true">点击设置</a>
       </div>
     </div>
     <div class="hr-line">
@@ -186,10 +194,33 @@
       </draggable-wrap>
       <small class="small-tip">【说明】订阅的项目将展示在主页，可拖动进行排序。由于网络原因（防火墙/反爬等），过多订阅可能会影响加载体验，请适当订阅。</small>
     </sub-view>
+
+    <sub-view view-name="快捷键" title-highlight v-if="isShowShortcutsSubView" @hide="isShowShortcutsSubView = false">
+      <div class="info-item"
+        v-for="[label, key] in [
+          ['进入隐藏模式', 'routeToHideSecret'], ['离开隐藏模式', 'routeLeaveHideSecret'],
+          ['水平阅读（下一页）', 'comicViewerRowNext'], ['水平阅读（上一页）', 'comicViewerRowLast'],
+          ['竖直阅读（下一页）', 'comicViewerColumnNext'], ['竖直阅读（上一页）', 'comicViewerColumnLast']]"
+        :key="key"
+      >
+        <div>
+          <div class="label">{{ label }}</div>
+        </div>
+        <div v-if="shortcutRecordingKey !== key">
+          <span class="display-word">{{ shortcutsReadable[key].join(' ') }}</span>
+          <a href="." @click.prevent="setShortcuts(key)">自定义</a>
+        </div>
+        <div v-else>
+          <span class="display-word">请键入快捷键</span>
+        </div>
+      </div>
+      <small class="small-tip">【说明】在这里定义的快捷键，只有在App被聚焦时才有效哦。</small>
+    </sub-view>
   </div>
 </template>
 
 <script>
+import { defineComponent } from 'vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash, faPen, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -198,10 +229,11 @@ import CheckRadio from '../components/CheckRadio'
 import SubView from '../components/SubView.vue'
 import DraggableWrap from 'vuedraggable'
 import { mapState } from 'vuex'
-import Swal from '../assets/utils/sweetalert-picable'
+import Swal from '../plugins/sweetalert-picable'
 
 library.add(faEye, faEyeSlash, faPen, faBars)
 
+defineComponent({})
 export default {
   name: 'Setting',
   components: {
@@ -217,6 +249,8 @@ export default {
       isChangingAppLockPassword: false,
       nextAppLockPassword: this.$store.state.storage.appLockPassword,
       isShowHomePageModuleSubView: false,
+      isShowShortcutsSubView: false,
+      shortcutRecordingKey: '',
       packageJSON: require('../../package.json')
     }
   },
@@ -230,10 +264,21 @@ export default {
       viewRL: state => state.storage.imgViewerSettings.rl,
       isUseLazyLoad: state => state.storage.imgViewerSettings.lazyLoad,
       isAutoUpdatePage: state => state.storage.imgViewerSettings.autoUpdatePage,
-      homePageModule: state => state.storage.homePageModule
+      homePageModule: state => state.storage.homePageModule,
+      shortcuts: state => state.storage.shortcuts
     }),
     isNeedUpdate () {
       return window.sessionStorage.getItem('__PICABLE__IS_NEED_UPDATE__') === 'true'
+    },
+    shortcutsReadable () {
+      const readable = {}
+      for (const key in this.shortcuts) {
+        // though `navigator.platform` is deprecated, Mousetrap uses it for 'mod' alias,
+        // so we keep using it here
+        const modReadable = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'ctrl'
+        readable[key] = this.shortcuts[key].map(s => s.replace(/mod/gi, modReadable).replace(/meta/gi, '⌘'))
+      }
+      return readable
     },
     homePageModuleSubViewDraggableItemList: {
       get () {
@@ -279,6 +324,40 @@ export default {
     },
     toggleHomePageModule (key) {
       this.$store.commit('storage/setHomePageModulePart', { key, nextValue: !this.homePageModule.part[key] })
+    },
+    setShortcuts (key) {
+      this.shortcutRecordingKey = key
+      this.$mousetrap.pause()
+      return new Promise((resolve, reject) => {
+        const end = () => {
+          resolve()
+          this.shortcutRecordingKey = ''
+          this.$mousetrap.unpause()
+        }
+        const timer = setTimeout(() => {
+          end() // do not reject it, or it will throw an err
+        }, 3000)
+        this.$mousetrap.record((sequence) => {
+          clearTimeout(timer)
+          // sequence is an array like ['ctrl+k', 'c']
+          // => `shortcutsStr` = 'ctrl+k c'
+          // => when usage is like `Mousetrap.bind(['ctrl+k c'])`
+          const shortcutsStr = sequence.join(' ')
+          // check is validate
+          const mod = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
+          const isMulti = Object.values(this.shortcuts).flat().map(s => s.replace(/mod/gi, mod)).includes(shortcutsStr)
+          if (isMulti) {
+            Swal.fire({
+              title: '该快捷键已被占用',
+              icon: 'error'
+            })
+          } else {
+            // apply the change
+            this.$store.commit('storage/setShortcuts', { shortcutName: key, shortcutsList: [shortcutsStr] })
+          }
+          end()
+        })
+      })
     }
   }
 }
@@ -304,6 +383,10 @@ export default {
       display: inline;
       font-size: 18px;
       opacity: .78;
+    }
+    div .display-word {
+      margin: 0 10px;
+      color: @color-font-default-sub;
     }
     form {
       input {

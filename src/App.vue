@@ -19,7 +19,8 @@
 <script>
 import SideBar from '@/components/SideBar'
 import NavBar from '@/components/NavBar'
-import { startListener } from './assets/js/addEventListener'
+import shortcutsListener from './assets/js/shortcutsListener'
+import { mapState } from 'vuex'
 
 export default {
   name: 'App',
@@ -33,6 +34,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      shortcuts: state => state.storage.shortcuts
+    }),
     isShowBar () {
       return typeof this.$route.name !== 'undefined' &&
         !['Diversion', 'Login', 'AppLock', 'Register', 'HideSecret'].includes(this.$route.name)
@@ -59,12 +63,17 @@ export default {
       if (to.meta.keepAlive && !this.keepAliveList.includes(to.name)) {
         this.keepAliveList.push(to.name)
       }
+    },
+    shortcuts: {
+      deep: true,
+      handler () {
+        shortcutsListener.restart()
+      }
     }
   },
-  beforeCreate () {
-    startListener(this)
-  },
   created () {
+    shortcutsListener.install(this)
+    shortcutsListener.start()
     console.log(this.diversionUrl)
     this.addListener()
     this.getDiversionUrlList()

@@ -25,6 +25,14 @@ export default {
         rankD30: false
       },
       order: ['normalMei', 'normalMu', 'rankH24', 'rankD7', 'rankD30']
+    },
+    shortcuts: {
+      routeToHideSecret: ['mod+k'],
+      routeLeaveHideSecret: ['mod+shift+k'],
+      comicViewerRowNext: ['right'],
+      comicViewerRowLast: ['left'],
+      comicViewerColumnNext: ['down'],
+      comicViewerColumnLast: ['up']
     }
   },
   mutations: {
@@ -75,6 +83,9 @@ export default {
     },
     setHomePageModuleOrder (state, { nextOrder }) {
       state.homePageModule.order = [...nextOrder]
+    },
+    setShortcuts (state, { shortcutName, shortcutsList }) {
+      state.shortcuts[shortcutName] = [...shortcutsList]
     }
   },
   actions: {}

@@ -87,7 +87,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faGear, faArrowLeft, faArrowRight, faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'vuex'
-import Mousetrap from 'mousetrap'
 
 library.add(faGear, faArrowLeft, faArrowRight, faPaperclip)
 
@@ -120,7 +119,11 @@ export default {
     ...mapState({
       viewRL: state => state.storage.imgViewerSettings.rl,
       isUseLazyLoad: state => !!state.storage.imgViewerSettings.lazyLoad,
-      isAutoUpdatePage: state => !!state.storage.imgViewerSettings.autoUpdatePage
+      isAutoUpdatePage: state => !!state.storage.imgViewerSettings.autoUpdatePage,
+      shortcuts: state => ({
+        comicViewerRowNext: state.storage.shortcuts.comicViewerRowNext,
+        comicViewerRowLast: state.storage.shortcuts.comicViewerRowLast
+      })
     }),
     comicId () {
       return this.$route.params.comicId
@@ -335,14 +338,14 @@ export default {
     viewRL: {
       handler (nextValue) {
         console.log(nextValue)
-        Mousetrap.unbind(['left'])
-        Mousetrap.unbind(['right'])
+        this.$mousetrap.unbind(this.shortcuts.comicViewerRowLast)
+        this.$mousetrap.unbind(this.shortcuts.comicViewerRowNext)
         if (nextValue === 'rl') {
-          Mousetrap.bind(['right'], (e) => this.keyboardFliping('lastPic', e))
-          Mousetrap.bind(['left'], (e) => this.keyboardFliping('nextPic', e))
+          this.$mousetrap.bind(this.shortcuts.comicViewerRowNext, (e) => this.keyboardFliping('lastPic', e))
+          this.$mousetrap.bind(this.shortcuts.comicViewerRowLast, (e) => this.keyboardFliping('nextPic', e))
         } else {
-          Mousetrap.bind(['left'], (e) => this.keyboardFliping('lastPic', e))
-          Mousetrap.bind(['right'], (e) => this.keyboardFliping('nextPic', e))
+          this.$mousetrap.bind(this.shortcuts.comicViewerRowLast, (e) => this.keyboardFliping('lastPic', e))
+          this.$mousetrap.bind(this.shortcuts.comicViewerRowNext, (e) => this.keyboardFliping('nextPic', e))
         }
       },
       immediate: true
@@ -363,8 +366,8 @@ export default {
     // listener for window resize
     window.removeEventListener('resize', this.updatetImgLayerRect)
     // listener for keyboard fliping picture
-    Mousetrap.unbind(['left'])
-    Mousetrap.unbind(['right'])
+    this.$mousetrap.unbind(this.shortcuts.comicViewerRowLast)
+    this.$mousetrap.unbind(this.shortcuts.comicViewerRowNext)
   }
 }
 </script>

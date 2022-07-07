@@ -68,7 +68,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faGear, faArrowDown, faArrowUp, faArrowLeft, faArrowRight, faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'vuex'
-import Mousetrap from 'mousetrap'
 
 library.add(faGear, faArrowDown, faArrowUp, faArrowLeft, faArrowRight, faPaperclip)
 
@@ -99,7 +98,11 @@ export default {
   computed: {
     ...mapState({
       isUseLazyLoad: state => !!state.storage.imgViewerSettings.lazyLoad,
-      isAutoUpdatePage: state => !!state.storage.imgViewerSettings.autoUpdatePage
+      isAutoUpdatePage: state => !!state.storage.imgViewerSettings.autoUpdatePage,
+      shortcuts: state => ({
+        comicViewerColumnNext: state.storage.shortcuts.comicViewerColumnNext,
+        comicViewerColumnLast: state.storage.shortcuts.comicViewerColumnLast
+      })
     }),
     comicId () {
       return this.$route.params.comicId
@@ -308,14 +311,14 @@ export default {
   mounted () {
     window.document.addEventListener('scroll', this.imgScrollListener)
     // listener for keyboard fliping picture
-    Mousetrap.bind(['up', 'left'], (e) => this.keyboardFliping('lastPic', e))
-    Mousetrap.bind(['down', 'right'], (e) => this.keyboardFliping('nextPic', e))
+    this.$mousetrap.bind(this.shortcuts.comicViewerColumnLast, (e) => this.keyboardFliping('lastPic', e))
+    this.$mousetrap.bind(this.shortcuts.comicViewerColumnNext, (e) => this.keyboardFliping('nextPic', e))
   },
   beforeUnmount () {
     window.document.removeEventListener('scroll', this.imgScrollListener)
     // listener for keyboard fliping picture
-    Mousetrap.unbind(['up', 'left'])
-    Mousetrap.unbind(['down', 'right'])
+    this.$mousetrap.unbind(this.shortcuts.comicViewerColumnLast)
+    this.$mousetrap.unbind(this.shortcuts.comicViewerColumnNext)
   }
 }
 </script>

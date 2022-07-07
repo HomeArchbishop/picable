@@ -1,7 +1,7 @@
 import Header from './header'
 import { resolveURL } from '../utils/resolveURL'
 import axios from 'axios'
-import Swal from '../../assets/utils/sweetalert-picable'
+import Swal from '../../plugins/sweetalert-picable'
 import { resolveProtocol } from '../utils/resolveProtocol'
 
 // returns parsed json

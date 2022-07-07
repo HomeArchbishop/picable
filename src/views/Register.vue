@@ -66,7 +66,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Swal from '../assets/utils/sweetalert-picable'
+import Swal from '../plugins/sweetalert-picable'
 import CheckRadio from '../components/CheckRadio'
 import dobToAge from 'dob-to-age'
 

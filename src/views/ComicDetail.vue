@@ -153,7 +153,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import TagItem from '../components/TagItem'
 import CommonTipBlock from '../components/CommonTipBlock'
 import ItemSmall from '../components/ItemSmall.vue'
-import Swal from '../assets/utils/sweetalert-picable'
+import Swal from '../plugins/sweetalert-picable'
 
 library.add(faHeart, faEye, faCommentDots, faBookmark, faDownload, faFileZipper, faAngleDown, faAngleUp)
 

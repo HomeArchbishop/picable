@@ -34,7 +34,7 @@ import CommonTipBlock from '../components/CommonTipBlock'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faComment, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Swal from '../assets/utils/sweetalert-picable'
+import Swal from '../plugins/sweetalert-picable'
 
 library.add(faComment, faAngleRight)
 

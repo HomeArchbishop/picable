@@ -5,17 +5,27 @@ import router from './router'
 import store from './store'
 import apis from './apis'
 import utils from './assets/utils'
+import Mousetrap from './plugins/mousetrap'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 
-const app = createApp(App).use(store).use(router).use(apis).use(utils).use(VueDOMPurifyHTML).mixin({
-  computed: {
-    ...mapState({
-      token: state => state.storage.token
-    }),
-    ...mapGetters({
-      diversionUrl: 'runtime/currentDiversionUrl'
-    })
-  }
-})
+createApp(App)
 
-app.mount('#app')
+  .use(store)
+  .use(router)
+  .use(apis)
+  .use(utils)
+  .use(Mousetrap)
+  .use(VueDOMPurifyHTML)
+
+  .mixin({
+    computed: {
+      ...mapState({
+        token: state => state.storage.token
+      }),
+      ...mapGetters({
+        diversionUrl: 'runtime/currentDiversionUrl'
+      })
+    }
+  })
+
+  .mount('#app')
