@@ -91,7 +91,7 @@ export default {
       picLinkBtnActiveNum: NaN,
       imgScale: {},
       isAutoFlip: false,
-      autoFlipS: 2000, // will be immedately rewriten by $store
+      autoFlipS: this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000,
       autoFlipTimer: ''
     }
   },
@@ -295,15 +295,13 @@ export default {
     epsOrder (nextValue) {
       if (!nextValue) { return }
       // init $data.
-      Object.assign(this.$data, this.$options.data())
-      this.autoFlipS = this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000
+      Object.assign(this.$data, this.$options.data.call(this))
       this.updateNewPicturePage()
       this.judgeHasNextEpisodes()
       this.scrollToTop(0, 0)
     }
   },
   created () {
-    this.autoFlipS = this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000
     this.updateNewPicturePage()
     this.recordRecentComic()
     this.judgeHasNextEpisodes()
@@ -315,6 +313,7 @@ export default {
     this.$mousetrap.bind(this.shortcuts.comicViewerColumnNext, (e) => this.keyboardFliping('nextPic', e))
   },
   beforeUnmount () {
+    clearInterval(this.autoFlipTimer)
     window.document.removeEventListener('scroll', this.imgScrollListener)
     // listener for keyboard fliping picture
     this.$mousetrap.unbind(this.shortcuts.comicViewerColumnLast)

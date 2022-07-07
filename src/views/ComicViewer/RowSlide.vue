@@ -111,7 +111,7 @@ export default {
       imgScale: {},
       imgLayerRect: {},
       isAutoFlip: false,
-      autoFlipS: 2000, // will be immedately rewriten by $store
+      autoFlipS: this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000,
       autoFlipTimer: ''
     }
   },
@@ -328,8 +328,7 @@ export default {
     epsOrder (nextValue) {
       if (!nextValue) { return }
       // init $data.
-      Object.assign(this.$data, this.$options.data())
-      this.autoFlipS = this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000
+      Object.assign(this.$data, this.$options.data.call(this))
       this.updatetImgLayerRect()
       this.updateNewPicturePage()
       this.judgeHasNextEpisodes()
@@ -352,7 +351,6 @@ export default {
     }
   },
   created () {
-    this.autoFlipS = this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000
     this.updatetImgLayerRect()
     this.updateNewPicturePage()
     this.recordRecentComic()
@@ -363,6 +361,7 @@ export default {
     window.addEventListener('resize', this.updatetImgLayerRect)
   },
   beforeUnmount () {
+    clearInterval(this.autoFlipTimer)
     // listener for window resize
     window.removeEventListener('resize', this.updatetImgLayerRect)
     // listener for keyboard fliping picture
