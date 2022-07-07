@@ -79,7 +79,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import dobToAge from 'dob-to-age'
-import Swal from '../plugins/sweetalert-picable'
 import RadialProgressBar from 'vue-radial-progress'
 
 library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment)
@@ -141,14 +140,14 @@ export default {
         this.personInfo.isPunched = true
         this.personInfo.exp += 10
       } else /* punchActionRes.status === 'fail' */ {
-        Swal.fire({
+        this.$swal.fire({
           title: '哔咔被玩坏了',
           text: '签到失败。请重试...'
         })
       }
       this.personInfo.exp += 10
       if (this.level === preLevel + 1) {
-        Swal.fire({
+        this.$swal.fire({
           title: '恭喜升级',
           timer: 2000
         })
@@ -157,7 +156,7 @@ export default {
       this.isRequestingPunch = false
     },
     async logout () {
-      Swal.fire({
+      this.$swal.fire({
         title: '确定退出登录吗？',
         text: '您的浏览记录、下载将不会被删除',
         icon: 'warning',

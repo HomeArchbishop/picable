@@ -6,4 +6,10 @@ const Swal = _Swal.mixin({
   }
 })
 
-export default Swal
+export { Swal }
+
+export default {
+  install: (app) => {
+    app.config.globalProperties.$swal = Swal
+  }
+}

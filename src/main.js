@@ -6,6 +6,7 @@ import store from './store'
 import apis from './apis'
 import utils from './assets/utils'
 import Mousetrap from './plugins/mousetrap'
+import swal from './plugins/sweetalert-picable'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 
 createApp(App)
@@ -15,6 +16,7 @@ createApp(App)
   .use(apis)
   .use(utils)
   .use(Mousetrap)
+  .use(swal)
   .use(VueDOMPurifyHTML)
 
   .mixin({

@@ -31,7 +31,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Swal from '../plugins/sweetalert-picable'
 
 library.add(faAngleRight)
 
@@ -68,7 +67,7 @@ export default {
         })
         if (nextToken === false) {
           this.$utils.hideLoadingPica()
-          Swal.fire({
+          this.$swal.fire({
             title: '账号或密码错误',
             icon: 'error'
           })

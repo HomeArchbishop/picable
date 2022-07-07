@@ -66,7 +66,6 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Swal from '../plugins/sweetalert-picable'
 import CheckRadio from '../components/CheckRadio'
 import dobToAge from 'dob-to-age'
 
@@ -103,13 +102,13 @@ export default {
       for (const key in this.registerData) {
         if (!this.registerData[key]) {
           if (key === 'gender') {
-            Swal.fire({
+            this.$swal.fire({
               title: '还没选择性别诶',
               text: '不愿意透露的话可以选「保密」',
               icon: 'warning'
             })
           } else {
-            Swal.fire({
+            this.$swal.fire({
               title: '还有字段没有填哦',
               text: 'BTW\n问题和答案作用暂不明确\n反正就是要填',
               icon: 'warning'
@@ -121,7 +120,7 @@ export default {
         }
       }
       if (dobToAge(this.registerData.birthday) < 18) {
-        Swal.fire({
+        this.$swal.fire({
           title: '未满18周岁',
           text: '成年了再来吧',
           icon: 'warning'
@@ -129,7 +128,7 @@ export default {
         return
       }
       if (this.registerData.password.length < 8) {
-        Swal.fire({
+        this.$swal.fire({
           title: '密码长度应不小于8',
           icon: 'warning'
         })
@@ -139,7 +138,7 @@ export default {
         diversionUrl: this.diversionUrl, data: this.registerData
       })
       if (resData.code === 200) {
-        Swal.fire({
+        this.$swal.fire({
           title: '注册成功',
           text: '请前往登录',
           icon: 'info'

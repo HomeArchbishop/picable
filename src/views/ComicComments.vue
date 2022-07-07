@@ -34,7 +34,6 @@ import CommonTipBlock from '../components/CommonTipBlock'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faComment, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import Swal from '../plugins/sweetalert-picable'
 
 library.add(faComment, faAngleRight)
 
@@ -99,13 +98,13 @@ export default {
       if (sendState === 'success') {
         this.myCommentText = ''
         this.isShowSendCard = false
-        Swal.fire({
+        this.$swal.fire({
           title: '发送成功',
           text: '评论刷新页面后可见',
           icon: 'info'
         })
       } else {
-        Swal.fire({
+        this.$swal.fire({
           title: '发送失败',
           content: '请重新发送',
           icon: 'error'
