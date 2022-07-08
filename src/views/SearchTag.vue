@@ -99,13 +99,13 @@ export default {
   watch: {
     t () {
       // init result data.
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data.call(this))
       // call for new data.
       this.updatePage()
     },
     sort () {
       // init $data.
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data.call(this))
       this.updatePage()
     }
   },

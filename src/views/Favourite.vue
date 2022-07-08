@@ -116,7 +116,8 @@ export default {
       searchAuthorKeyword: '',
       searchAuthorActiveList: [],
       searchChineseKeyword: '',
-      searchChineseActiveList: []
+      searchChineseActiveList: [],
+      isShouldResetComp: false
     }
   },
   methods: {
@@ -176,47 +177,52 @@ export default {
       }
       this.searchChineseActiveList = this.favouriteChineseList.filter(name => new RegExp(kw, 'gi').test(name))
     },
-    changeType (nextType) {
-      if (nextType === this.currentType) { return }
-      this.currentType = ''
-      setTimeout(() => {
-        this.currentType = nextType
-      }, 80)
+    changeType (nextType, forced = false) {
+      if (!forced && nextType === this.currentType) { return }
+      this.currentType = nextType
+      switch (nextType) {
+        case 'comic':
+          this.typeInitState[nextType] === false && this.updatePageComic()
+          break
+        case 'author':
+          this.updatePageAuthor()
+          break
+        case 'chinese':
+          this.updatePageChinese()
+          break
+      }
+      this.typeInitState[nextType] = true
     }
   },
   watch: {
-    currentType: {
-      handler (nextType) {
-        switch (nextType) {
-          case 'comic':
-            this.typeInitState[nextType] === false && this.updatePageComic()
-            break
-          case 'author':
-            this.updatePageAuthor()
-            break
-          case 'chinese':
-            this.updatePageChinese()
-            break
-        }
-        this.typeInitState[nextType] = true
-      },
-      immediate: true
+    token () {
+      this.isShouldResetComp = true
     }
   },
   async activated () {
+    // special: if should reset, just do it
+    if (this.isShouldResetComp) {
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.$options.created.call(this)
+      return
+    }
+    // if favourite comics changed
     if (this.isPageFirstEnter) {
       this.isPageFirstEnter = false
       return
     }
-    const myFavouriteListObject = await this.$api.myFavourite({
-      diversionUrl: this.diversionUrl, token: this.token, page: 1
-    })
-    if (myFavouriteListObject.total !== this.favouriteComicTotalCnt) {
+    if (this.$store.state.runtime.isFavouriteChanged) {
       console.log('!!!!!')
+      this.$store.commit('runtime/setIsFavouriteChanged', { nextIsFavouriteChanged: false })
       const formerType = this.currentType
-      Object.assign(this.$data, this.$options.data(), { currentType: '', isPageFirstEnter: false })
+      Object.assign(this.$data, this.$options.data.call())
+      this.isPageFirstEnter = false
       this.currentType = formerType
+      this.$options.created.call(this)
     }
+  },
+  created () {
+    this.changeType(this.currentType, true)
   }
 }
 </script>

@@ -236,6 +236,7 @@ export default {
         diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
       })
       this.isFavourite = favouriteAction === 'favourite'
+      this.$store.commit('runtime/setIsFavouriteChanged', { nextIsFavouriteChanged: true })
       // change state.
       this.isRequestingFavourite = false
     },

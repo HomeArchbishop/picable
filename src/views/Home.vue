@@ -61,7 +61,8 @@ export default {
         rankH24: {},
         rankD7: {},
         rankD30: {}
-      }
+      },
+      isShouldResetComp: false
     }
   },
   computed: {
@@ -120,28 +121,33 @@ export default {
       console.log(tt)
       this.$store.commit('runtime/setCurrentTt', { nextCurrentTt: tt })
       navigate()
-    }
-  },
-  watch: {
-    homePageModule: {
-      deep: true,
-      immediate: true,
-      handler (newVal) {
-        // `part` change
-        let isNormalXXRequesting = false
-        for (const partName in newVal.part) {
-          if (newVal.part[partName] && isEmpty(this.collectionsList[partName])) {
-            if (/^normal(Mu|Mei)$/.test(partName)) {
-              if (isNormalXXRequesting) { continue }
-              isNormalXXRequesting = true
-              this.getList('normal')
-            } else {
-              this.getList(partName)
-            }
+    },
+    async resolveUpdateModule () {
+      // on `homePageModule.part` change
+      let isNormalXXRequesting = false
+      for (const partName in this.homePageModule.part) {
+        if (this.homePageModule.part[partName] && isEmpty(this.collectionsList[partName])) {
+          if (/^normal(Mu|Mei)$/.test(partName)) {
+            if (isNormalXXRequesting) { continue }
+            isNormalXXRequesting = true
+            this.getList('normal')
+          } else {
+            this.getList(partName)
           }
         }
       }
     }
+  },
+  watch: {
+    token () {
+      this.isShouldResetComp = true
+    }
+  },
+  activated () {
+    if (this.isShouldResetComp) {
+      Object.assign(this.$data, this.$options.data.call(this))
+    }
+    this.resolveUpdateModule()
   }
 }
 </script>

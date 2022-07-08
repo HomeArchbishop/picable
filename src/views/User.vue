@@ -98,7 +98,8 @@ export default {
       myCommentsList: [],
       myCommentsCurrentPage: 1,
       isFoundAny: true,
-      isAll: false
+      isAll: false,
+      isShouldResetComp: false
     }
   },
   computed: {
@@ -173,6 +174,17 @@ export default {
           this.$router.replace({ name: 'Diversion' })
         }
       })
+    }
+  },
+  watch: {
+    token () {
+      this.isShouldResetComp = true
+    }
+  },
+  activated () {
+    if (this.isShouldResetComp) {
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.$options.created.call(this)
     }
   },
   created () {

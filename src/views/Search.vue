@@ -141,13 +141,13 @@ export default {
   watch: {
     kw () {
       // init $data.
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data.call(this))
       this.inputKeyword = this._kw
       this.updatePage()
     },
     sort () {
       // init $data.
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data.call(this))
       this.inputKeyword = this._kw
       this.updatePage()
     }

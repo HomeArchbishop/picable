@@ -30,7 +30,8 @@ export default {
     currentTt: 'H24',
     currentHiddenPoemTitle: '孔雀东南飞',
     searchKeyword: '',
-    savedScrollPositions: {}
+    savedScrollPositions: {},
+    isFavouriteChanged: false
   },
   getters: {
     currentDiversionUrl (state, getters, rootState) {
@@ -65,6 +66,9 @@ export default {
       }
       state.savedScrollPositions[routeName].x = nextX
       state.savedScrollPositions[routeName].y = nextY
+    },
+    setIsFavouriteChanged (state, { nextIsFavouriteChanged }) {
+      state.isFavouriteChanged = !!nextIsFavouriteChanged
     }
   },
   actions: {}
