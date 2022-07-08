@@ -38,12 +38,10 @@ export default {
       if (this.password === this.$store.state.storage.appLockPassword) {
         this.shiftPage()
       } else {
-        this.$swal.fire({
-          title: '密码错误',
-          icon: 'error'
-        }).then(() => {
-          this.$refs.passwordInput.focus()
+        this.$swal.toast.error.fire({
+          title: '密码错误'
         })
+        this.$refs.passwordInput.focus()
       }
     },
     shiftPage () {

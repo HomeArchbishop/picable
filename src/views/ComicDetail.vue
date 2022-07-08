@@ -276,7 +276,7 @@ export default {
       this.isChoosingPackZip = !this.isChoosingPackZip
     },
     async download () {
-      this.$swal.fire('下载功能暂未公测哦，请静候更新')
+      this.$swal.modal.fire('下载功能暂未公测哦，请静候更新')
       // this.toggleDownload()
       // this.episodesDownloadChosenList.forEach(episodesOrder => {
       //   this.$api.download(this.token, this.comicId, episodesOrder)

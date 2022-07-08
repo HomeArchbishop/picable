@@ -98,16 +98,14 @@ export default {
       if (sendState === 'success') {
         this.myCommentText = ''
         this.isShowSendCard = false
-        this.$swal.fire({
+        this.$swal.toast.info.fire({
           title: '发送成功',
-          text: '评论刷新页面后可见',
-          icon: 'info'
+          text: '评论刷新页面后可见'
         })
       } else {
-        this.$swal.fire({
+        this.$swal.toast.error.fire({
           title: '发送失败',
-          content: '请重新发送',
-          icon: 'error'
+          text: '请重新发送'
         })
       }
     }

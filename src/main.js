@@ -6,7 +6,7 @@ import store from './store'
 import apis from './apis'
 import utils from './assets/utils'
 import Mousetrap from './plugins/mousetrap'
-import swal from './plugins/sweetalert-picable'
+import swal from './plugins/sweetalert-picable/sweetalert-picable'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 
 createApp(App)

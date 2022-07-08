@@ -102,35 +102,31 @@ export default {
       for (const key in this.registerData) {
         if (!this.registerData[key]) {
           if (key === 'gender') {
-            this.$swal.fire({
+            console.log('sss')
+            this.$swal.toast.error.fire({
               title: '还没选择性别诶',
-              text: '不愿意透露的话可以选「保密」',
-              icon: 'warning'
+              text: '不愿意透露的话可以选「保密」'
             })
           } else {
-            this.$swal.fire({
+            this.$swal.toast.error.fire({
               title: '还有字段没有填哦',
-              text: 'BTW\n问题和答案作用暂不明确\n反正就是要填',
-              icon: 'warning'
-            }).then(() => {
-              this.$refs[`${key}Input`].focus()
+              html: '<small style=color:grey;>【注】问题和答案作用暂不明确，反正就是要填</small>'
             })
+            this.$refs[`${key}Input`].focus()
           }
           return
         }
       }
       if (dobToAge(this.registerData.birthday) < 18) {
-        this.$swal.fire({
+        this.$swal.toast.error.fire({
           title: '未满18周岁',
-          text: '成年了再来吧',
-          icon: 'warning'
+          text: '成年了再来吧'
         })
         return
       }
       if (this.registerData.password.length < 8) {
-        this.$swal.fire({
-          title: '密码长度应不小于8',
-          icon: 'warning'
+        this.$swal.toast.error.fire({
+          title: '密码长度应不小于8'
         })
         return
       }
@@ -138,10 +134,13 @@ export default {
         diversionUrl: this.diversionUrl, data: this.registerData
       })
       if (resData.code === 200) {
-        this.$swal.fire({
+        this.$swal.toast.success.fire({
           title: '注册成功',
-          text: '请前往登录',
-          icon: 'info'
+          html: '即将前往登录<span style="margin-left:5px;cursor:pointer;color:#d66e9e">立即前往</span>',
+          timer: 1500,
+          didOpen: (toastDom) => {
+            toastDom.addEventListener('click', this.$swal.clickConfirm)
+          }
         }).then(() => {
           this.$router.push({ name: 'Login' })
         })

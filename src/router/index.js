@@ -1,6 +1,8 @@
 import { isObjectLike } from 'lodash'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import store from '../store'
+import { swal } from '../plugins/sweetalert-picable/sweetalert-picable'
+
 // import { showLoadingPica, hideLoadingPica } from '../assets/utils/controlLoadingPica'
 
 import AppLock from '../views/AppLock'
@@ -263,6 +265,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  swal.close()
   store.commit('runtime/setSavedScrollPosition', {
     routeName: from.name, nextX: scrollX, nextY: scrollY
   })

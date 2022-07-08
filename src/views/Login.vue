@@ -17,8 +17,8 @@
           <input type="password" v-model.trim="password" ref="passwordInput">
         </div>
         <div class="function-div">
+          <input type="submit" value="" style="display: none;">
           <div class="submit-btn" @click="login()">
-            <input type="submit" value="" style="display: none;">
             登录<font-awesome-icon icon="angle-right" />
           </div>
         </div>
@@ -67,9 +67,8 @@ export default {
         })
         if (nextToken === false) {
           this.$utils.hideLoadingPica()
-          this.$swal.fire({
-            title: '账号或密码错误',
-            icon: 'error'
+          this.$swal.toast.error.fire({
+            title: '账号或密码错误'
           })
           return
         }

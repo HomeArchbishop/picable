@@ -1,7 +1,8 @@
+/* eslint-disable quote-props */
 import Header from './header'
 import { resolveURL } from '../utils/resolveURL'
 import axios from 'axios'
-import { Swal } from '../../plugins/sweetalert-picable'
+import { swal } from '../../plugins/sweetalert-picable/sweetalert-picable'
 import { resolveProtocol } from '../utils/resolveProtocol'
 
 // returns parsed json
@@ -48,7 +49,7 @@ const sendRequest = async function ({
     url: subUrl,
     baseURL: resolveProtocol(diversionUrl),
     method,
-    timeout: 6000,
+    timeout: 10000,
     [method === 'POST' && 'data']: body,
     validateStatus (status) {
       return (status >= 200 && status < 300) || excludeStatus.includes(status)
@@ -60,26 +61,30 @@ const sendRequest = async function ({
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      Swal.fire({
+      swal.toast.error.fire({
         title: '哔咔报告错误',
-        html: `错误详情<br>${JSON.stringify(error.response.data)}`,
-        icon: 'error'
+        html: `<details>
+          <summary>错误详情</summary>
+          ${JSON.stringify(error.response.data)}
+          </details>`
       })
     } else if (error.request) {
       // The request was made but no response was received
-      Swal.fire({
-        title: '啊嘞，请求错误诶...',
-        html: `请尝试如下几种解决方案<br>1.检查网络连接<br>2.重启应用<br>3.无法解决时，将此截图反馈给开发者<br>
-          错误详情<br>${JSON.stringify(error.message)}<br>${JSON.stringify(error.request)}`,
-        icon: 'error'
+      swal.toast.error.fire({
+        title: '网络错误，请检查网络和代理',
+        html: `发生未知错误<details>
+          <summary>可能解决方案</summary>
+          <ol><li>检查网络和代理连接</li><li>重启应用</li><li>无法解决时，将错误详情反馈给开发者</li></ol>
+          </details><details><summary>错误详情</summary>
+          ${JSON.stringify(error.message)}<br>${JSON.stringify(error.request)}`
       })
     } else {
       // Something happened in setting up the request that triggered an Error
-      Swal.fire({
-        title: '哔咔被玩坏了...',
-        html: `发生未知错误<br>
-          错误详情<br>${JSON.stringify(error.message)}`,
-        icon: 'error'
+      swal.modal.error.fire({
+        title: '未知错误',
+        html: `<details>
+        <summary>错误详情</summary>
+        ${JSON.stringify(error.message)}</details>`
       })
     }
     return Promise.reject(error)

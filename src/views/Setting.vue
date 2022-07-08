@@ -319,10 +319,11 @@ export default {
     toggleAppLock () {
       this.$store.commit('storage/setHasAppLock', { nextState: !this.hasAppLock })
       if (this.hasAppLock) {
-        this.$swal.fire({
+        this.$swal.modal.info.fire({
           title: '已开启应用锁，请牢记密码',
-          html: `密码：${this.appLockPassword}<br>记不住的话，可不好找回哦～`,
-          icon: 'info'
+          html: `<span style="color:#d66e9e">
+            密码：${this.appLockPassword}
+            </span><br>记不住的话，可不好找回哦～`
         })
       }
     },
@@ -370,9 +371,8 @@ export default {
           const mod = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
           const isMulti = Object.values(this.shortcuts).flat().map(s => s.replace(/mod/gi, mod)).includes(shortcutsStr)
           if (isMulti) {
-            this.$swal.fire({
-              title: '该快捷键已被占用',
-              icon: 'error'
+            this.$swal.toast.error.fire({
+              title: '该快捷键已被占用'
             })
           } else {
             // apply the change

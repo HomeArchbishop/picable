@@ -1,0 +1,38 @@
+@import '../../assets/themes/config';
+@import '../..//assets/themes/@{theme-name}/theme';
+
+.swal2-confirm-picable
+.swal2-deny-picable,
+.swal2-cancel-picable {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.swal2-confirm-picable {
+  background-color: fade(@background-btn-highlight, 70%) !important;
+  &:hover:not([disabled]) {
+    background-color: fade(@background-btn-highlight, 90%) !important;
+  }
+  &:focus {
+    box-shadow: 0 0 0 3px fade(@background-btn-highlight, 50%) !important;
+  }
+}
+
+.swal2-icon-picable {
+  width: 100% !important;
+  height: fit-content !important;
+  border: none !important;
+  border-radius: 0 !important;
+  img {
+    width: 200px;
+  }
+}
+
+.swal2-html-container-picable {
+  // text-align: unset !important;
+  margin: 1em 5em .3em !important;
+}
+
+.swal2-timer-progress-bar-picable {
+  background: fade(@background-btn-highlight, 70%) !important;
+}

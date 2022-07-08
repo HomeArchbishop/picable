@@ -141,36 +141,34 @@ export default {
       if (punchActionRes.status === 'ok') {
         this.personInfo.isPunched = true
         this.personInfo.exp += 10
+        this.$swal.toast.success.fire({
+          title: '签到成功'
+        })
       } else /* punchActionRes.status === 'fail' */ {
-        this.$swal.fire({
+        this.$swal.toast.error.fire({
           title: '哔咔被玩坏了',
           text: '签到失败。请重试...'
         })
       }
       this.personInfo.exp += 10
       if (this.level === preLevel + 1) {
-        this.$swal.fire({
-          title: '恭喜升级',
-          timer: 2000
+        this.$swal.toast.success.fire({
+          title: '恭喜升级'
         })
       }
       // change state.
       this.isRequestingPunch = false
     },
     async logout () {
-      this.$swal.fire({
+      this.$swal.modal.warning.fire({
         title: '确定退出登录吗？',
         text: '您的浏览记录、下载将不会被删除',
-        icon: 'warning',
-        buttons: {
-          cancel: '取消',
-          confirm: {
-            text: '确认登出',
-            value: true
-          }
-        }
-      }).then(val => {
-        if (val) {
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确认登出',
+        reverseButtons: true
+      }).then(result => {
+        if (result.isConfirmed) {
           this.$store.commit('storage/setToken', { nextToken: '' })
           this.$router.replace({ name: 'Diversion' })
         }
