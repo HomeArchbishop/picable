@@ -4,7 +4,8 @@
       <div class="name-card">
         <div class="line">
           <div class="left-part">
-            <radial-progress-bar :diameter="111"
+            <radial-progress
+              :diameter="111"
               :strokeWidth="10"
               :innerStrokeWidth="6"
               :completed-steps="+personInfo.exp % 300 + 1"
@@ -14,7 +15,7 @@
               innerStrokeColor="#00000006"
             >
               <img :src="avatarSrc" :alt="personInfo.name" v-if="avatarSrc" @click="$utils.viewLargeImage(avatarSrc)">
-            </radial-progress-bar>
+            </radial-progress>
             <div class="info">
               <div class="username">{{ personInfo.name }}</div>
               <div class="sub-info">
@@ -79,7 +80,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import dobToAge from 'dob-to-age'
-import RadialProgressBar from 'vue-radial-progress'
+import RadialProgress from 'vue3-radial-progress'
 
 library.add(faMars, faVenus, faRobot, faFeather, faCheck, faQuoteLeft, faQuoteRight, faPen, faGear, faRightFromBracket, faComment)
 
@@ -87,7 +88,7 @@ export default {
   name: 'User',
   components: {
     FontAwesomeIcon,
-    RadialProgressBar
+    RadialProgress
   },
   data () {
     return {
