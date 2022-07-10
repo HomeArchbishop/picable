@@ -6,7 +6,6 @@
 export default {
   name: 'Buffer',
   created () {
-    console.log(window.location.href, this.$store.state.storage.hasAppLock)
     if (!this.$store.state.storage.hasAppLock) {
       this.$router.replace({ name: 'Diversion' })
     } else {
@@ -16,9 +15,10 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-@import '~@/assets/themes/config';
-@import '~@/assets/themes/@{theme-name}/theme';
+<style>
+/* <style lang="less" scoped> */
+/* @import '~@/assets/themes/config'; */
+/* @import '~@/assets/themes/@{theme-name}/theme'; */
 .buffer-container {
   height: 70vh;
 }
