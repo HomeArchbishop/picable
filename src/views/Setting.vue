@@ -37,6 +37,14 @@
           </form>
         </div>
       </div>
+      <div class="info-item">
+        <div>
+          <div class="label">登录</div>
+        </div>
+        <div>
+          <a href="." @click.prevent="logout">登出</a>
+        </div>
+      </div>
     </div>
     <!-- 阅读 -->
     <div>
@@ -348,6 +356,21 @@ export default {
     },
     toggleHomePageModule (key) {
       this.$store.commit('storage/setHomePageModulePart', { key, nextValue: !this.homePageModule.part[key] })
+    },
+    async logout () {
+      this.$swal.modal.warning.fire({
+        title: '确定退出登录吗？',
+        text: '您的浏览记录、下载将不会被删除',
+        showCancelButton: true,
+        cancelButtonText: '取消',
+        confirmButtonText: '确认登出',
+        reverseButtons: true
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.$store.commit('storage/setToken', { nextToken: '' })
+          this.$router.replace({ name: 'Diversion' })
+        }
+      })
     },
     setShortcuts (key) {
       this.shortcutRecordingKey = key
