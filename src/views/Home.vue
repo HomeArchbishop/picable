@@ -1,45 +1,47 @@
 <template>
 <div class="home-container">
   <!-- `partName` is 'normalMei'|'normalMu'|'rankH24'|'rankD7'|'rankD30' -->
-  <div v-for="partName in homePageModulePartList" :key="partName">
-    <div v-if="isRequestingCollections[partName]">
-      <div class="unit-group">
-        <h2 class="loading-unit-group-title">
-          <div class="cover"></div>
-        </h2>
-        <div class="comic-list">
-          <loading-item-small v-for="index in 4" :key="'loading' + partName + index" />
+  <div class="main-center">
+    <div v-for="partName in homePageModulePartList" :key="partName">
+      <div v-if="isRequestingCollections[partName]">
+        <div class="unit-group">
+          <h2 class="loading-unit-group-title">
+            <div class="cover"></div>
+          </h2>
+          <div class="comic-list">
+            <loading-item-small v-for="index in 4" :key="'loading' + partName + index" />
+          </div>
+        </div>
+      </div>
+      <div v-else-if="!isEmpty(collectionsList[partName]) || isRequestingError[partName]">
+        <div class="unit-group">
+          <h2>
+            <span>{{ collectionsList[partName].title }}</span>
+            <router-link :to="{ name: 'Rank' }" custom v-slot="{ navigate }" v-if="partName.startsWith('rank')">
+              <div class="nav-btn" @click="navToRank(navigate, partName)">查看全部</div>
+            </router-link>
+          </h2>
+          <div class="tip-layer" v-if="isRequestingError[partName]">
+            <common-tip-block clickable
+              @click="getList(/^normal(Mu|Mei)$/.test(partName) ? 'normal' : partName)"
+            >重新加载</common-tip-block>
+          </div>
+          <div class="comic-list" v-else-if="collectionsList[partName].comics.length">
+            <item-small v-for="item in collectionsList[partName].comics" :key="collectionsList[partName].title + item._id" :item="item"
+              :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
+            />
+          </div>
+          <div class="tip-layer" v-else-if="/^normal(Mu|Mei)$/.test(partName)">
+            <common-tip-block>哔咔娘还不知道你的喜好哦，先去看点喜欢的本子吧</common-tip-block>
+          </div>
         </div>
       </div>
     </div>
-    <div v-else-if="!isEmpty(collectionsList[partName]) || isRequestingError[partName]">
-      <div class="unit-group">
-        <h2>
-          <span>{{ collectionsList[partName].title }}</span>
-          <router-link :to="{ name: 'Rank' }" custom v-slot="{ navigate }" v-if="partName.startsWith('rank')">
-            <div class="nav-btn" @click="navToRank(navigate, partName)">查看全部</div>
-          </router-link>
-        </h2>
-        <div class="tip-layer" v-if="isRequestingError[partName]">
-          <common-tip-block clickable
-            @click="getList(/^normal(Mu|Mei)$/.test(partName) ? 'normal' : partName)"
-          >重新加载</common-tip-block>
-        </div>
-        <div class="comic-list" v-else-if="collectionsList[partName].comics.length">
-          <item-small v-for="item in collectionsList[partName].comics" :key="collectionsList[partName].title + item._id" :item="item"
-            :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
-          />
-        </div>
-        <div class="tip-layer" v-else-if="/^normal(Mu|Mei)$/.test(partName)">
-          <common-tip-block>哔咔娘还不知道你的喜好哦，先去看点喜欢的本子吧</common-tip-block>
-        </div>
-      </div>
+    <div class="tip-layer" v-if="!homePageModulePartList.length">
+      <common-tip-block>你没有订阅主页模块，请前往<code>「设置」-「主页模块」</code>进行设置</common-tip-block>
     </div>
+    <small class="small-tip" v-else>主页模块支持自定义，请前往<code>「设置」-「主页模块」</code>进行设置</small>
   </div>
-  <div class="tip-layer" v-if="!homePageModulePartList.length">
-    <common-tip-block>你没有订阅主页模块，请前往<code>「设置」-「主页模块」</code>进行设置</common-tip-block>
-  </div>
-  <small class="small-tip" v-else>主页模块支持自定义，请前往<code>「设置」-「主页模块」</code>进行设置</small>
 </div>
 </template>
 
@@ -180,52 +182,62 @@ export default {
 @import '~@/assets/themes/config';
 @import '~@/assets/themes/@{theme-name}/theme';
 .home-container {
-  .unit-group {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 20px;
-    h2 {
+  display: flex;
+  justify-content: center;
+  .main-center {
+    // @media (min-width: 843px) and (max-width: 1200px) {
+    //   margin-left: calc(50vw - 843px / 2);
+    // }
+    // @media (min-width: 1200px) {
+    //   margin-left: calc(1200px / 2 - 843px / 2);
+    // }
+    .unit-group {
       display: flex;
-      align-items: baseline;
-      margin: 0;
-      .nav-btn {
-        font-size: .7em;
-        color: @color-font-default-highlight;
-        margin-left:  1em;
-        cursor: pointer;
-        &:hover {
-          text-decoration: underline;
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 20px;
+      h2 {
+        display: flex;
+        align-items: baseline;
+        margin: 0;
+        .nav-btn {
+          font-size: .7em;
+          color: @color-font-default-highlight;
+          margin-left:  1em;
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
-    }
-    .loading-unit-group-title {
-      width: 8em;
-      background: #eee;
-      padding: 0;
-      .cover {
-        width: 100%;
-        height: 1.4em;
-        animation: loading 5s linear infinite;
-        background-image: linear-gradient(50deg, transparent, transparent, #fafafa 55%, transparent, transparent);
-        background-size: 400% 100%;
-        z-index: 3;
+      .loading-unit-group-title {
+        width: 8em;
+        background: #eee;
+        padding: 0;
+        .cover {
+          width: 100%;
+          height: 1.4em;
+          animation: loading 5s linear infinite;
+          background-image: linear-gradient(50deg, transparent, transparent, #fafafa 55%, transparent, transparent);
+          background-size: 400% 100%;
+          z-index: 3;
+        }
+      }
+      .comic-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
       }
     }
-    .comic-list {
+    .tip-layer {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
     }
-  }
-  .tip-layer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 10px;
-  }
-  .small-tip {
-    color: @color-font-default-sub;
+    .small-tip {
+      color: @color-font-default-sub;
+    }
   }
 }
 @keyframes loading {
