@@ -84,7 +84,7 @@ export default {
           this.$set(this, 'commentInput', '')
           this.$dialog({
             title: '发送成功',
-            content: '评论刷新页面后可见。',
+            content: '重进本页面后可见',
             autoClose: 3000
           })
         } else {

@@ -107,7 +107,7 @@ export default {
           this.isShowSendCard = false
           this.$swal.toast.info.fire({
             title: '发送成功',
-            text: '评论刷新页面后可见'
+            text: '重进本页面后可见'
           })
         } else {
           this.$swal.toast.error.fire({
