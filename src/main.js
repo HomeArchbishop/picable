@@ -10,6 +10,7 @@ import swal from './plugins/sweetalert-picable/sweetalert-picable'
 import compHelper from './plugins/component-helper'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 import tippyPicable from './plugins/tippy-picable'
+import styleUtils from './plugins/style-utils'
 
 const app = createApp(App)
 
@@ -21,6 +22,7 @@ const app = createApp(App)
   .use(swal)
   .use(compHelper)
   .use(tippyPicable)
+  .use(styleUtils)
   .use(VueDOMPurifyHTML)
 
   .mixin({

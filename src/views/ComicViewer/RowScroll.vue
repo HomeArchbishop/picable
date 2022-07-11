@@ -377,6 +377,7 @@ export default {
         position: relative;
         padding-right: 4px;
         .img-layer {
+          display: flex;
           overflow: scroll;
           img {
             height: 76vh;

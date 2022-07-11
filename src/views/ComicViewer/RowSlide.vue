@@ -1,16 +1,11 @@
 <template>
   <div class="display-card row-slide-view">
-    <div class="img-track">
+    <div class="img-track" v-width="imgLayerRect.width * 2" v-height="imgLayerRect.height">
       <ul class="img-container" :class="{ reversed: viewRL === 'rl' }"
-        :style="{ width: `${imgLayerRect.width * 2}px`, height: imgLayerRect.height + 'px' }"
         @wheel="flipingMotion"
       >
         <li v-for="(item, index) in pictureListDocsList" :key="item._id" :id="`pic${index + 1}`" class="img-group"
           v-show="pictureCurrentInSightList.includes(index)"
-          :style="{
-            width: imgLayerRect.width + 'px',
-            height: imgLayerRect.height + 'px'
-          }"
         >
           <div class="img-layer" v-show="pictureLoadingStateMap[item._id]"
             :img-align="(viewRL === 'rl' ^ index % 2 === 0) ? 'right' : 'left'"
@@ -35,10 +30,6 @@
           v-show="pictureCurrentInSightList.includes(pictureListDocsList.length)"
           :class="{ loading: isUpdating }"
           @click="isAll && hasNextEpisodes ? nextEpisodes() : (isAll && backToDetail());(!isUpdating && !isAll && updateNewPicturePage())"
-          :style="{
-            width: imgLayerRect.width + 'px',
-            height: imgLayerRect.height + 'px'
-          }"
         >
           <span v-if="!isUpdating && !isAll">点击加载更多</span>
           <span v-if="isAll && hasNextEpisodes">看到底了 下一章节</span>
@@ -50,7 +41,7 @@
         </div>
       </ul>
     </div>
-    <div class="page-tip" :style="{ width: `${imgLayerRect.width * 2}px` }">
+    <div class="page-tip" v-width="imgLayerRect.width * 2">
       <span>{{ viewRL === 'rl' ? pictureCurrentInSightList.map(n => n + 1).reverse().join('｜') : pictureCurrentInSightList.map(n => n + 1).join('｜') }}</span>
     </div>
     <div class="tool-bar" v-if="pictureListDocsList.length !== 0">
@@ -407,7 +398,8 @@ export default {
       flex-direction: row;
       padding: 0;
       margin: 0;
-      min-width: 100%;
+      width: 100%;
+      height: 100%;
       &.reversed {
         flex-direction: row-reverse;
       }
@@ -416,6 +408,8 @@ export default {
         position: relative;
         padding: 0;
         margin: 0;
+        width: 50%;
+        height: 100%;
 
         .img-layer {
           display: flex;
@@ -423,6 +417,7 @@ export default {
           align-items: center;
           overflow: scroll;
           width: 100%;
+          height: 100%;
           &[img-align = left] {
             justify-content: flex-start;
             padding-left: 2px;
@@ -432,8 +427,9 @@ export default {
             padding-right: 2px;
           }
           img {
-            max-width: 100%;
-            max-height: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
           }
           &::-webkit-scrollbar {
             display: none;
@@ -490,6 +486,8 @@ export default {
         font-size: 2em;
         user-select: none;
         cursor: pointer;
+        width: 50%;
+        height: 100%;
         &.loading {
           cursor: wait;
         }
