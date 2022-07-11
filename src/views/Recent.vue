@@ -2,8 +2,13 @@
   <div class="recent-container">
     <div class="display-card">
       <div v-if="isFoundAny">
-        <div v-for="item in recentComicList.filter(o => o)" :key="item._id">
-          <item-large v-if="item !== 'failed'"
+        <div v-for="(item, index) in recentComicList" :key="'comic-' + index">
+          <loading-item-large v-if="item === 'failed'" failed
+            :comic-id="recentComicIdList[index]"
+            @click="loadOneComicInfo(recentComicIdList[index], index)"
+          />
+          <loading-item-large v-else-if="item === 'waiting'" />
+          <item-large v-else
             :item="item" :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
           />
         </div>
@@ -25,10 +30,11 @@
 <script>
 import ItemLarge from '../components/ItemLarge'
 import CommonTipBlock from '../components/CommonTipBlock'
+import LoadingItemLarge from '../components/LoadingItemLarge.vue'
 
 export default {
   name: 'Recent',
-  components: { ItemLarge, CommonTipBlock },
+  components: { ItemLarge, CommonTipBlock, LoadingItemLarge },
   data () {
     return {
       recentComicIdList: [],
@@ -56,25 +62,27 @@ export default {
         this.isFounAny = false
         this.isUpdating = false
       }
+
+      this.recentComicList.push(...Array.from({ length: 10 }).fill('waiting'))
+
+      const taskStack = []
       for (const index in recentComicOfNextPage) {
         const comicIndexInShowList = 10 * (this.nextPage - 2) + (+index)
-        this.$api.info({
-          diversionUrl: this.diversionUrl, token: this.token, comicId: recentComicOfNextPage[index]
+        taskStack.push(this.loadOneComicInfo(recentComicOfNextPage[index], comicIndexInShowList))
+      }
+      Promise.all(taskStack).then(() => {
+        this.isUpdating = false
+      })
+    },
+    async loadOneComicInfo (comicId, comicIndexInShowList) {
+      this.recentComicList[comicIndexInShowList] = 'waiting'
+      try {
+        const comicInfo = await this.$api.info({
+          diversionUrl: this.diversionUrl, token: this.token, comicId
         })
-          .then(comicInfo => {
-            this.recentComicList[comicIndexInShowList] = comicInfo
-          })
-          .catch(() => {
-            this.recentComicList[comicIndexInShowList] = 'failed'
-          })
-          .finally(() => {
-            if (
-              this.recentComicList.length === 10 * (this.nextPage - 2) + recentComicOfNextPage.length &&
-              this.recentComicList.every(o => o)
-            ) {
-              this.isUpdating = false
-            }
-          })
+        this.recentComicList[comicIndexInShowList] = comicInfo
+      } catch (err) {
+        this.recentComicList[comicIndexInShowList] = 'failed'
       }
     }
   },
