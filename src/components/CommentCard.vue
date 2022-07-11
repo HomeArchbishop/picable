@@ -129,7 +129,7 @@ export default {
       // call api.
       try {
         const commentObj = await this.$api.childrenComments({
-          diversionUrl: this.diversionUrl + '2', token: this.token, commentId: this.item._id, page: this.childrenCommentNextPage
+          diversionUrl: this.diversionUrl, token: this.token, commentId: this.item._id, page: this.childrenCommentNextPage
         })
         this.childrenCommentList.push(...commentObj.docs)
         console.log(commentObj, this.childrenCommentList)
