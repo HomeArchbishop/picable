@@ -3,6 +3,7 @@
     <div class="content-card">
       <div class="tool-bar">
         <div class="tool-title">目录</div>
+        <div v-tippy="leaveShortcut + ' 退出'"><font-awesome-icon icon='question' /></div>
       </div>
       <div class="content-item" v-for="title in hiddenPoemTitles" :key="title" @click="changePoem(title)">
         <div class="content-title" :class="{ actived: poemTitle === title }">{{ title }}</div>
@@ -19,11 +20,17 @@
 <script>
 import MarkdownIt from 'markdown-it'
 import hiddenPoems from '../assets/lib/hiddenPoems'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { mapState } from 'vuex'
 
+library.add(faQuestion)
 const md = new MarkdownIt()
 
 export default {
   name: 'HideSecret',
+  components: { FontAwesomeIcon },
   data () {
     return {
       hiddenPoems,
@@ -31,6 +38,13 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      leaveShortcut: state => {
+        const s = state.storage.shortcuts.routeLeaveHideSecret
+        const modReadable = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'ctrl'
+        return s.map(s => s.replace(/mod/gi, modReadable).replace(/meta/gi, '⌘'))
+      }
+    }),
     poemTitle () {
       return this.$store.state.runtime.currentHiddenPoemTitle
     },

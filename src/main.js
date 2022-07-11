@@ -9,6 +9,7 @@ import Mousetrap from './plugins/mousetrap'
 import swal from './plugins/sweetalert-picable/sweetalert-picable'
 import compHelper from './plugins/component-helper'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
+import tippyPicable from './plugins/tippy-picable'
 
 const app = createApp(App)
 
@@ -19,6 +20,7 @@ const app = createApp(App)
   .use(Mousetrap)
   .use(swal)
   .use(compHelper)
+  .use(tippyPicable)
   .use(VueDOMPurifyHTML)
 
   .mixin({
