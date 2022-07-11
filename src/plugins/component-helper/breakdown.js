@@ -26,7 +26,7 @@ export function breakdown () {
   })
     .catch()
     .then(() => {
-      this.$el.children.forEach(element => {
+      [...this.$el.children].forEach(element => {
         element.style.visibility = 'hidden'
       })
 
@@ -87,7 +87,7 @@ export function breakdown () {
 
       reloadBtnDom.addEventListener('click', () => {
         childrenDom.forEach(el => el.remove())
-        this.$el.children.forEach(el => {
+        ;[...this.$el.children].forEach(el => {
           el.style.visibility = 'unset'
         })
         console.log('sss')
