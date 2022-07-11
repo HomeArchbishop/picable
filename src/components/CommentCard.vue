@@ -105,15 +105,20 @@ export default {
       // change state.
       this.isAskLiked = true
       // pretend to be callback, for a more smooth use.
-      const { likesCount } = this.item
-      this.item.likesCount += this.item.isLiked ? -1 : 1
-      this.item.isLiked = !this.item.isLiked
+      const { likesCount, isLiked } = this.item
+      this.item.likesCount += likesCount ? -1 : 1
+      this.item.isLiked = !isLiked
       // call api.
-      const likeAction = await this.$api.commentLike({
-        diversionUrl: this.diversionUrl, token: this.token, commentId: this.item._id
-      })
-      this.item.isLiked = likeAction === 'like'
-      this.item.likesCount = likesCount + (likeAction === 'like' ? 1 : -1)
+      try {
+        const likeAction = await this.$api.commentLike({
+          diversionUrl: this.diversionUrl, token: this.token, commentId: this.item._id
+        })
+        this.item.isLiked = likeAction === 'like'
+        this.item.likesCount = likesCount + (likeAction === 'like' ? 1 : -1)
+      } catch (err) {
+        this.item.likesCount = likesCount
+        this.item.isLiked = isLiked
+      }
       // change state.
       this.isAskLiked = false
     },
@@ -122,13 +127,15 @@ export default {
       // change state.
       this.isRequestingChildrenComment = true
       // call api.
-      const commentObj = await this.$api.childrenComments({
-        diversionUrl: this.diversionUrl, token: this.token, commentId: this.item._id, page: this.childrenCommentNextPage
-      })
-      this.childrenCommentList.push(...commentObj.docs)
-      console.log(commentObj, this.childrenCommentList)
-      this.isChildrenCommentAll = +commentObj.page === +commentObj.pages
-      this.childrenCommentNextPage = this.childrenCommentNextPage + !this.isChildrenCommentAll
+      try {
+        const commentObj = await this.$api.childrenComments({
+          diversionUrl: this.diversionUrl + '2', token: this.token, commentId: this.item._id, page: this.childrenCommentNextPage
+        })
+        this.childrenCommentList.push(...commentObj.docs)
+        console.log(commentObj, this.childrenCommentList)
+        this.isChildrenCommentAll = +commentObj.page === +commentObj.pages
+        this.childrenCommentNextPage = this.childrenCommentNextPage + !this.isChildrenCommentAll
+      } catch (err) {}
       // change state.
       this.isRequestingChildrenComment = false
     },

@@ -2,9 +2,11 @@
   <div class="recent-container">
     <div class="display-card">
       <div v-if="isFoundAny">
-        <item-large v-for="item in recentComicList.filter(o => o)" :key="item._id"
-          :item="item" :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
-        />
+        <div v-for="item in recentComicList.filter(o => o)" :key="item._id">
+          <item-large v-if="item !== 'failed'"
+            :item="item" :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
+          />
+        </div>
       </div>
       <div class="tip-layer">
         <common-tip-block v-if="isFoundAny && isUpdating" :waiting="true">正在加载</common-tip-block>
@@ -55,18 +57,24 @@ export default {
         this.isUpdating = false
       }
       for (const index in recentComicOfNextPage) {
+        const comicIndexInShowList = 10 * (this.nextPage - 2) + (+index)
         this.$api.info({
           diversionUrl: this.diversionUrl, token: this.token, comicId: recentComicOfNextPage[index]
-        }).then(comicInfo => {
-          const comicIndexInShowList = 10 * (this.nextPage - 2) + (+index)
-          this.recentComicList[comicIndexInShowList] = comicInfo
-          if (
-            this.recentComicList.length === 10 * (this.nextPage - 2) + recentComicOfNextPage.length &&
-            this.recentComicList.every(o => o)
-          ) {
-            this.isUpdating = false
-          }
         })
+          .then(comicInfo => {
+            this.recentComicList[comicIndexInShowList] = comicInfo
+          })
+          .catch(() => {
+            this.recentComicList[comicIndexInShowList] = 'failed'
+          })
+          .finally(() => {
+            if (
+              this.recentComicList.length === 10 * (this.nextPage - 2) + recentComicOfNextPage.length &&
+              this.recentComicList.every(o => o)
+            ) {
+              this.isUpdating = false
+            }
+          })
       }
     }
   },

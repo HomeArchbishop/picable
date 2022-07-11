@@ -119,11 +119,15 @@ export default {
       // change state.
       this.isRequestingPersonInfo = true
       // call api.
-      const personInfo = await this.$api.personInfo({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      this.personInfo = personInfo
-      console.log(personInfo)
+      try {
+        const personInfo = await this.$api.personInfo({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        this.personInfo = personInfo
+        console.log(personInfo)
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
       // change state.
       this.isRequestingPersonInfo = false
     },
@@ -132,30 +136,32 @@ export default {
       // change state.
       this.isRequestingPunch = true
       // call api.
-      const punchActionRes = await this.$api.punch({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      console.log(punchActionRes)
-      // judge.
-      const preLevel = this.level
-      if (punchActionRes.status === 'ok') {
-        this.personInfo.isPunched = true
+      try {
+        const punchActionRes = await this.$api.punch({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        console.log(punchActionRes)
+        // judge.
+        const preLevel = this.level
+        if (punchActionRes.status === 'ok') {
+          this.personInfo.isPunched = true
+          this.personInfo.exp += 10
+          this.$swal.toast.success.fire({
+            title: '签到成功'
+          })
+        } else /* punchActionRes.status === 'fail' */ {
+          this.$swal.toast.error.fire({
+            title: '哔咔被玩坏了',
+            text: '签到失败。请重试...'
+          })
+        }
         this.personInfo.exp += 10
-        this.$swal.toast.success.fire({
-          title: '签到成功'
-        })
-      } else /* punchActionRes.status === 'fail' */ {
-        this.$swal.toast.error.fire({
-          title: '哔咔被玩坏了',
-          text: '签到失败。请重试...'
-        })
-      }
-      this.personInfo.exp += 10
-      if (this.level === preLevel + 1) {
-        this.$swal.toast.success.fire({
-          title: '恭喜升级'
-        })
-      }
+        if (this.level === preLevel + 1) {
+          this.$swal.toast.success.fire({
+            title: '恭喜升级'
+          })
+        }
+      } catch (err) {}
       // change state.
       this.isRequestingPunch = false
     },

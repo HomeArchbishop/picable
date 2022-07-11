@@ -50,28 +50,32 @@ export default {
   },
   methods: {
     async getCategoryList () {
-      const categoryList = await this.$api.categories({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      this.$store.commit('runtime/setCategoryList', { nextCategoryList: categoryList })
-      console.log(this.categoryList)
-      // set values in each data.
-      this.categoryList.forEach(item => {
-        if (item.isWeb) {
-          if (item.title !== '嗶咔鍋貼') {
-            this.webList.push(item)
-          } else {
-            item.toName = 'PostWeb'
-            this.appList.push(item)
+      try {
+        const categoryList = await this.$api.categories({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        this.$store.commit('runtime/setCategoryList', { nextCategoryList: categoryList })
+        console.log(this.categoryList)
+        // set values in each data.
+        this.categoryList.forEach(item => {
+          if (item.isWeb) {
+            if (item.title !== '嗶咔鍋貼') {
+              this.webList.push(item)
+            } else {
+              item.toName = 'PostWeb'
+              this.appList.push(item)
+            }
+            return
           }
-          return
-        }
-        if (item.isApp) {
-          this.appList.push(item)
-          return
-        }
-        this.cateList.push(item)
-      })
+          if (item.isApp) {
+            this.appList.push(item)
+            return
+          }
+          this.cateList.push(item)
+        })
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
     }
   },
   created () {

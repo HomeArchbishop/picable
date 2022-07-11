@@ -61,19 +61,28 @@ export default {
       // change state.
       this.isUpdating = true
       // call api to search.
+      const [formerCurrentPage, formerToPageInput] = [this.nextPage, this.nextPage]
       this.currentPage = this.nextPage
       this.toPageInput = this.nextPage
-      const postInfo = await this.$api.postInfo({ token: this.token, page: this.nextPage })
-      this.totalPage = Math.ceil(postInfo.total / 10)
-      this.postsList = postInfo.posts
-      console.log(postInfo)
-      if (this.nextPage === this.totalPage) {
-        this.isAll = true
+      try {
+        const postInfo = await this.$api.postInfo({ token: this.token, page: this.nextPage })
+        this.totalPage = Math.ceil(postInfo.total / 10)
+        this.postsList = postInfo.posts
+        console.log(postInfo)
+        if (this.nextPage === this.totalPage) {
+          this.isAll = true
+        }
+        if (!postInfo.posts.length) {
+          this.isFoundAny = false
+        }
+        this.nextPage++
+      } catch (err) {
+        this.currentPage = formerCurrentPage
+        this.toPageInput = formerToPageInput
+        if (!this.postsList.length) {
+          this.$compHelper.breakdown.call(this)
+        }
       }
-      if (!postInfo.posts.length) {
-        this.isFoundAny = false
-      }
-      this.nextPage++
       // change state.
       this.isUpdating = false
     },

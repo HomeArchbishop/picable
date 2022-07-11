@@ -93,7 +93,7 @@
         <common-tip-block v-if="!isEpisodesListEnd & !isRequestingEpisodes"
           :clickable="true" @click="getEpisodesList()"
         >
-          加载更多
+          {{ episodesList.length ? '加载更多' : '重新加载' }}
         </common-tip-block>
       </div>
     </div>
@@ -135,12 +135,24 @@
       </div>
     </div>
     -->
-    <div class="recommend-card" v-if="recommendComicList.length && !isRequestingDetail">
+    <div class="recommend-card"
+      v-if="
+        (
+          (!isRecommendComicListRequestError && recommendComicList.length) ||
+          isRecommendComicListRequestError
+        ) && !isRequestingDetail
+      "
+    >
       <h2>看了這本子的人也在看</h2>
-      <div class="comic-list">
+      <div class="comic-list" v-if="!isRecommendComicListRequestError">
         <item-small v-for="item in recommendComicList" :key="item._id" :item="item"
           :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
         />
+      </div>
+      <div class="state-line" v-if="isRecommendComicListRequestError">
+        <common-tip-block :clickable="true" @click="getRecommendComic()">
+          重新加载
+        </common-tip-block>
       </div>
     </div>
   </div>
@@ -175,6 +187,7 @@ export default {
       favouriteAuthorList: [],
       favouriteChineseList: [],
       recommendComicList: [],
+      isRecommendComicListRequestError: false,
       isFavourite: false,
       isLiked: false,
       isRequestingDetail: true,
@@ -205,26 +218,32 @@ export default {
       // change state.
       this.isRequestingDetail = true
       // call api.
-      const comicDetailObject = await this.$api.info({
-        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
-      })
-      this.comicDetailObject = comicDetailObject
-      this.isFavourite = this.comicDetailObject.isFavourite
-      this.isLiked = this.comicDetailObject.isLiked
-      this.isDescriptionPreview = String(this.comicDetailObject.description).length > 30
-      console.log('comicDetailObject', comicDetailObject)
+      try {
+        const comicDetailObject = await this.$api.info({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
+        })
+        this.comicDetailObject = comicDetailObject
+        this.isFavourite = this.comicDetailObject.isFavourite
+        this.isLiked = this.comicDetailObject.isLiked
+        this.isDescriptionPreview = String(this.comicDetailObject.description).length > 30
+        console.log('comicDetailObject', comicDetailObject)
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
       // change state.
       this.isRequestingDetail = false
     },
     async getEpisodesList () {
       this.isRequestingEpisodes = true
-      const episodesObject = await this.$api.episodes({
-        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page: this.nextEpisodesPage
-      })
-      this.episodesList.push(...(episodesObject.docs || []))
-      this.isEpisodesListEnd = episodesObject.page === episodesObject.pages
-      this.nextEpisodesPage += !this.isEpisodesListEnd
-      console.log(this.episodesList)
+      try {
+        const episodesObject = await this.$api.episodes({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page: this.nextEpisodesPage
+        })
+        this.episodesList.push(...(episodesObject.docs || []))
+        this.isEpisodesListEnd = episodesObject.page === episodesObject.pages
+        this.nextEpisodesPage += !this.isEpisodesListEnd
+        console.log(this.episodesList)
+      } catch (err) {}
       this.isRequestingEpisodes = false
     },
     async toggleFavourite () {
@@ -232,11 +251,17 @@ export default {
       // change state.
       this.isRequestingFavourite = true
       // call api.
-      const favouriteAction = await this.$api.favourite({
-        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
-      })
-      this.isFavourite = favouriteAction === 'favourite'
-      this.$store.commit('runtime/setIsFavouriteChanged', { nextIsFavouriteChanged: true })
+      const formerIsFavourite = this.isFavourite
+      this.isFavourite = !formerIsFavourite
+      try {
+        const favouriteAction = await this.$api.favourite({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
+        })
+        this.isFavourite = favouriteAction === 'favourite'
+        this.$store.commit('runtime/setIsFavouriteChanged', { nextIsFavouriteChanged: true })
+      } catch (err) {
+        this.isFavourite = formerIsFavourite
+      }
       // change state.
       this.isRequestingFavourite = false
     },
@@ -245,18 +270,32 @@ export default {
       // change state.
       this.isRequestingLike = true
       // call api.
-      const likeAction = await this.$api.like({
-        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
-      })
-      this.isLiked = likeAction === 'like'
-      this.comicDetailObject.likesCount = this.comicDetailObject.likesCount + (likeAction === 'like' ? 1 : -1)
+      const formerIsLiked = this.isLiked
+      const formerLikesCount = this.comicDetailObject.likesCount
+      this.isLiked = !formerIsLiked
+      this.comicDetailObject.likesCount = formerLikesCount + (formerIsLiked ? -1 : 1)
+      try {
+        const likeAction = await this.$api.like({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
+        })
+        this.isLiked = likeAction === 'like'
+        this.comicDetailObject.likesCount = formerLikesCount + (likeAction === 'like' ? 1 : -1)
+      } catch (err) {
+        this.isLiked = formerIsLiked
+        this.comicDetailObject.likesCount = formerLikesCount
+      }
       // change state.
       this.isRequestingLike = false
     },
     async getRecommendComic () {
-      this.recommendComicList = (await this.$api.recommend({
-        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
-      })).comics
+      try {
+        this.recommendComicList = (await this.$api.recommend({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId
+        })).comics
+        this.isRecommendComicListRequestError = false
+      } catch (err) {
+        this.isRecommendComicListRequestError = true
+      }
     },
     async toggleDownload () {
       this.isChoosingPackZip && await this.togglePack()
@@ -302,18 +341,26 @@ export default {
       this.isDescriptionPreview = !this.isDescriptionPreview
     },
     async toggleFavouriteAuthor () {
-      await this.$api.favouriteAuthor(this.comicDetailObject.author)
-      this.getFavouriteAuthorList()
+      try {
+        await this.$api.favouriteAuthor(this.comicDetailObject.author)
+        this.getFavouriteAuthorList()
+      } catch (err) {}
     },
     async getFavouriteAuthorList () {
-      this.favouriteAuthorList = await this.$api.favouriteAuthorList()
+      try {
+        this.favouriteAuthorList = await this.$api.favouriteAuthorList()
+      } catch (err) {}
     },
     async toggleFavouriteChinese () {
-      await this.$api.favouriteChinese(this.comicDetailObject.chineseTeam)
-      this.getFavouriteChineseList()
+      try {
+        await this.$api.favouriteChinese(this.comicDetailObject.chineseTeam)
+        this.getFavouriteChineseList()
+      } catch (err) {}
     },
     async getFavouriteChineseList () {
-      this.favouriteChineseList = await this.$api.favouriteChineseList()
+      try {
+        this.favouriteChineseList = await this.$api.favouriteChineseList()
+      } catch (err) {}
     }
   },
   watch: {

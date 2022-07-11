@@ -7,9 +7,10 @@ import apis from './apis'
 import utils from './assets/utils'
 import Mousetrap from './plugins/mousetrap'
 import swal from './plugins/sweetalert-picable/sweetalert-picable'
+import compHelper from './plugins/component-helper'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 
-createApp(App)
+const app = createApp(App)
 
   .use(store)
   .use(router)
@@ -17,6 +18,7 @@ createApp(App)
   .use(utils)
   .use(Mousetrap)
   .use(swal)
+  .use(compHelper)
   .use(VueDOMPurifyHTML)
 
   .mixin({
@@ -30,4 +32,6 @@ createApp(App)
     }
   })
 
-  .mount('#app')
+router.isReady().then(() => {
+  app.mount('#app')
+})

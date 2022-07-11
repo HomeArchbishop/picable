@@ -57,9 +57,8 @@ export default {
         } else {
           this.$router.replace({ name: 'Login' })
         }
+      } catch (err) {} finally {
         // hide loading-pica animation
-        this.$utils.hideLoadingPica()
-      } catch {
         this.$utils.hideLoadingPica()
       }
     }

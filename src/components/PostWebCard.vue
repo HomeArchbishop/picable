@@ -103,13 +103,15 @@ export default {
       // change state.
       this.isRequestingComment = true
       // call api.
-      const commentObj = await this.$api.postWebComments({
-        token: this.token, postId: this.item._id, page: this.commentNextPage
-      })
-      this.commentList.push(...commentObj.comments)
-      console.log(commentObj)
-      this.isCommentAll = +commentObj.total < +commentObj.limit * this.commentNextPage
-      this.commentNextPage += 1
+      try {
+        const commentObj = await this.$api.postWebComments({
+          token: this.token, postId: this.item._id + 'd', page: this.commentNextPage
+        })
+        this.commentList.push(...commentObj.comments)
+        console.log(commentObj)
+        this.isCommentAll = +commentObj.total < +commentObj.limit * this.commentNextPage
+        this.commentNextPage += 1
+      } catch (err) {}
       // change state.
       this.isRequestingComment = false
     },

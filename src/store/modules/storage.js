@@ -2,7 +2,7 @@ export default {
   namespaced: true,
   state: {
     token: 'e',
-    diversionIndex: 2,
+    diversionIndex: 0,
     blurOutOfFocus: false,
     hasAppLock: false,
     appLockPassword: '123',

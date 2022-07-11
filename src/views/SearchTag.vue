@@ -15,13 +15,14 @@
         />
       </div>
       <div class="tip-layer">
-        <common-tip-block v-if="isFoundAny && isSearching" :waiting="true">正在加载</common-tip-block>
-        <common-tip-block v-if="!isFoundAny">什么都没有</common-tip-block>
-        <common-tip-block v-if="isFoundAny && isAll">没有更多了</common-tip-block>
-        <common-tip-block v-if="searchResultList.length && !isAll && !isSearching"
-          :clickable="true" @click="updatePage()"
-        >
-          加载更多
+        <common-tip-block v-if="isSearching" waiting>正在加载</common-tip-block>
+        <common-tip-block v-else-if="!isFoundAny">什么都没有</common-tip-block>
+        <common-tip-block v-else-if="isAll">没有更多了</common-tip-block>
+        <common-tip-block v-else-if="searchResultList.length" clickable @click="updatePage()">
+          {{ isError ? '重试' : '加载更多' }}
+        </common-tip-block>
+        <common-tip-block v-else clickable @click="updatePage()">
+          重新加载
         </common-tip-block>
       </div>
     </div>
@@ -44,7 +45,8 @@ export default {
       nextPage: 1,
       isAll: false,
       isFoundAny: true,
-      isSearching: false
+      isSearching: false,
+      isError: false
     }
   },
   computed: {
@@ -59,27 +61,32 @@ export default {
       // change state.
       this.isSearching = true
       // call api to search.
-      const searchResultInfo = await this.$api.searchTag({
-        diversionUrl: this.diversionUrl,
-        token: this.token,
-        tag: this.t,
-        page: this.nextPage,
-        sort: this.sort
-      })
-      console.log(searchResultInfo.docs)
-      this.searchResultList.push(...searchResultInfo.docs)
+      try {
+        const searchResultInfo = await this.$api.searchTag({
+          diversionUrl: this.diversionUrl,
+          token: this.token,
+          tag: this.t,
+          page: this.nextPage,
+          sort: this.sort
+        })
+        this.isError = false
+        console.log(searchResultInfo.docs)
+        this.searchResultList.push(...searchResultInfo.docs)
+        // judge if empty.
+        if (!searchResultInfo.total) {
+          this.isFoundAny = false
+        }
+        // judge if is all, if not, then pageCount++.
+        if (+searchResultInfo.page === +searchResultInfo.pages) {
+          this.isAll = true
+        } else {
+          this.nextPage = this.nextPage + 1
+        }
+      } catch (err) {
+        this.isError = true
+      }
       // change state.
       this.isSearching = false
-      // judge if empty.
-      if (!searchResultInfo.total) {
-        this.isFoundAny = false
-      }
-      // judge if is all, if not, then pageCount++.
-      if (+searchResultInfo.page === +searchResultInfo.pages) {
-        this.isAll = true
-      } else {
-        this.nextPage = this.nextPage + 1
-      }
     },
     async changeSort (sortCode) {
       if (this.sort === sortCode) {

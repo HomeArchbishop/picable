@@ -1,4 +1,4 @@
-import { sendGet, sendPost, sendPut } from './https/request'
+import { sendGet, sendPost, sendPut } from './xhr-pica-api/request'
 import axios from 'axios'
 import extraCategoriesList from '../configs/extraCategories'
 import configs from '../configs'

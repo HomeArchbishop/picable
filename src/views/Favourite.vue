@@ -125,18 +125,24 @@ export default {
       // change states.
       this.isUpdating = true
       // call api to update.
-      const myFavouriteListObject = await this.$api.myFavourite({
-        diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
-      })
-      this.favouriteComicList.push(...myFavouriteListObject.docs)
-      this.favouriteComicTotalCnt = myFavouriteListObject.total
-      if (myFavouriteListObject.page === myFavouriteListObject.pages) {
-        this.isAll = true
-      } else {
-        this.nextPage += 1
-      }
-      if (!myFavouriteListObject.pages) {
-        this.isFounAny = false
+      try {
+        const myFavouriteListObject = await this.$api.myFavourite({
+          diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
+        })
+        this.favouriteComicList.push(...myFavouriteListObject.docs)
+        this.favouriteComicTotalCnt = myFavouriteListObject.total
+        if (myFavouriteListObject.page === myFavouriteListObject.pages) {
+          this.isAll = true
+        } else {
+          this.nextPage += 1
+        }
+        if (!myFavouriteListObject.pages) {
+          this.isFounAny = false
+        }
+      } catch (err) {
+        if (!this.favouriteComicList.length) {
+          this.$compHelper.breakdown.call(this)
+        }
       }
       // change states.
       this.isUpdating = false
@@ -146,8 +152,10 @@ export default {
       // change states.
       this.isUpdatingAuthor = true
       // call api to update.
-      this.favouriteAuthorList = await this.$api.favouriteAuthorList()
-      this.isFoundAnyAuthor = !!this.favouriteAuthorList.length
+      try {
+        this.favouriteAuthorList = await this.$api.favouriteAuthorList()
+        this.isFoundAnyAuthor = !!this.favouriteAuthorList.length
+      } catch (err) {}
       // change states.
       this.isUpdatingAuthor = false
     },
@@ -156,8 +164,10 @@ export default {
       // change states.
       this.isUpdatingChinese = true
       // call api to update.
-      this.favouriteChineseList = await this.$api.favouriteChineseList()
-      this.isFoundAnyChinese = !!this.favouriteChineseList.length
+      try {
+        this.favouriteChineseList = await this.$api.favouriteChineseList()
+        this.isFoundAnyChinese = !!this.favouriteChineseList.length
+      } catch (err) {}
       // change states.
       this.isUpdatingChinese = false
     },

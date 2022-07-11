@@ -179,7 +179,11 @@ export default {
       console.log('ws closed')
     },
     async initRoom () {
-      this.userInfo = await this.$api.personInfo({ diversionUrl: this.diversionUrl, token: this.token })
+      try {
+        this.userInfo = await this.$api.personInfo({ diversionUrl: this.diversionUrl, token: this.token })
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
       this.chatRoomWS.send(`42${JSON.stringify(['init', this.userInfo])}`)
     },
     async textInputKeyDown (e) {

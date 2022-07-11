@@ -69,11 +69,13 @@ export default {
       // change state.
       this.isRequestingPersonInfo = true
       // call api.
-      const personInfo = await this.$api.personInfo({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      this.personInfo = personInfo
-      console.log(personInfo)
+      try {
+        const personInfo = await this.$api.personInfo({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        this.personInfo = personInfo
+        console.log(personInfo)
+      } catch (err) {}
       // change state.
       this.isRequestingPersonInfo = false
     },
@@ -82,15 +84,21 @@ export default {
       // change state.
       this.isUpdating = true
       // call api to search.
-      const resultInfo = await this.$api.myComments({
-        diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
-      })
-      const commentsInfo = resultInfo.comments
-      this.commentsList.push(...commentsInfo.docs)
-      console.log(resultInfo)
-      this.isAll = +commentsInfo.page === +commentsInfo.pages
-      this.nextPage += !this.isAll
-      this.isFoundAny = !!commentsInfo.pages
+      try {
+        const resultInfo = await this.$api.myComments({
+          diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
+        })
+        const commentsInfo = resultInfo.comments
+        this.commentsList.push(...commentsInfo.docs)
+        console.log(resultInfo)
+        this.isAll = +commentsInfo.page === +commentsInfo.pages
+        this.nextPage += !this.isAll
+        this.isFoundAny = !!commentsInfo.pages
+      } catch (err) {
+        if (!this.commentsList.length) {
+          this.$compHelper.breakdown.call(this)
+        }
+      }
       // change state.
       this.isUpdating = false
     }

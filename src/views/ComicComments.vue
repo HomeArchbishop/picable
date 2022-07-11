@@ -64,19 +64,25 @@ export default {
       // change state.
       this.isUpdating = true
       // call api to search.
-      const resultInfo = await this.$api.comments({
-        diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page: this.nextPage
-      })
-      const commentsInfo = resultInfo.comments
-      this.commentsList.push(...commentsInfo.docs.filter(item => !item.isTop))
-      if (+commentsInfo.page === 1) {
-        const topCommentsList = resultInfo.topComments
-        this.topCommentsList.push(...topCommentsList)
+      try {
+        const resultInfo = await this.$api.comments({
+          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page: this.nextPage
+        })
+        const commentsInfo = resultInfo.comments
+        this.commentsList.push(...commentsInfo.docs.filter(item => !item.isTop))
+        if (+commentsInfo.page === 1) {
+          const topCommentsList = resultInfo.topComments
+          this.topCommentsList.push(...topCommentsList)
+        }
+        console.log(resultInfo)
+        this.isAll = +commentsInfo.page === +commentsInfo.pages
+        this.nextPage += !this.isAll
+        this.isFoundAny = !!commentsInfo.pages
+      } catch (err) {
+        if (!this.commentsList.length) {
+          this.$compHelper.breakdown.call(this)
+        }
       }
-      console.log(resultInfo)
-      this.isAll = +commentsInfo.page === +commentsInfo.pages
-      this.nextPage += !this.isAll
-      this.isFoundAny = !!commentsInfo.pages
       // change state.
       this.isUpdating = false
     },
@@ -87,27 +93,29 @@ export default {
       if (!this.myCommentText) { return }
       // call api.
       // - tip: sendState: 'success' | string
-      const sendState = await this.$api.sendComments({
-        diversionUrl: this.diversionUrl,
-        token: this.token,
-        comicId: this.comicId,
-        content: this.myCommentText
-      })
-      console.log(sendState)
-      // judge state.
-      if (sendState === 'success') {
-        this.myCommentText = ''
-        this.isShowSendCard = false
-        this.$swal.toast.info.fire({
-          title: '发送成功',
-          text: '评论刷新页面后可见'
+      try {
+        const sendState = await this.$api.sendComments({
+          diversionUrl: this.diversionUrl,
+          token: this.token,
+          comicId: this.comicId,
+          content: this.myCommentText
         })
-      } else {
-        this.$swal.toast.error.fire({
-          title: '发送失败',
-          text: '请重新发送'
-        })
-      }
+        console.log(sendState)
+        // judge state.
+        if (sendState === 'success') {
+          this.myCommentText = ''
+          this.isShowSendCard = false
+          this.$swal.toast.info.fire({
+            title: '发送成功',
+            text: '评论刷新页面后可见'
+          })
+        } else {
+          this.$swal.toast.error.fire({
+            title: '发送失败',
+            text: '请重新发送'
+          })
+        }
+      } catch (err) {}
     }
   },
   created () {

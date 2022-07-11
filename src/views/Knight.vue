@@ -65,11 +65,15 @@ export default {
       // change state.
       this.isRequesting = true
       // call api to search.
-      const rankList = await this.$api.knightRank({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      this.rankList = [...rankList]
-      console.log([...rankList])
+      try {
+        const rankList = await this.$api.knightRank({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        this.rankList = [...rankList]
+        console.log([...rankList])
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
       // change state.
       this.isRequesting = false
     },

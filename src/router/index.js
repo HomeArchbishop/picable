@@ -264,7 +264,7 @@ const router = createRouter({
   }
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   swal.close()
   store.commit('runtime/setSavedScrollPosition', {
     routeName: from.name, nextX: scrollX, nextY: scrollY

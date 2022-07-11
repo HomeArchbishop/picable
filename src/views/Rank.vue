@@ -15,10 +15,10 @@
       </div>
       <div class="tip-layer">
         <common-tip-block v-if="isSearching" :waiting="true">正在加载</common-tip-block>
-        <common-tip-block v-if="rankList.length && !isSearching"
+        <common-tip-block v-else
           :clickable="true" @click="updatePage()"
         >
-          刷新
+          {{ isError ? '重新加载' : '刷新' }}
         </common-tip-block>
       </div>
     </div>
@@ -37,7 +37,8 @@ export default {
       H24List: [],
       D7List: [],
       D30List: [],
-      isSearching: false
+      isSearching: false,
+      isError: false
     }
   },
   computed: {
@@ -54,11 +55,16 @@ export default {
       // change state.
       this.isSearching = true
       // call api to search.
-      const rankList = await this.$api.rank({
-        diversionUrl: this.diversionUrl, token: this.token, tt: this.tt
-      })
-      console.log(rankList)
-      this[`${this.tt}List`] = [...rankList]
+      try {
+        const rankList = await this.$api.rank({
+          diversionUrl: this.diversionUrl, token: this.token, tt: this.tt
+        })
+        this.isError = false
+        console.log(rankList)
+        this[`${this.tt}List`] = [...rankList]
+      } catch (err) {
+        this.isError = true
+      }
       // change state.
       this.isSearching = false
     },
@@ -67,7 +73,8 @@ export default {
     }
   },
   watch: {
-    tt: async function () {
+    async tt () {
+      this.isError = false
       if (!this[`${this.tt}List`].length) {
         await this.updatePage()
       }

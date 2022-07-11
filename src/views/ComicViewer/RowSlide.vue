@@ -112,7 +112,8 @@ export default {
       imgLayerRect: {},
       isAutoFlip: false,
       autoFlipS: this.$store.state.storage.imgViewerSettings.autoFlipMs / 1000,
-      autoFlipTimer: ''
+      autoFlipTimer: '',
+      isPreventFilping: true
     }
   },
   computed: {
@@ -141,33 +142,41 @@ export default {
       // change states.
       this.isUpdating = true
       // call api to update
-      const pictureObjectResults = await this.$api.picture({
-        diversionUrl: this.diversionUrl,
-        token: this.token,
-        comicId: this.comicId,
-        epsOrder: this.epsOrder,
-        page: this.nextPage
-      })
-      console.log(pictureObjectResults)
-      this.pictureListDocsList.push(...pictureObjectResults.pages.docs)
-      this.pictureLoadingStateMap = {
-        ...this.pictureLoadingStateMap,
-        ...pictureObjectResults.pages.docs.reduce((p, c) => {
-          p[c._id] = false
-          return p
-        }, {})
-      }
-      this.pictureLazyLoadHappenedMap = {
-        ...this.pictureLazyLoadHappenedMap,
-        ...pictureObjectResults.pages.docs.slice(0, 3).reduce((p, c) => {
-          p[c._id] = true
-          return p
-        }, {})
-      }
-      if (pictureObjectResults.pages.page === pictureObjectResults.pages.pages) {
-        this.isAll = true
-      } else {
-        this.nextPage += 1
+      try {
+        const pictureObjectResults = await this.$api.picture({
+          diversionUrl: this.diversionUrl,
+          token: this.token,
+          comicId: this.comicId,
+          epsOrder: this.epsOrder,
+          page: this.nextPage
+        })
+        this.isPreventFilping = false
+        console.log(pictureObjectResults)
+        this.pictureListDocsList.push(...pictureObjectResults.pages.docs)
+        this.pictureLoadingStateMap = {
+          ...this.pictureLoadingStateMap,
+          ...pictureObjectResults.pages.docs.reduce((p, c) => {
+            p[c._id] = false
+            return p
+          }, {})
+        }
+        this.pictureLazyLoadHappenedMap = {
+          ...this.pictureLazyLoadHappenedMap,
+          ...pictureObjectResults.pages.docs.slice(0, 3).reduce((p, c) => {
+            p[c._id] = true
+            return p
+          }, {})
+        }
+        if (pictureObjectResults.pages.page === pictureObjectResults.pages.pages) {
+          this.isAll = true
+        } else {
+          this.nextPage += 1
+        }
+      } catch (err) {
+        if (!this.pictureListDocsList.length) {
+          this.isPreventFilping = true
+          this.$compHelper.breakdown.call(this)
+        }
       }
       // change states.
       this.isUpdating = false
@@ -206,6 +215,7 @@ export default {
       this.scrollToPic(this.pictureListDocsList.length)
     },
     async scrollToPic (num) {
+      if (this.isPreventFilping) { return }
       // every page fliping will come to this function
       console.log('scrollToPic', num)
       const startNum = ~~((num - 1) / 2) * 2 + 1

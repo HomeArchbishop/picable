@@ -48,19 +48,25 @@ export default {
       // change state.
       this.isUpdating = true
       // call api to search.
-      const resultInfo = await this.$api.gameComments({
-        diversionUrl: this.diversionUrl, token: this.token, gameId: this.gameId, page: this.nextPage
-      })
-      const commentsInfo = resultInfo.comments
-      this.commentsList.push(...commentsInfo.docs.filter(item => !item.isTop))
-      if (+commentsInfo.page === 1) {
-        const topCommentsList = resultInfo.topComments
-        this.topCommentsList.push(...topCommentsList)
+      try {
+        const resultInfo = await this.$api.gameComments({
+          diversionUrl: this.diversionUrl, token: this.token, gameId: this.gameId, page: this.nextPage
+        })
+        const commentsInfo = resultInfo.comments
+        this.commentsList.push(...commentsInfo.docs.filter(item => !item.isTop))
+        if (+commentsInfo.page === 1) {
+          const topCommentsList = resultInfo.topComments
+          this.topCommentsList.push(...topCommentsList)
+        }
+        console.log(resultInfo)
+        this.isAll = +commentsInfo.page === +commentsInfo.pages
+        this.nextPage += !this.isAll
+        this.isFoundAny = !!commentsInfo.pages
+      } catch (err) {
+        if (!this.commentsList.length) {
+          this.$compHelper.breakdown.call(this)
+        }
       }
-      console.log(resultInfo)
-      this.isAll = +commentsInfo.page === +commentsInfo.pages
-      this.nextPage += !this.isAll
-      this.isFoundAny = !!commentsInfo.pages
       // change state.
       this.isUpdating = false
     },
@@ -69,30 +75,32 @@ export default {
         this.$refs.commentInput.focus()
         return
       }
-      // call api.
-      // - tip: sendState: 'success' | string
-      const sendState = await this.$api.sendComments(this.token, this.gameId, this.commentInput)
-      // judge state.
-      if (sendState === 'success') {
-        this.$set(this, 'commentInput', '')
-        this.$dialog({
-          title: '发送成功',
-          content: '评论刷新页面后可见。',
-          autoClose: 3000
-        })
-      } else {
-        const _this = this
-        this.$dialog({
-          title: '发送失败',
-          content: '请重新发送。',
-          confirm () {
-            _this.$refs.commentInput.focus()
-          },
-          close () {
-            _this.$refs.commentInput.focus()
-          }
-        })
-      }
+      try {
+        // call api.
+        // - tip: sendState: 'success' | string
+        const sendState = await this.$api.sendComments(this.token, this.gameId, this.commentInput)
+        // judge state.
+        if (sendState === 'success') {
+          this.$set(this, 'commentInput', '')
+          this.$dialog({
+            title: '发送成功',
+            content: '评论刷新页面后可见。',
+            autoClose: 3000
+          })
+        } else {
+          const _this = this
+          this.$dialog({
+            title: '发送失败',
+            content: '请重新发送。',
+            confirm () {
+              _this.$refs.commentInput.focus()
+            },
+            close () {
+              _this.$refs.commentInput.focus()
+            }
+          })
+        }
+      } catch (err) {}
     }
   },
   created () {

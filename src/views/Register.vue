@@ -130,21 +130,23 @@ export default {
         })
         return
       }
-      const resData = await this.$api.register({
-        diversionUrl: this.diversionUrl, data: this.registerData
-      })
-      if (resData.code === 200) {
-        this.$swal.toast.success.fire({
-          title: '注册成功',
-          html: '即将前往登录<span style="margin-left:5px;cursor:pointer;color:#d66e9e">立即前往</span>',
-          timer: 1500,
-          didOpen: (toastDom) => {
-            toastDom.addEventListener('click', this.$swal.clickConfirm)
-          }
-        }).then(() => {
-          this.$router.push({ name: 'Login' })
+      try {
+        const resData = await this.$api.register({
+          diversionUrl: this.diversionUrl, data: this.registerData
         })
-      }
+        if (resData.code === 200) {
+          this.$swal.toast.success.fire({
+            title: '注册成功',
+            html: '即将前往登录<span style="margin-left:5px;cursor:pointer;color:#d66e9e">立即前往</span>',
+            timer: 1500,
+            didOpen: (toastDom) => {
+              toastDom.addEventListener('click', this.$swal.clickConfirm)
+            }
+          }).then(() => {
+            this.$router.push({ name: 'Login' })
+          })
+        }
+      } catch (err) {}
     }
   }
 }

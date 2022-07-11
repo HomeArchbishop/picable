@@ -34,11 +34,15 @@ export default {
       // change states.
       this.isUpdating = true
       // call api to update.
-      const chatRoomList = await this.$api.chatRoomList({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      this.chatList = chatRoomList.chatList
-      console.log(chatRoomList)
+      try {
+        const chatRoomList = await this.$api.chatRoomList({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        this.chatList = chatRoomList.chatList
+        console.log(chatRoomList)
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
       // change states.
       this.isUpdating = false
     }

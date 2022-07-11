@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-    <div v-else-if="!isEmpty(collectionsList[partName])">
+    <div v-else-if="!isEmpty(collectionsList[partName]) || isRequestingError[partName]">
       <div class="unit-group">
         <h2>
           <span>{{ collectionsList[partName].title }}</span>
@@ -20,7 +20,12 @@
             <div class="nav-btn" @click="navToRank(navigate, partName)">查看全部</div>
           </router-link>
         </h2>
-        <div class="comic-list" v-if="collectionsList[partName].comics.length">
+        <div class="tip-layer" v-if="isRequestingError[partName]">
+          <common-tip-block clickable
+            @click="getList(/^normal(Mu|Mei)$/.test(partName) ? 'normal' : partName)"
+          >重新加载</common-tip-block>
+        </div>
+        <div class="comic-list" v-else-if="collectionsList[partName].comics.length">
           <item-small v-for="item in collectionsList[partName].comics" :key="collectionsList[partName].title + item._id" :item="item"
             :link="{ name: 'ComicDetail', params: { comicId: item._id } }"
           />
@@ -55,6 +60,7 @@ export default {
   data () {
     return {
       isRequestingCollections: { normalMei: true, normalMu: true, rankH24: true, rankD7: true, rankD30: true },
+      isRequestingError: { normalMei: false, normalMu: false, rankH24: false, rankD7: false, rankD30: false },
       collectionsList: {
         normalMei: {},
         normalMu: {},
@@ -82,21 +88,30 @@ export default {
         this.isRequestingCollections.normalMei = true
         this.isRequestingCollections.normalMu = true
         // call api.
-        const shenMoTuiJianList = await this.$api.shenMoCollections({
-          diversionUrl: this.diversionUrl, token: this.token
-        })
-        let mei = {}
-        let mu = {}
-        shenMoTuiJianList.forEach(item => {
-          if (/妹推薦/.test(item.title)) {
-            mei = item
-          }
-          if (/母推薦/.test(item.title)) {
-            mu = item
-          }
-        })
-        this.collectionsList.normalMei = mei
-        this.collectionsList.normalMu = mu
+        try {
+          const shenMoTuiJianList = await this.$api.shenMoCollections({
+            diversionUrl: this.diversionUrl, token: this.token
+          })
+          let mei = {}
+          let mu = {}
+          shenMoTuiJianList.forEach(item => {
+            if (/妹推薦/.test(item.title)) {
+              mei = item
+            }
+            if (/母推薦/.test(item.title)) {
+              mu = item
+            }
+          })
+          this.collectionsList.normalMei = mei
+          this.collectionsList.normalMu = mu
+          this.isRequestingError.normalMei = false
+          this.isRequestingError.normalMu = false
+        } catch (err) {
+          this.collectionsList.normalMei = { title: '本子妹推薦', comics: [] }
+          this.collectionsList.normalMu = { title: '本子母推薦', comics: [] }
+          this.isRequestingError.normalMei = true
+          this.isRequestingError.normalMu = true
+        }
         // change state.
         this.isRequestingCollections.normalMei = false
         this.isRequestingCollections.normalMu = false
@@ -106,11 +121,19 @@ export default {
         // call api.
         const referTt = { rankH24: 'H24', rankD7: 'D7', rankD30: 'D30' }
         const referTitle = { rankH24: '每日排行榜', rankD7: '每周排行榜', rankD30: '每月排行榜' }
-        const rankList = await this.$api.rank({
-          diversionUrl: this.diversionUrl, token: this.token, tt: referTt[partName]
-        })
-        this.collectionsList[partName] = {
-          title: referTitle[partName], comics: rankList.slice(0, 4)
+        try {
+          const rankList = await this.$api.rank({
+            diversionUrl: this.diversionUrl, token: this.token, tt: referTt[partName]
+          })
+          this.collectionsList[partName] = {
+            title: referTitle[partName], comics: rankList.slice(0, 4)
+          }
+          this.isRequestingError[partName] = false
+        } catch (err) {
+          this.collectionsList[partName] = {
+            title: referTitle[partName], comics: []
+          }
+          this.isRequestingError[partName] = true
         }
         // change state.
         this.isRequestingCollections[partName] = false
@@ -147,6 +170,7 @@ export default {
     if (this.isShouldResetComp) {
       Object.assign(this.$data, this.$options.data.call(this))
     }
+    console.log(JSON.parse(JSON.stringify(this.homePageModule.part)))
     this.resolveUpdateModule()
   }
 }

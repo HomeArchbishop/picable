@@ -38,8 +38,8 @@ export default {
       shortcuts: state => state.storage.shortcuts
     }),
     isShowBar () {
-      return typeof this.$route.name !== 'undefined' &&
-        !['Diversion', 'Login', 'AppLock', 'Register', 'HideSecret'].includes(this.$route.name)
+      return !['Diversion', 'Login', 'AppLock', 'Register', 'HideSecret']
+        .includes(this.$route.name)
     }
   },
   methods: {
@@ -59,9 +59,12 @@ export default {
     }
   },
   watch: {
-    $route (to) {
-      if (to.meta.keepAlive && !this.keepAliveList.includes(to.name)) {
-        this.keepAliveList.push(to.name)
+    '$route.name': {
+      immediate: true,
+      handler (toRouteName) {
+        if (this.$route.meta.keepAlive && !this.keepAliveList.includes(toRouteName)) {
+          this.keepAliveList.push(toRouteName)
+        }
       }
     },
     shortcuts: {
@@ -71,12 +74,14 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     shortcutsListener.install(this)
     shortcutsListener.start()
     console.log(this.diversionUrl)
     this.addListener()
-    this.getDiversionUrlList()
+    // ? there is no need to request for diversionURL
+    // let me fix the diversion CORS or 502 problem in future
+    // this.getDiversionUrlList()
   }
 }
 </script>

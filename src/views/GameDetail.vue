@@ -116,12 +116,16 @@ export default {
       // change state.
       this.isRequestingDetail = true
       // call api.
-      this.gameDetailObject = await this.$api.gameInfo({
-        diversionUrl: this.diversionUrl, token: this.token, gameId: this.gameId
-      })
-      this.isLiked = this.gameDetailObject.isLiked
-      this.isDescriptionPreview = String(this.gameDetailObject.description).length > 30
-      console.log(this.gameDetailObject)
+      try {
+        this.gameDetailObject = await this.$api.gameInfo({
+          diversionUrl: this.diversionUrl, token: this.token, gameId: this.gameId
+        })
+        this.isLiked = this.gameDetailObject.isLiked
+        this.isDescriptionPreview = String(this.gameDetailObject.description).length > 30
+        console.log(this.gameDetailObject)
+      } catch (err) {
+        this.$compHelper.breakdown.call(this)
+      }
       // change state.
       this.isRequestingDetail = false
     },
@@ -130,12 +134,14 @@ export default {
       // change state.
       this.isRequestingLike = true
       // call api.
-      const likeAction = await this.$api.gameLike({
-        diversionUrl: this.diversionUrl, token: this.token, gameId: this.gameId
-      })
-      console.log(likeAction)
-      this.isLiked = likeAction === 'like'
-      this.gameDetailObject.likesCount = this.gameDetailObject.likesCount + (likeAction === 'like' ? 1 : -1)
+      try {
+        const likeAction = await this.$api.gameLike({
+          diversionUrl: this.diversionUrl, token: this.token, gameId: this.gameId
+        })
+        console.log(likeAction)
+        this.isLiked = likeAction === 'like'
+        this.gameDetailObject.likesCount = this.gameDetailObject.likesCount + (likeAction === 'like' ? 1 : -1)
+      } catch (err) {}
       // change state.
       this.isRequestingLike = false
     },

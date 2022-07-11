@@ -1,12 +1,12 @@
 <template>
   <div class="search-container" ref="searchContainer">
     <div class="input-card">
-      <form @submit.prevent="searchNew()">
-        <input type="text" :placeholder="'热门：' + (randomKeyword || '')" v-model="inputKeyword">
+      <form @submit.prevent="isError ? updatePage() : searchNew()">
+        <input type="text" :placeholder="randomKeyword ? '热门：' + randomKeyword : '搜索'" v-model="inputKeyword">
       </form>
       <div class="keyword-tag-wrap">
         <tag-item v-for="word in keywordList" :key="word"
-          @click.stop="inputKeyword = word; searchNew()"
+          @click.stop="inputKeyword = word; isError ? updatePage() : searchNew()"
         >
           {{ word }}
         </tag-item>
@@ -26,13 +26,14 @@
         />
       </div>
       <div class="tip-layer">
-        <common-tip-block v-if="isFoundAny && isSearching" :waiting="true">正在加载</common-tip-block>
-        <common-tip-block v-if="!isFoundAny">什么都没有</common-tip-block>
-        <common-tip-block v-if="isFoundAny && isAll">没有更多了</common-tip-block>
-        <common-tip-block v-if="searchResultList.length && !isAll && !isSearching"
-          :clickable="true" @click="updatePage()"
-        >
-          加载更多
+        <common-tip-block v-if="isSearching" waiting>正在加载</common-tip-block>
+        <common-tip-block v-else-if="!isFoundAny">什么都没有</common-tip-block>
+        <common-tip-block v-else-if="isAll">没有更多了</common-tip-block>
+        <common-tip-block v-else-if="searchResultList.length" clickable @click="updatePage()">
+          {{ isError ? '重试' : '加载更多' }}
+        </common-tip-block>
+        <common-tip-block v-else clickable @click="updatePage()">
+          重新加载
         </common-tip-block>
       </div>
     </div>
@@ -56,6 +57,7 @@ export default {
       isAll: false,
       isFoundAny: true,
       isSearching: false,
+      isError: false,
       searchResultList: [],
       nextPage: 1
     }
@@ -82,27 +84,32 @@ export default {
       // change state.
       this.isSearching = true
       // call api to search.
-      const searchResultInfo = await this.$api.search({
-        diversionUrl: this.diversionUrl,
-        token: this.token,
-        keyword: this.inputKeyword,
-        page: this.nextPage,
-        sort: this.sort
-      })
-      this.searchResultList.push(...searchResultInfo.docs)
-      console.log(searchResultInfo, searchResultInfo.page, searchResultInfo.pages)
+      try {
+        const searchResultInfo = await this.$api.search({
+          diversionUrl: this.diversionUrl,
+          token: this.token,
+          keyword: this.inputKeyword,
+          page: this.nextPage,
+          sort: this.sort
+        })
+        this.isError = false
+        this.searchResultList.push(...searchResultInfo.docs)
+        console.log(searchResultInfo, searchResultInfo.page, searchResultInfo.pages)
+        // judge if empty.
+        if (!searchResultInfo.total) {
+          this.isFoundAny = false
+        }
+        // judge if is all, if not, then pageCount++.
+        if (+searchResultInfo.page === +searchResultInfo.pages) {
+          this.isAll = true
+        } else {
+          this.nextPage = this.nextPage + 1
+        }
+      } catch (err) {
+        this.isError = true
+      }
       // change state.
       this.isSearching = false
-      // judge if empty.
-      if (!searchResultInfo.total) {
-        this.isFoundAny = false
-      }
-      // judge if is all, if not, then pageCount++.
-      if (+searchResultInfo.page === +searchResultInfo.pages) {
-        this.isAll = true
-      } else {
-        this.nextPage = this.nextPage + 1
-      }
     },
     async searchNew () {
       // if: empty keyword, return.
@@ -119,9 +126,11 @@ export default {
       this.$router.push({ name: 'Search', query: { kw: this.inputKeyword } })
     },
     async getKeywordList () {
-      const nextKeywordList = await this.$api.keyword({ diversionUrl: this.diversionUrl, token: this.token })
-      this.$store.commit('runtime/setKeywordList', { nextKeywordList })
-      console.log(nextKeywordList)
+      try {
+        const nextKeywordList = await this.$api.keyword({ diversionUrl: this.diversionUrl, token: this.token })
+        this.$store.commit('runtime/setKeywordList', { nextKeywordList })
+        console.log(nextKeywordList)
+      } catch (err) {}
     },
     async changeSort (sortCode) {
       if (this.sort === sortCode) {

@@ -46,14 +46,20 @@ export default {
       // change state.
       this.isRequesting = true
       // call api.
-      const gameListObject = await this.$api.gameList({
-        diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
-      })
-      console.log(gameListObject)
-      this.gameList.push(...gameListObject.docs)
-      // update isAll and nextPage.
-      this.isAll = +gameListObject.pages === +gameListObject.page
-      this.nextPage += !this.isAll
+      try {
+        const gameListObject = await this.$api.gameList({
+          diversionUrl: this.diversionUrl, token: this.token, page: this.nextPage
+        })
+        console.log(gameListObject)
+        this.gameList.push(...gameListObject.docs)
+        // update isAll and nextPage.
+        this.isAll = +gameListObject.pages === +gameListObject.page
+        this.nextPage += !this.isAll
+      } catch (err) {
+        if (!this.gameList.length) {
+          this.$compHelper.breakdown.call(this)
+        }
+      }
       // change state.
       this.isRequesting = false
     }

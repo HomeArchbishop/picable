@@ -9,7 +9,16 @@
 <script>
 export default {
   name: 'CommonTipBlock',
-  props: ['clickable', 'waiting']
+  props: {
+    clickable: {
+      type: Boolean,
+      default: false
+    },
+    waiting: {
+      type: Boolean,
+      default: false
+    }
+  }
 }
 </script>
 

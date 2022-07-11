@@ -8,10 +8,10 @@
       </div>
       <div class="tip-layer">
         <common-tip-block v-if="isUpdating" :waiting="true">正在加载</common-tip-block>
-        <common-tip-block v-if="!isUpdating"
+        <common-tip-block v-else
           :clickable="true" @click="updatePage()"
         >
-          刷新
+          {{ isError ? '重新加载' : '刷新' }}
         </common-tip-block>
       </div>
     </div>
@@ -28,7 +28,8 @@ export default {
   data () {
     return {
       resultList: [],
-      isUpdating: false
+      isUpdating: false,
+      isError: false
     }
   },
   methods: {
@@ -37,10 +38,15 @@ export default {
       // change state.
       this.isUpdating = true
       // call api to search.
-      const resultList = await this.$api.randomComic({
-        diversionUrl: this.diversionUrl, token: this.token
-      })
-      this.resultList = [...resultList]
+      try {
+        const resultList = await this.$api.randomComic({
+          diversionUrl: this.diversionUrl, token: this.token
+        })
+        this.isError = false
+        this.resultList = [...resultList]
+      } catch (err) {
+        this.isError = true
+      }
       // change state.
       this.isUpdating = false
     }
