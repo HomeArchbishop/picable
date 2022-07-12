@@ -1,25 +1,31 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu, shell } from 'electron'
+import { app, protocol, BrowserWindow, Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-import packageJSON from '../package.json'
-import appDefaultConfig from './configs/app.config.json'
-import fs from 'fs'
 import path from 'path'
-import { createFolder } from './electron/createFolder'
 import { checkUpdate } from './electron/checkUpdate'
 import { ipcMainStart } from './electron/ipcMain'
 import { checkAnnouncement } from './electron/checkAnnouncement'
 import { registerGlobalShortcut } from './electron/registerGlobalShortcut'
+import resolveRuntimeDirStructure from './electron/resolveRuntimeDirStructure'
+import resolveAppConfig from './electron/resolveAppConfig'
+import updateAppConfig from './electron/updateAppConfig'
+import topMenuTemplate from './electron/menuTemplate/topMenuTemplate'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-const appRuntimeDirPath = isDevelopment
-  ? path.resolve(__dirname, '../src/runtime')
-  : path.resolve(__dirname, './runtime')
-const appRuntimeConfigFilePath = path.resolve(appRuntimeDirPath, 'configs/app.config.json')
-const appRuntimeConfig = fs.existsSync(appRuntimeConfigFilePath) ? JSON.parse(fs.readFileSync(appRuntimeConfigFilePath).toString()) : {}
-const appConfig = { ...appDefaultConfig, ...appRuntimeConfig }
+// set the runtime dir to global
+// NOTICE
+// if you want to change the dirname 'runtime', just modify the name below,
+// all the runtime-dir-path depends on this
+global.RUNTIME_DATA_PATH = path.resolve(app.getPath('userData'), 'runtime')
+
+// resolve the runtime dir,
+// ensure that the `runtime` dir has main structure
+resolveRuntimeDirStructure()
+
+// resolve the config object for app
+const appConfig = resolveAppConfig()
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -62,15 +68,13 @@ async function createWindow () {
   win.on('resized', e => {
     const sizeData = win.getContentBounds()
     appConfig.window = sizeData
-    createFolder(appRuntimeConfigFilePath)
-    fs.writeFileSync(appRuntimeConfigFilePath, JSON.stringify(appConfig))
+    updateAppConfig(appConfig)
   })
 
   win.on('moved', e => {
     const sizeData = win.getContentBounds()
     appConfig.window = sizeData
-    createFolder(appRuntimeConfigFilePath)
-    fs.writeFileSync(appRuntimeConfigFilePath, JSON.stringify(appConfig))
+    updateAppConfig(appConfig)
   })
 
   return win
@@ -85,62 +89,7 @@ const dockMenu = Menu.buildFromTemplate([
   }
 ])
 
-const topMenu = Menu.buildFromTemplate([
-  {
-    label: app.name,
-    submenu: [
-      { label: '关于' + app.name, role: 'about' },
-      { type: 'separator' },
-      { label: '服务', role: 'services' },
-      { type: 'separator' },
-      { label: '隐藏' + app.name, role: 'hide' },
-      { label: '隐藏其他', role: 'hideOthers' },
-      { label: '全部显示', role: 'unhide' },
-      { type: 'separator' },
-      { label: '退出' + app.name, role: 'quit' },
-      { type: 'separator' },
-      {
-        label: 'GitHub仓库',
-        click: async () => {
-          await shell.openExternal(packageJSON.repository.github)
-        }
-      },
-      {
-        label: '项目主页',
-        click: async () => {
-          await shell.openExternal(packageJSON.repository.github)
-        }
-      }
-    ]
-  },
-  {
-    label: '编辑',
-    submenu: [
-      { label: '撤销', role: 'undo' },
-      { label: '恢复', role: 'redo' },
-      { type: 'separator' },
-      { label: '剪切', role: 'cut' },
-      { label: '复制', role: 'copy' },
-      { label: '粘贴', role: 'paste' },
-      { type: 'separator' },
-      { label: '开始听写', role: 'startSpeaking' }
-    ]
-  },
-  {
-    label: '视图',
-    submenu: [
-      { label: '重载页面', role: 'reload' },
-      { label: '强制重载', role: 'forceReload' },
-      { label: 'devTools', role: 'toggleDevTools' },
-      { type: 'separator' },
-      { label: '重置缩放', role: 'resetZoom' },
-      { label: '视图放大', role: 'zoomIn' },
-      { label: '视图缩小', role: 'zoomOut' },
-      { type: 'separator' },
-      { label: '全屏', role: 'togglefullscreen' }
-    ]
-  }
-])
+const topMenu = Menu.buildFromTemplate(topMenuTemplate)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -165,7 +114,7 @@ app.on('ready', async () => {
   })
 })
 
-ipcMainStart(appRuntimeDirPath)
+ipcMainStart()
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

@@ -1,13 +1,13 @@
 import { ipcMain, shell } from 'electron'
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
-import { createFolder } from './createFolder'
 
-export function ipcMainStart (appRuntimeDirPath) {
+export function ipcMainStart () {
+  const appRuntimeDirPath = global.RUNTIME_DATA_PATH
+
   ipcMain.handle('write-runtime-file', async (event, { file, content }) => {
     const fileResolvedPath = path.resolve(appRuntimeDirPath, './database', file)
-    createFolder(fileResolvedPath)
-    fs.writeFileSync(fileResolvedPath, content)
+    fs.outputFileSync(fileResolvedPath, content)
   })
 
   ipcMain.handle('read-runtime-file', async (event, { file }) => {
