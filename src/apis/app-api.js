@@ -42,8 +42,26 @@ const openBrowser = async function (url) {
   window.electronAPI.openBrowser({ url })
 }
 
+const getRecentComic = async function () {
+  if (await window.electronAPI.existRuntimeFile({ file: './recentComicIdList.json' })) {
+    return JSON.parse(await window.electronAPI.readRuntimeFile({ file: './recentComicIdList.json' }))
+  } else {
+    return []
+  }
+}
+
+const recordRecentComic = async function (comicId) {
+  const currentRecentComicIdList = await getRecentComic()
+  const recentComicIdSet = new Set(currentRecentComicIdList)
+  recentComicIdSet.delete(comicId)
+  recentComicIdSet.add(comicId)
+  const recentComicIdList = Array.from(recentComicIdSet).reverse()
+  window.electronAPI.writeRuntimeFile({ file: './recentComicIdList.json', content: JSON.stringify(recentComicIdList) })
+}
+
 export {
   favouriteAuthor, favouriteAuthorList,
   favouriteChinese, favouriteChineseList,
-  openBrowser
+  openBrowser, getRecentComic,
+  recordRecentComic
 }

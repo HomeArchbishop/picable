@@ -50,9 +50,7 @@ export default {
       // change states.
       this.isUpdating = true
       // call api to update.
-      this.recentComicIdList = await window.electronAPI.existRuntimeFile({ file: './recentComicIdList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './recentComicIdList.json' }))
-        : []
+      this.recentComicIdList = await this.$api.getRecentComic()
       const recentComicOfNextPage = this.recentComicIdList.slice(10 * (this.nextPage - 1), 10 * this.nextPage)
       if (10 * this.nextPage >= this.recentComicIdList.length) {
         this.isAll = true

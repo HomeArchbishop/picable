@@ -215,16 +215,6 @@ export default {
       // document.querySelector(`#pic${num}`).scrollIntoView()
       // scrollTo(0, document.querySelector(`#pic${num}`).offsetTop)
     },
-    async recordRecentComic () {
-      const currentRecentComicIdList = await window.electronAPI.existRuntimeFile({ file: './recentComicIdList.json' })
-        ? JSON.parse(await window.electronAPI.readRuntimeFile({ file: './recentComicIdList.json' })).reverse()
-        : []
-      const recentComicIdSet = new Set(currentRecentComicIdList)
-      recentComicIdSet.delete(this.comicId)
-      recentComicIdSet.add(this.comicId)
-      const recentComicIdList = Array.from(recentComicIdSet).reverse()
-      window.electronAPI.writeRuntimeFile({ file: './recentComicIdList.json', content: JSON.stringify(recentComicIdList) })
-    },
     async imgWheel (e) {
       if (!e.ctrlKey) { return } // stand for scroll, not scale
       const dom = e.path[0]
@@ -326,7 +316,6 @@ export default {
   },
   created () {
     this.updateNewPicturePage()
-    this.recordRecentComic()
     this.judgeHasNextEpisodes()
   },
   mounted () {

@@ -40,7 +40,13 @@ export default {
   computed: {
     ...mapState({
       viewDirection: state => state.storage.imgViewerSettings.direction || 'column-scroll'
-    })
+    }),
+    comicId () {
+      return this.$route.params.comicId
+    }
+  },
+  mounted () {
+    this.$api.recordRecentComic(this.comicId)
   }
 }
 </script>
