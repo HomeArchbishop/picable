@@ -58,12 +58,10 @@ export default {
         this.isAll = true
       }
       this.nextPage += 1
-      if (!this.recentComicIdList.length) {
-        this.isFounAny = false
-        this.isUpdating = false
-      }
 
-      this.recentComicList.push(...Array.from({ length: 10 }).fill('waiting'))
+      this.isFoundAny = !!this.recentComicIdList.length
+
+      this.recentComicList.push(...Array.from({ length: recentComicOfNextPage.length }).fill('waiting'))
 
       const taskStack = []
       for (const index in recentComicOfNextPage) {
