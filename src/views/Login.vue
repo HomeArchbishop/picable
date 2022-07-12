@@ -10,13 +10,31 @@
       <form @submit.prevent="login()">
         <div class="input-div">
           <label>用户名</label>
-          <input type="text" v-model.trim="username" ref="usernameInput">
+          <input type="text" v-model.trim="username"
+            ref="usernameInput"
+            @focusin="isUsernameInputFocused = true"
+            @focusout="isUsernameInputFocused = false"
+          >
+          <div class="account-list" v-if="isShowAccount && rememberWithPasswordList.length"
+            @mouseover="isAccountMouseon = true" @mouseout="isAccountMouseon = false"
+          >
+            <div class="account-item"
+              v-for="(item, index) in rememberWithPasswordList" :key="item.username + index"
+              @click="useAccount(item.username)"
+            >
+              {{ item.username }}
+            </div>
+          </div>
         </div>
         <div class="input-div">
           <label>密&emsp;码</label>
           <input type="password" v-model.trim="password" ref="passwordInput">
         </div>
         <div class="function-div">
+          <div class="check-box">
+            记住密码
+            <check-box small :isChecked="isRememberMe" @click="isRememberMe = !isRememberMe" />
+          </div>
           <input type="submit" value="" style="display: none;">
           <div class="submit-btn" @click="login()">
             登录<font-awesome-icon icon="angle-right" />
@@ -31,21 +49,57 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import CheckBox from '../components/CheckBox.vue'
 
 library.add(faAngleRight)
 
 export default {
   name: 'Login',
   components: {
-    FontAwesomeIcon
+    FontAwesomeIcon,
+    CheckBox
   },
   data () {
     return {
+      rememberList: [],
+      isRememberMe: false,
+      isUsernameInputFocused: false,
+      isAccountMouseon: false,
       username: '',
       password: ''
     }
   },
+  computed: {
+    accountListLeftPadding () {
+      return Math.min(Math.max(this.username.length / 2, 5.8), 15) + 'em'
+    },
+    isShowAccount () {
+      return this.isAccountMouseon || this.isUsernameInputFocused
+    },
+    rememberWithPasswordList () {
+      return this.rememberList.filter(o => !!o.password && o.username.startsWith(this.username)).reverse()
+    }
+  },
   methods: {
+    async getRememberList () {
+      this.rememberList = await this.$api.getRememberAccount()
+    },
+    async resolveRememberMe () {
+      const meInfo = { username: this.username, password: this.isRememberMe ? this.password : '' }
+      const userIndex = this.rememberList.findIndex(o => o.username === this.username)
+      // only save 3 accounts
+      const nextRememberList = [meInfo, ...this.rememberList.slice(0, userIndex), ...this.rememberList.slice(1 + userIndex)].slice(0, 3)
+      await this.$api.updateRememberAccount(nextRememberList)
+    },
+    async useAccount (username) {
+      const targetAccont = this.rememberList.find(o => o.username === username)
+      console.log(targetAccont)
+      if (!targetAccont) { return }
+      this.$refs.passwordInput.focus()
+      this.isAccountMouseon = false
+      this.username = targetAccont.username
+      this.password = targetAccont.password
+    },
     async login () {
       // ENTER will submit the form and call this function
       // while the password is empty,
@@ -72,6 +126,7 @@ export default {
           })
           return
         }
+        await this.resolveRememberMe()
         this.$store.commit('storage/setToken', { nextToken })
         this.$router.push({ name: 'Home' })
         // hide loading-pica animation
@@ -80,6 +135,18 @@ export default {
         this.$utils.hideLoadingPica()
       }
     }
+  },
+  watch: {
+    username (newName) {
+      this.isRememberMe = this.rememberList.some(o => o.username === newName && !!o.password)
+    }
+  },
+  created () {
+    this.getRememberList().then(() => {
+      this.isRememberMe = !!this.rememberList[0]?.password
+      this.username = this.rememberList[0]?.username || ''
+      this.password = this.rememberList[0]?.password || ''
+    })
   }
 }
 </script>
@@ -121,6 +188,7 @@ export default {
     margin-bottom: 10px;
     width: 400px;
     height: 40px;
+    position: relative;
     label {
       margin-right: 8px;
       font-size: 18px;
@@ -144,12 +212,39 @@ export default {
         border-bottom: 2px solid @color-line-default;
       }
     }
+    .account-list {
+      padding: 0;
+      overflow: hidden;
+      box-shadow: @shadow-card-default;
+      background: @background-main;
+      border-radius: .3em;
+      position: absolute;
+      left: v-bind(accountListLeftPadding);
+      right: calc(100% - v-bind(accountListLeftPadding) - 17em);
+      bottom: 100%;
+      z-index: 10;
+      .account-item {
+        width: 100%;
+        padding: 1em 1.5em;
+        cursor: pointer;
+        transition: .2s;
+        &:hover {
+          background: lighten(@background-btn-highlight, 25%);
+        }
+      }
+    }
   }
   .function-div {
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 400px;
     height: 40px;
     margin-top: 20px;
+    .check-box {
+      display: flex;
+      color: @color-font-default-sub;
+    }
     .submit-btn {
       display: inline-flex;
       align-items: center;

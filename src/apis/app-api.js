@@ -59,9 +59,24 @@ const recordRecentComic = async function (comicId) {
   window.electronAPI.writeRuntimeFile({ file: './recentComicIdList.json', content: JSON.stringify(recentComicIdList) })
 }
 
+const getRememberAccount = async function () {
+  if (await window.electronAPI.existRuntimeFile({ file: './rememberAccountList.json' })) {
+    return JSON.parse(await window.electronAPI.readRuntimeFile({ file: './rememberAccountList.json' }))
+  } else {
+    return []
+  }
+}
+
+const updateRememberAccount = async function (_nextList) {
+  // ensure no repeat
+  const nextList = Array.from(new Set(_nextList))
+  window.electronAPI.writeRuntimeFile({ file: './rememberAccountList.json', content: JSON.stringify(nextList) })
+}
+
 export {
   favouriteAuthor, favouriteAuthorList,
   favouriteChinese, favouriteChineseList,
   openBrowser, getRecentComic,
-  recordRecentComic
+  recordRecentComic,
+  updateRememberAccount, getRememberAccount
 }
