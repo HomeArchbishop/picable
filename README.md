@@ -15,7 +15,7 @@
   <a href="."><img alt="GitHub license" src="https://img.shields.io/github/license/HomeArchbishop/picable"></a>
 </p>
 
-<h1 align="center">还有一些细节...但已经可以使用了哦😉</h1>
+<h1 align="center">预计7月1x日发布最新版本，做了非常多的优化和更改！<br>旧版本应用里会有提醒更新😉</h1>
 
 * 🍑旨在让PC（电脑）访问哔咔更加便捷，功能更加灵活人性化，为绅士淑女们提供极致的享受。
 * 🍓实现了官方的**绝大部分**功能，还添加了一些**个性化**功能，满足各位的日常需要绰绰有余😏。[功能列表>](#功能列表)
