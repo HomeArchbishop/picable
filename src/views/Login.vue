@@ -28,7 +28,11 @@
         </div>
         <div class="input-div">
           <label>密&emsp;码</label>
-          <input type="password" v-model.trim="password" ref="passwordInput">
+          <input :type="isShowPassword ? 'text' : 'password'" v-model.trim="password" ref="passwordInput">
+          <div class="show-btn" @click="isShowPassword = !isShowPassword">
+            <font-awesome-icon icon="eye" v-if="!isShowPassword" />
+            <font-awesome-icon icon="eye-slash" v-if="isShowPassword" />
+          </div>
         </div>
         <div class="function-div">
           <div class="check-box">
@@ -47,11 +51,11 @@
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { faAngleRight, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import CheckBox from '../components/CheckBox.vue'
 
-library.add(faAngleRight)
+library.add(faAngleRight, faEye, faEyeSlash)
 
 export default {
   name: 'Login',
@@ -65,6 +69,7 @@ export default {
       isRememberMe: false,
       isUsernameInputFocused: false,
       isAccountMouseon: false,
+      isShowPassword: false,
       username: '',
       password: ''
     }
@@ -211,6 +216,13 @@ export default {
       &:focus {
         border-bottom: 2px solid @color-line-default;
       }
+    }
+    .show-btn {
+      position: absolute;
+      right: 0;
+      bottom: 2px;
+      color: @color-font-default-sub;
+      cursor: pointer;
     }
     .account-list {
       padding: 0;
