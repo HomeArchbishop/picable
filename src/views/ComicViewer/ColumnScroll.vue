@@ -163,20 +163,22 @@ export default {
     async judgeHasNextEpisodes () {
       let episodesObject
       let page = 1
-      while (!episodesObject || episodesObject.page < episodesObject.pages) {
-        episodesObject = await this.$api.episodes({
-          diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page
-        })
-        console.log(episodesObject)
-        for (const { order } of (episodesObject.docs || [])) {
-          if (order === +this.epsOrder + 1) {
-            this.hasNextEpisodes = true
-            console.log(this.hasNextEpisodes)
-            return
+      try {
+        while (!episodesObject || episodesObject.page < episodesObject.pages) {
+          episodesObject = await this.$api.episodes({
+            diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, page
+          })
+          console.log(episodesObject)
+          for (const { order } of (episodesObject.docs || [])) {
+            if (order === +this.epsOrder + 1) {
+              this.hasNextEpisodes = true
+              console.log(this.hasNextEpisodes)
+              return
+            }
           }
+          page++
         }
-        page++
-      }
+      } catch (err) {}
       this.hasNextEpisodes = false
     },
     async nextEpisodes () {
