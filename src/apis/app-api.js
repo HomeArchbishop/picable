@@ -52,6 +52,7 @@ const getRecentComic = async function () {
 
 const recordRecentComic = async function (comicId) {
   const currentRecentComicIdList = await getRecentComic()
+  currentRecentComicIdList.reverse()
   const recentComicIdSet = new Set(currentRecentComicIdList)
   recentComicIdSet.delete(comicId)
   recentComicIdSet.add(comicId)
@@ -73,10 +74,15 @@ const updateRememberAccount = async function (_nextList) {
   window.electronAPI.writeRuntimeFile({ file: './rememberAccountList.json', content: JSON.stringify(nextList) })
 }
 
+const downloadComic = async function ({ comicDownloadInfo }) {
+  window.electronAPI.downloadComic({ comicDownloadInfo })
+}
+
 export {
   favouriteAuthor, favouriteAuthorList,
   favouriteChinese, favouriteChineseList,
   openBrowser, getRecentComic,
   recordRecentComic,
-  updateRememberAccount, getRememberAccount
+  updateRememberAccount, getRememberAccount,
+  downloadComic
 }

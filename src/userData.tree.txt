@@ -5,3 +5,11 @@ Application Support
     runtime
       configs
       database
+        [some files]
+        download
+          mainState.json
+            [epiOrder]
+              epi.json
+              pictures
+                [...jpg]
+

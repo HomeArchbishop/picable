@@ -19,5 +19,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   writeRuntimeFile: ({ file, content }) => ipcRenderer.invoke('write-runtime-file', { file, content }),
   readRuntimeFile: ({ file }) => ipcRenderer.invoke('read-runtime-file', { file }),
   existRuntimeFile: ({ file }) => ipcRenderer.invoke('exist-runtime-file', { file }),
-  openBrowser: ({ url }) => ipcRenderer.invoke('open-browser', { url })
+  openBrowser: ({ url }) => ipcRenderer.invoke('open-browser', { url }),
+  downloadComic: ({ comicDownloadInfo }) => {
+    ipcRenderer.invoke('download-comic', { comicDownloadInfo })
+  }
 })

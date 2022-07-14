@@ -13,7 +13,7 @@ export async function checkUpdate () {
     .catch(() => {
       setTimeout(checkUpdate, 50000)
     })
-    .then(version => {
+    .then((version = '0.0.0') => {
       const LatestVersion = version.split('.')
       const currentVersion = packageJSON.version.split('.')
       for (let i = 0; i < Math.max(LatestVersion.length, currentVersion.length); i++) {

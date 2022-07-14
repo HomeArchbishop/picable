@@ -11,6 +11,7 @@ import resolveRuntimeDirStructure from './electron/resolveRuntimeDirStructure'
 import resolveAppConfig from './electron/resolveAppConfig'
 import updateAppConfig from './electron/updateAppConfig'
 import topMenuTemplate from './electron/menuTemplate/topMenuTemplate'
+import sweepDownloadingPast from './electron/downloadComic/sweepDownloadingPast'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -49,6 +50,7 @@ async function createWindow () {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
+      nodeIntegrationInWorker: true,
       preload: path.resolve(__dirname, './preload.js')
     }
   })
@@ -113,6 +115,8 @@ app.on('ready', async () => {
     checkAnnouncement()
   })
 })
+
+sweepDownloadingPast()
 
 ipcMainStart()
 

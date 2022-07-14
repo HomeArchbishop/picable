@@ -1,6 +1,7 @@
 import { ipcMain, shell } from 'electron'
 import fs from 'fs-extra'
 import path from 'path'
+import downloadComic from './downloadComic/downloadComic'
 
 export function ipcMainStart () {
   const appRuntimeDirPath = global.RUNTIME_DATA_PATH
@@ -23,5 +24,9 @@ export function ipcMainStart () {
 
   ipcMain.handle('open-browser', async (event, { url }) => {
     shell.openExternal(url)
+  })
+
+  ipcMain.handle('download-comic', async function downloadComicHandler (event, { comicDownloadInfo }) {
+    await downloadComic({ comicDownloadInfo })
   })
 }

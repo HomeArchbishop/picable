@@ -73,10 +73,12 @@
             <div class="func-btn-badge">{{ comicDetailObject.commentsCount }}</div>
           </div>
         </router-link>
-        <div class="func-btn" @click.stop="toggleDownload()">
+        <div class="func-btn" id="downloadBtn" :class="{ active: isChoosingDownLoad }" @click.stop="toggleDownload()">
           <font-awesome-icon icon="download" />下载
         </div>
-        <div class="func-btn" @click.stop="togglePack()" v-if="episodesDownloadedList.length">
+        <div class="func-btn" id="packBtn" :class="{ active: isChoosingPackZip }" @click.stop="togglePack()"
+          v-if="episodesDownloadedList.length"
+        >
           <font-awesome-icon icon="file-zipper" />打包
         </div>
       </div>
@@ -97,8 +99,8 @@
         </common-tip-block>
       </div>
     </div>
-    <div class="episodes-card" v-if="!isRequestingDetail && isChoosingDownLoad">
-      <h2>请选择要下载的章节<small>（由于官方接口的问题，不能保证下载的成功与完整）</small></h2>
+    <div class="episodes-card" v-if="!isRequestingDetail && isChoosingDownLoad && !isChoosingPackZip">
+      <h2>请选择要下载的章节</h2>
       <div class="episodes-list">
         <div class="episodes-item" :class="{ chosen: episodesDownloadChosenList.includes('' + item.order) }"
           @click="toggleDownloadChosenList(item.order)" v-for="item in episodesList" :key="item.order"
@@ -107,6 +109,7 @@
         </div>
       </div>
       <div class="state-line">
+         <small class="tip-small">（由于官方接口的问题，不能保证下载的成功与完整）</small>
         <common-tip-block v-if="isRequestingEpisodes" :waiting="true">加载中...</common-tip-block>
         <common-tip-block v-if="!isEpisodesListEnd & !isRequestingEpisodes"
           :clickable="true" @click="getEpisodesList()"
@@ -242,7 +245,7 @@ export default {
         this.episodesList.push(...(episodesObject.docs || []))
         this.isEpisodesListEnd = episodesObject.page === episodesObject.pages
         this.nextEpisodesPage += !this.isEpisodesListEnd
-        console.log(this.episodesList)
+        console.log(episodesObject)
       } catch (err) {}
       this.isRequestingEpisodes = false
     },
@@ -315,15 +318,64 @@ export default {
       this.isChoosingPackZip = !this.isChoosingPackZip
     },
     async download () {
-      this.$swal.modal.fire('下载功能暂未公测哦，请静候更新')
-      // this.toggleDownload()
-      // this.episodesDownloadChosenList.forEach(episodesOrder => {
-      //   this.$api.download(this.token, this.comicId, episodesOrder)
-      //     .then(downloadRes => {
-      //       console.log('download', episodesOrder, downloadRes)
-      //       this.getDownloadedList()
-      //     })
-      // })
+      // this.$swal.modal.fire('下载功能暂未公测哦，请静候更新')
+      this.$swal.modal.fire({
+        title: '正在获取信息',
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        willOpen: () => {
+          this.$swal.modal.showLoading()
+          this.$swal.modal.clickConfirm()
+        },
+        preConfirm: () => {
+          return this.getComicAllDownloadInfo(this.episodesDownloadChosenList)
+        }
+      }).then((result) => {
+        const comicAllDownloadInfo = result.value
+        this.toggleDownload()
+        console.log(comicAllDownloadInfo)
+        comicAllDownloadInfo.forEach(comicDownloadInfo => {
+          this.$api.downloadComic({ comicDownloadInfo: JSON.stringify(comicDownloadInfo) })
+        })
+        this.episodesDownloadChosenList = []
+      }).catch(() => {
+        this.$swal.toast.error.fire('下载失败，请重试')
+      })
+    },
+    async getComicAllDownloadInfo (episodesOrderList) {
+      const comicAllDownloadInfo = []
+      const comicDetail = {
+        title: this.comicDetailObject.title,
+        _id: this.comicDetailObject._id,
+        author: this.comicDetailObject.author,
+        chineseTeam: this.comicDetailObject.chineseTeam
+      }
+      try {
+        for (const episodesOrder of episodesOrderList) {
+          const pictureInfoList = []
+          const firstPageInfo = await this.$api.picture({
+            diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, epsOrder: episodesOrder, page: 1
+          })
+          pictureInfoList.push(...firstPageInfo.pages.docs)
+          const totalPages = firstPageInfo.pages.pages
+          for (let page = 2; page <= totalPages; page++) {
+            const pageInfo = await this.$api.picture({
+              diversionUrl: this.diversionUrl, token: this.token, comicId: this.comicId, epsOrder: episodesOrder, page
+            })
+            pictureInfoList.push(...pageInfo.pages.docs)
+          }
+          const episodesTitle = this.episodesList.find(e => +e.order === +episodesOrder).title || ''
+          comicAllDownloadInfo.push({
+            comicDetail: { ...comicDetail, episodesOrder, episodesTitle },
+            pictureInfoList
+          })
+        }
+      } catch (err) {
+        return Promise.reject(new Error('failed to get info'))
+      }
+      return comicAllDownloadInfo
     },
     async packZip (episodesOrder) {
       if (episodesOrder === undefined) { return }
@@ -519,6 +571,10 @@ export default {
             color: @color-active-highlight-2;
             background-color: fade(@color-active-highlight-2, 15%);
           }
+          &#downloadBtn {
+            color: @color-active-highlight-7;
+            background-color: fade(@color-active-highlight-7, 15%);
+          }
         }
         &.loading {
           cursor: wait;
@@ -583,6 +639,7 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: flex-end;
+      align-items: center;
       width: 100%;
       margin-top: 10px;
       .loading-state {
@@ -600,6 +657,9 @@ export default {
           transform: scale(110%);
         }
       }
+    }
+    .tip-small {
+      color: @color-font-default-sub;
     }
   }
   .recommend-card {
