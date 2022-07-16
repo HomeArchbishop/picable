@@ -5,6 +5,7 @@ import path from 'path'
 // it contains every info:
 // comic, epi, pictures order, download state, etc.
 
+// DO NOT change the name 'epi.json'
 function getEpiStateFilePath (epiDirPath) {
   return path.resolve(epiDirPath, './epi.json')
 }

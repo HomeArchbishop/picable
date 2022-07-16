@@ -71,11 +71,51 @@ const getRememberAccount = async function () {
 const updateRememberAccount = async function (_nextList) {
   // ensure no repeat
   const nextList = Array.from(new Set(_nextList))
-  window.electronAPI.writeRuntimeFile({ file: './rememberAccountList.json', content: JSON.stringify(nextList) })
+  await window.electronAPI.writeRuntimeFile({ file: './rememberAccountList.json', content: JSON.stringify(nextList) })
 }
 
 const downloadComic = async function ({ comicDownloadInfo }) {
-  window.electronAPI.downloadComic({ comicDownloadInfo })
+  await window.electronAPI.downloadComic({ comicDownloadInfo })
+}
+
+const cancelDownloadComic = async function ({ comicId, episodesOrder }) {
+  await window.electronAPI.cancelDownloadComic({ comicId, episodesOrder })
+}
+
+const downloadTree = async function () {
+  if (!window.electronAPI.existRuntimeDir({ dir: './download' })) {
+    return []
+  }
+  const tree = []
+  const comicIdList = (await window.electronAPI.readRuntimeDir({ dir: './download' })).filter(s => !s.startsWith('.'))
+  for (const comicId of comicIdList) {
+    const epiOrderListOrigin = (await window.electronAPI.readRuntimeDir({ dir: `./download/${comicId}` })).filter(s => !s.startsWith('.'))
+    const epiOrderList = []
+    for (const epiOrder of epiOrderListOrigin) {
+      if (await window.electronAPI.existRuntimeFile({ file: `./download/${comicId}/${epiOrder}/epi.json` })) {
+        epiOrderList.push(epiOrder)
+      }
+    }
+    if (epiOrderList.length) {
+      tree[comicId] = epiOrderList
+    }
+  }
+  return tree
+}
+
+const downloadEpiState = async function ({ comicId, epiOrder }) {
+  if (!window.electronAPI.existRuntimeFile({ file: `./download/${comicId}/${epiOrder}/epi.json` })) {
+    throw Error('file: epi.json not exists')
+  }
+  return JSON.parse(await window.electronAPI.readRuntimeFile({ file: `./download/${comicId}/${epiOrder}/epi.json` }))
+}
+
+const packPDF = async function ({ comicId, episodesOrder }) {
+  return await window.electronAPI.packPDF({ comicId, episodesOrder })
+}
+
+const packZIP = async function ({ comicId, episodesOrder }) {
+  return await window.electronAPI.packZIP({ comicId, episodesOrder })
 }
 
 export {
@@ -84,5 +124,7 @@ export {
   openBrowser, getRecentComic,
   recordRecentComic,
   updateRememberAccount, getRememberAccount,
-  downloadComic
+  downloadComic, cancelDownloadComic,
+  downloadTree, downloadEpiState,
+  packPDF, packZIP
 }

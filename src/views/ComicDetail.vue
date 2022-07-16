@@ -347,6 +347,7 @@ export default {
     async getComicAllDownloadInfo (episodesOrderList) {
       const comicAllDownloadInfo = []
       const comicDetail = {
+        ...this.comicDetailObject,
         title: this.comicDetailObject.title,
         _id: this.comicDetailObject._id,
         author: this.comicDetailObject.author,
@@ -368,6 +369,7 @@ export default {
           }
           const episodesTitle = this.episodesList.find(e => +e.order === +episodesOrder).title || ''
           comicAllDownloadInfo.push({
+            // DOCS: the `comicDetail` used in the backend is documented here
             comicDetail: { ...comicDetail, episodesOrder, episodesTitle },
             pictureInfoList
           })

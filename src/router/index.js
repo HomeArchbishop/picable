@@ -173,6 +173,14 @@ const routes = [
     }
   },
   {
+    path: '/download',
+    name: 'Download',
+    component: () => import('../views/Download'),
+    meta: {
+      title: '下载'
+    }
+  },
+  {
     path: '/knight',
     name: 'Knight',
     component: () => import('../views/Knight'),

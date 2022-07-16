@@ -19,8 +19,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   writeRuntimeFile: ({ file, content }) => ipcRenderer.invoke('write-runtime-file', { file, content }),
   readRuntimeFile: ({ file }) => ipcRenderer.invoke('read-runtime-file', { file }),
   existRuntimeFile: ({ file }) => ipcRenderer.invoke('exist-runtime-file', { file }),
+  readRuntimeDir: ({ dir }) => ipcRenderer.invoke('read-runtime-dir', { dir }),
+  existRuntimeDir: ({ dir }) => ipcRenderer.invoke('exist-runtime-dir', { dir }),
   openBrowser: ({ url }) => ipcRenderer.invoke('open-browser', { url }),
   downloadComic: ({ comicDownloadInfo }) => {
-    ipcRenderer.invoke('download-comic', { comicDownloadInfo })
-  }
+    return ipcRenderer.invoke('download-comic', { comicDownloadInfo })
+  },
+  packPDF: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-pdf', { comicId, episodesOrder }),
+  packZIP: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-zip', { comicId, episodesOrder })
 })
