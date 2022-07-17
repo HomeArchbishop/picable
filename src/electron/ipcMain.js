@@ -1,6 +1,7 @@
 import { ipcMain, shell } from 'electron'
 import fs from 'fs-extra'
 import path from 'path'
+import deleteDownloadComic from './downloadComic/deleteDownloadComic'
 import downloadComic from './downloadComic/downloadComic'
 import packPDF from './downloadComic/packPDF'
 import packZIP from './downloadComic/packZIP'
@@ -42,9 +43,9 @@ export function ipcMainStart () {
     await downloadComic({ comicDownloadInfo })
   })
 
-  // ipcMain.handle('cancel-download-comic', async function downloadComicHandler (event, { comicId, episodesOrder }) {
-  //   await cancelDownloadComic({ comicId, episodesOrder })
-  // })
+  ipcMain.handle('delete-download-comic', async function downloadComicHandler (event, { comicId, episodesOrder }) {
+    return await deleteDownloadComic({ comicId, episodesOrder })
+  })
 
   ipcMain.handle('pack-pdf', async function (event, { comicId, episodesOrder }) {
     return await packPDF({ comicId, episodesOrder })

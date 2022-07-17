@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webFrame } from 'electron'
 import packageJSON from '../package.json'
 import { getLatestVersion } from './electron/getLatestVersion'
 
@@ -25,6 +25,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
   downloadComic: ({ comicDownloadInfo }) => {
     return ipcRenderer.invoke('download-comic', { comicDownloadInfo })
   },
+  deleteDownloadComic: ({ comicId, episodesOrder }) => {
+    return ipcRenderer.invoke('delete-download-comic', { comicId, episodesOrder })
+  },
   packPDF: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-pdf', { comicId, episodesOrder }),
   packZIP: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-zip', { comicId, episodesOrder })
+})
+
+ipcRenderer.on('download-state-change', (event) => {
+  webFrame.executeJavaScript(`
+    window.document.dispatchEvent(
+      new Event('download-state-change')
+    );
+  `)
 })

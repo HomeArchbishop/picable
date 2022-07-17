@@ -13,7 +13,7 @@
             @click.stop="changeType('downloading')"
             :class="{ current: currentType === 'downloading' }"
           >
-            正在下载
+            正在下载<sub class="badge" v-if="downloadingDownloadCnt">{{ downloadingDownloadCnt }}</sub>
           </div>
         </div>
       </div>
@@ -24,6 +24,9 @@
           :key="comicId"
           :epiList="epiList"
         />
+        <div class="tip-layer">
+          <common-tip-block v-if="!successDownloadCnt">什么都没有</common-tip-block>
+        </div>
       </div>
       <div v-if="currentType === 'downloading'">
         <download-item-large
@@ -31,6 +34,9 @@
           :key="comicId"
           :epiList="epiList"
         />
+        <div class="tip-layer">
+          <common-tip-block v-if="!downloadingDownloadCnt">什么都没有</common-tip-block>
+        </div>
       </div>
     </div>
   </div>
@@ -38,20 +44,19 @@
 
 <script>
 import DownloadItemLarge from '../components/DownloadItemLarge.vue'
-// import CommonTipBlock from '../components/CommonTipBlock'
+import CommonTipBlock from '../components/CommonTipBlock'
 // import LoadingItemLarge from '../components/LoadingItemLarge.vue'
 
 export default {
   name: 'Download',
   // components: { CommonTipBlock, LoadingItemLarge },
   components: {
-    DownloadItemLarge
+    DownloadItemLarge, CommonTipBlock
   },
   data () {
     return {
       downloadInfo: {},
-      currentType: 'downloaded', // 'downloading' | 'downloaded'
-      isUpdating: true
+      currentType: 'downloaded' // 'downloading' | 'downloaded'
     }
   },
   computed: {
@@ -71,6 +76,9 @@ export default {
       console.log('successDownloadInfo', successDownloadInfo)
       return successDownloadInfo
     },
+    successDownloadCnt () {
+      return Object.values(this.successDownloadInfo).reduce((p, c) => p + c.length, 0)
+    },
     downloadingDownloadInfo () {
       const downloadingDownloadInfo = {}
       for (const comicId in this.downloadInfo) {
@@ -86,28 +94,31 @@ export default {
       }
       console.log('downloadingDownloadInfo', downloadingDownloadInfo)
       return downloadingDownloadInfo
+    },
+    downloadingDownloadCnt () {
+      return Object.values(this.downloadingDownloadInfo).reduce((p, c) => p + c.length, 0)
     }
   },
   methods: {
     async updateDownloadInfo () {
-      // change states.
-      this.isUpdating = true
-      // call api to update.
-      const downloadTree = await this.$api.downloadTree()
-      const downloadInfo = {}
-      for (const comicId in downloadTree) {
-        downloadTree[comicId].sort((a, b) => +b - +a)
-        downloadInfo[comicId] = []
-        for (const epiOrder of downloadTree[comicId]) {
-          downloadInfo[comicId].push({
-            ...await this.$api.downloadEpiState({ comicId, epiOrder })
-          })
+      try {
+        // call api to update.
+        const downloadTree = await this.$api.downloadTree()
+        const downloadInfo = {}
+        for (const comicId in downloadTree) {
+          downloadTree[comicId].sort((a, b) => +b - +a)
+          downloadInfo[comicId] = []
+          for (const epiOrder of downloadTree[comicId]) {
+            downloadInfo[comicId].push({
+              ...await this.$api.downloadEpiState({ comicId, epiOrder })
+            })
+          }
         }
+        console.log(downloadInfo)
+        this.downloadInfo = downloadInfo
+      } catch (err) {
+        this.$swal.toast.error.fire('啊，出错了')
       }
-      console.log(downloadInfo)
-      this.downloadInfo = downloadInfo
-      // change states.
-      this.isUpdating = false
     },
     changeType (type) {
       this.currentType = type
@@ -115,6 +126,15 @@ export default {
   },
   created () {
     this.updateDownloadInfo()
+      .then(() => {
+        document.addEventListener('download-state-change', this.updateDownloadInfo)
+        document.addEventListener('download-state-change', () => {
+          console.log('emit')
+        })
+      })
+  },
+  beforeUnmount () {
+    document.removeEventListener('download-state-change', this.updateDownloadInfo)
   }
 }
 </script>
@@ -151,6 +171,17 @@ export default {
           &.current {
             cursor: default;
             color: @color-font-default-highlight;
+          }
+          .badge {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            height: 1.1em;
+            padding: 0 4px;
+            font-size: .8em;
+            border-radius: .7em;
+            color: rgb(247, 247, 247);
+            background: @color-font-default-highlight;
           }
         }
       }

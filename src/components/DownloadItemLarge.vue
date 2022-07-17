@@ -23,6 +23,9 @@
           已下载
           {{ Object.values(epiItem.refer).filter(({ state }) => state === 'success').length }} /
           {{ epiItem.info.pictureInfoList.length }} 页
+          <span v-if="Object.values(epiItem.refer).filter(({ state }) => state == 'failed').length">
+            失败{{ Object.values(epiItem.refer).filter(({ state }) => state == 'failed').length }}页
+          </span>
         </div>
         <div class="info" v-if="epiItem.state === 'error'">
           成功{{ Object.values(epiItem.refer).filter(({ state }) => state === 'success').length }}页
@@ -32,8 +35,7 @@
       </div>
       <div class="state" v-if="epiItem.state === 'success'">已完成</div>
       <div class="state" v-if="epiItem.state === 'downloading'">正在下载</div>
-      <div class="state" v-if="epiItem.state === 'cancelled'">已取消</div>
-      <div class="state" v-if="epiItem.state === 'error'">部分失败</div>
+      <div class="state" v-if="epiItem.state === 'error'">下载失败</div>
       <div class="func-bar">
         <div class="btn"
           v-if="epiItem.state === 'success'"
@@ -45,11 +47,22 @@
           v-if="epiItem.state === 'success'"
           @click="packZIP(epiItem.info.comicDetail.episodesOrder)"
         >保存zip</div>
-        <div class="btn" v-if="epiItem.state === 'success'">删除</div>
-        <div class="btn" v-if="epiItem.state === 'downloading'">取消</div>
-        <div class="btn" v-if="epiItem.state === 'cancelled'">重新下载</div>
-        <div class="btn" v-if="epiItem.state === 'error'">重试</div>
-        <div class="btn" v-if="epiItem.state === 'error'">取消</div>
+        <div class="btn"
+          v-if="epiItem.state === 'success'"
+          @click="deleteDownloadComic(epiItem.info.comicDetail.episodesOrder)"
+        >删除</div>
+        <div class="btn"
+          v-if="epiItem.state === 'downloading'"
+          @click="cancelDownloadComic(epiItem.info.comicDetail.episodesOrder)"
+        >取消</div>
+        <div class="btn"
+          v-if="epiItem.state === 'error'"
+          @click="retryDownloadComic(epiItem.info)"
+        >重试</div>
+        <div class="btn"
+          v-if="epiItem.state === 'error'"
+          @click="deleteDownloadComic(epiItem.info.comicDetail.episodesOrder)"
+        >删除</div>
       </div>
     </div>
   </div>
@@ -121,7 +134,50 @@ export default {
         }
       }).catch(() => null)
     },
+    async deleteDownloadComic (episodesOrder) {
+      const { isConfirmed } = await this.$swal.modal.fire({
+        title: '确定删除这个章节吗？',
+        html: this.comicDetail.title + '<br>' + this.comicDetail.episodesTitle,
+        showCancelButton: true,
+        cancelButtonText: '我再想想',
+        confirmButtonText: '删除',
+        reverseButtons: true
+      })
+      if (!isConfirmed) { return }
+      this.$swal.modal.fire({
+        title: '正在删除...',
+        html: this.comicDetail.title + '<br>' + this.comicDetail.episodesTitle,
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        willOpen: () => {
+          this.$swal.modal.showLoading()
+          this.$swal.modal.clickConfirm()
+        },
+        preConfirm: () => {
+          // Promise<'delete_success' | 'delete_error'>
+          return this.$api.deleteDownloadComic({ comicId: this.comicDetail._id, episodesOrder })
+        }
+      }).then((result) => {
+        console.log(result.value)
+        if (result.value === 'delete_success') {
+          this.$swal.toast.success.fire('删除成功')
+        } else if (result.value === 'delete_error') {
+          this.$swal.toast.error.fire('可能发生了错误')
+        }
+      }).catch(() => null)
+    },
     async cancelDownloadComic (episodesOrder) {
+      const { isConfirmed } = await this.$swal.modal.fire({
+        title: '确定取消下载吗？',
+        html: this.comicDetail.title + '<br>' + this.comicDetail.episodesTitle,
+        showCancelButton: true,
+        cancelButtonText: '我再想想',
+        confirmButtonText: '取消下载',
+        reverseButtons: true
+      })
+      if (!isConfirmed) { return }
       this.$swal.modal.fire({
         title: '正在取消下载...',
         html: this.comicDetail.title + '<br>' + this.comicDetail.episodesTitle,
@@ -134,17 +190,50 @@ export default {
           this.$swal.modal.clickConfirm()
         },
         preConfirm: () => {
-          // Promise<'save_success' | 'save_cancelled' | 'save_error'>
-          return this.$api.cancelDownloadComic({ comicId: this.comicDetail._id, episodesOrder })
+          // Promise<'delete_success' | 'delete_error'>
+          return this.$api.deleteDownloadComic({ comicId: this.comicDetail._id, episodesOrder })
         }
       }).then((result) => {
         console.log(result.value)
-        if (result.value === 'cancel_success') {
+        if (result.value === 'delete_success') {
           this.$swal.toast.success.fire('取消成功')
-        } else if (result.value === 'cancel_error') {
+        } else if (result.value === 'delete_error') {
           this.$swal.toast.error.fire('可能发生了错误')
         }
       }).catch(() => null)
+    },
+    async retryDownloadComic (info) {
+      const { isConfirmed } = await this.$swal.modal.fire({
+        title: '重试下载本章吗？',
+        html: this.comicDetail.title + '<br>' + this.comicDetail.episodesTitle,
+        showCancelButton: true,
+        cancelButtonText: '不了',
+        confirmButtonText: '重试下载',
+        reverseButtons: true
+      })
+      if (!isConfirmed) { return }
+      this.$swal.toast.fire({
+        title: '正在添加下载任务...',
+        html: this.comicDetail.title + '<br>' + this.comicDetail.episodesTitle,
+        showCancelButton: false,
+        showConfirmButton: false,
+        allowEscapeKey: false,
+        timer: 0,
+        willOpen: () => {
+          this.$swal.modal.showLoading()
+          this.$swal.modal.clickConfirm()
+        },
+        preConfirm: () => {
+          // Promise<'delete_success' | 'delete_error'>
+          return this.$api.downloadComic({
+            comicDownloadInfo: JSON.stringify({ ...info })
+          })
+        }
+      }).then(() => {
+        this.$swal.toast.success.fire('添加成功，正在下载')
+      }).catch(() => {
+        this.$swal.toast.error.fire('下载失败，请重试')
+      })
     }
   }
 }
@@ -188,8 +277,10 @@ export default {
       grid-template-columns: 40% 15% 45%;
       align-items: center;
       border-bottom: 1px solid #dadada;
-      border-top: 1px solid #dadada;
       padding: 6px 0;
+      &:nth-child(1) {
+        border-top: 1px solid #dadada;
+      }
       .title {
         margin-right: 20px;
         .name {

@@ -1,5 +1,10 @@
 import fs from 'fs-extra'
 import path from 'path'
+import generateDownloadKey from './generateDownloadKey'
+import { AbortController } from 'node-abort-controller'
+
+const pendingDonwload = new Map()
+
 // Agreements:
 // There is only one state file for each epi,
 // it contains every info:
@@ -16,9 +21,8 @@ async function initEpiStateFile ({
 }) {
   const initEpiStateFileStructure = {
     // A string that describe the state of this epi
-    // value: 'downloading' | 'cancelled' | 'error' | 'success'
+    // value: 'downloading' | 'error' | 'success'
     // - 'downloading' the epi is downloading
-    // - 'cancelled' the epi is cancelled by user (sometimes the app is closed)
     // - 'error' the epi download finished, but some of the pictures failed
     // - 'success' the epi is well downloaded
     state: 'downloading',
@@ -73,7 +77,7 @@ async function initEpiStateFile ({
 /**
  * update an epi's download state
  * @param {{
- *  state: 'downloading' | 'cancelled' | 'error' | 'success'
+ *  state: 'downloading' | 'error' | 'success'
  * }}
  */
 async function updateEpiState ({ state, epiDirPath }) {
@@ -95,6 +99,32 @@ async function updatePictureState ({ pictureName, state, epiDirPath }) {
   fs.outputJSONSync(getEpiStateFilePath(epiDirPath), epiStateStructure)
 }
 
+async function addPendingDownload ({ comicId, episodesOrder }) {
+  const key = generateDownloadKey({ comicId, episodesOrder })
+  // Notice: we have ensured that there is no same pending download task in advance
+  const controller = new AbortController()
+  pendingDonwload.set(key, controller)
+  return controller.signal
+}
+async function hasPendingDownload ({ comicId, episodesOrder }) {
+  const key = generateDownloadKey({ comicId, episodesOrder })
+  return pendingDonwload.has(key)
+}
+async function abortPendingDownload ({ comicId, episodesOrder }) {
+  const key = generateDownloadKey({ comicId, episodesOrder })
+  if (pendingDonwload.has(key)) {
+    pendingDonwload.get(key).abort()
+    pendingDonwload.delete(key)
+  }
+  await new Promise((resolve) => { setTimeout(resolve, 200) })
+}
+async function deletePendingDownload ({ comicId, episodesOrder }) {
+  const key = generateDownloadKey({ comicId, episodesOrder })
+  pendingDonwload.delete(key)
+  await new Promise((resolve) => { setTimeout(resolve, 200) })
+}
+
 export {
-  initEpiStateFile, updateEpiState, updatePictureState
+  initEpiStateFile, updateEpiState, updatePictureState,
+  addPendingDownload, hasPendingDownload, abortPendingDownload, deletePendingDownload
 }

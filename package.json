@@ -43,6 +43,8 @@
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
     "mousetrap": "^1.6.5",
+    "node-abort-controller": "^3.0.1",
+    "node-watch": "^0.7.3",
     "pdf-lib": "^1.17.1",
     "qs": "^6.11.0",
     "sweetalert2": "^11.4.18",

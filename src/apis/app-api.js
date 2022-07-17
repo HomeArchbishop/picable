@@ -78,8 +78,9 @@ const downloadComic = async function ({ comicDownloadInfo }) {
   await window.electronAPI.downloadComic({ comicDownloadInfo })
 }
 
-const cancelDownloadComic = async function ({ comicId, episodesOrder }) {
-  await window.electronAPI.cancelDownloadComic({ comicId, episodesOrder })
+// remove all the download remains. This is the same api for cancel download
+const deleteDownloadComic = async function ({ comicId, episodesOrder }) {
+  return await window.electronAPI.deleteDownloadComic({ comicId, episodesOrder })
 }
 
 const downloadTree = async function () {
@@ -124,7 +125,7 @@ export {
   openBrowser, getRecentComic,
   recordRecentComic,
   updateRememberAccount, getRememberAccount,
-  downloadComic, cancelDownloadComic,
+  downloadComic, deleteDownloadComic,
   downloadTree, downloadEpiState,
   packPDF, packZIP
 }

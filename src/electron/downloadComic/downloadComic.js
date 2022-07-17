@@ -15,9 +15,13 @@ import * as hooks from './downloadHook'
 export default async function downloadComic ({ comicDownloadInfo }) {
   comicDownloadInfo = JSON.parse(comicDownloadInfo)
   const { comicDetail, pictureInfoList } = comicDownloadInfo
+  const { _id: comicId, episodesOrder } = comicDetail
+
+  if (await hooks.hasPendingDownload({ comicId, episodesOrder })) { return }
+  const abortSignal = await hooks.addPendingDownload({ comicId, episodesOrder })
 
   const epiDirPath = path.resolve(
-    global.RUNTIME_DATA_PATH, 'database/download', comicDetail._id, comicDetail.episodesOrder
+    global.RUNTIME_DATA_PATH, 'database/download', comicId, episodesOrder
   )
   fs.ensureDirSync(epiDirPath)
   fs.emptyDirSync(epiDirPath)
@@ -36,6 +40,10 @@ export default async function downloadComic ({ comicDownloadInfo }) {
   const taskStack = Array.from({ length: pictureInfoList.length })
 
   for (const pictureIndex in pictureInfoList) {
+    // when abort, we don't care about the whole function, and the state file anymore,
+    // we will delete all the files and dirs about the episode
+    if (abortSignal.aborted) { return }
+
     const pictureInfo = pictureInfoList[pictureIndex]
     const pictureURL = new URL(pictureInfo.media.path, 'https://storage1.picacomic.com/static/').href
     const pictureName = path.basename(pictureURL)
@@ -51,7 +59,8 @@ export default async function downloadComic ({ comicDownloadInfo }) {
         url: pictureURL,
         timeout: 15000,
         maxRedirects: 10,
-        responseType: 'stream'
+        responseType: 'stream',
+        signal: abortSignal
       })
       const dataStream = resp.data
       const writeStream = fs.createWriteStream(pictureFilePath)
@@ -105,11 +114,14 @@ export default async function downloadComic ({ comicDownloadInfo }) {
       if (successResults.length === results.length) {
         console.log('all done sucessfully', successResults.length)
         hooks.updateEpiState({ epiDirPath, state: 'success' })
-        return
       }
 
       // some pictures failed to download
-      hooks.updateEpiState({ epiDirPath, state: 'error' })
+      if (successResults.length !== results.length) {
+        hooks.updateEpiState({ epiDirPath, state: 'error' })
+      }
+
+      hooks.deletePendingDownload({ comicId, episodesOrder })
     })
     .catch(() => null)
 }

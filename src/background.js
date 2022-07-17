@@ -12,6 +12,8 @@ import resolveAppConfig from './electron/resolveAppConfig'
 import updateAppConfig from './electron/updateAppConfig'
 import topMenuTemplate from './electron/menuTemplate/topMenuTemplate'
 import sweepDownloadingPast from './electron/downloadComic/sweepDownloadingPast'
+import * as windowsManager from './electron/windowsManager'
+import { startDownloadStateWatcher } from './electron/downloadComic/downloadStateWatcher'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -79,6 +81,12 @@ async function createWindow () {
     updateAppConfig(appConfig)
   })
 
+  await windowsManager.registerWindow(win.id, win.webContents)
+
+  win.on('close', e => {
+    windowsManager.removeWindow(win.id)
+  })
+
   return win
 }
 
@@ -117,6 +125,7 @@ app.on('ready', async () => {
 })
 
 sweepDownloadingPast()
+startDownloadStateWatcher()
 
 ipcMainStart()
 
