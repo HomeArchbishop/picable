@@ -76,14 +76,9 @@
         <div class="func-btn" id="downloadBtn" :class="{ active: isChoosingDownLoad }" @click.stop="toggleDownload()">
           <font-awesome-icon icon="download" />下载
         </div>
-        <div class="func-btn" id="packBtn" :class="{ active: isChoosingPackZip }" @click.stop="togglePack()"
-          v-if="episodesDownloadedList.length"
-        >
-          <font-awesome-icon icon="file-zipper" />打包
-        </div>
       </div>
     </div>
-    <div class="episodes-card" v-if="!isRequestingDetail && !isChoosingDownLoad && !isChoosingPackZip">
+    <div class="episodes-card" v-if="!isRequestingDetail && !isChoosingDownLoad">
       <h2>章节列表</h2>
       <div class="episodes-list">
         <router-link :to="{ name: 'ComicViewer', params: { comicId, order: item.order } }" custom v-slot="{ navigate }"  v-for="item in episodesList" :key="item.order" >
@@ -99,17 +94,21 @@
         </common-tip-block>
       </div>
     </div>
-    <div class="episodes-card" v-if="!isRequestingDetail && isChoosingDownLoad && !isChoosingPackZip">
+    <div class="episodes-card" v-if="!isRequestingDetail && isChoosingDownLoad">
       <h2>请选择要下载的章节</h2>
       <div class="episodes-list">
-        <div class="episodes-item" :class="{ chosen: episodesDownloadChosenList.includes('' + item.order) }"
+        <div class="episodes-item"
+          :class="{
+            chosen: episodesDownloadChosenList.includes('' + item.order),
+            disabled: episodesDownloadedList.includes('' + item.order)
+          }"
           @click="toggleDownloadChosenList(item.order)" v-for="item in episodesList" :key="item.order"
         >
           {{ item.title }}
         </div>
       </div>
       <div class="state-line">
-         <small class="tip-small">（由于官方接口的问题，不能保证下载的成功与完整）</small>
+         <small class="tip-small">（由于官方接口的问题，不能保证下载成功，请谨慎下载）</small>
         <common-tip-block v-if="isRequestingEpisodes" :waiting="true">加载中...</common-tip-block>
         <common-tip-block v-if="!isEpisodesListEnd & !isRequestingEpisodes"
           :clickable="true" @click="getEpisodesList()"
@@ -121,23 +120,6 @@
         </common-tip-block>
       </div>
     </div>
-    <!--
-    <div class="pack-episodes-area" v-if="!isRequestingDetail && isChoosingPackZip">
-      <div class="tip">请选择要打包的章节</div>
-      <div class="tip sub">（仅支持已下载的章节）</div>
-      <div class="tip sub" v-if="!episodesDownloadedList.length">（当前没有已下载的章节供打包）</div>
-      <div class="pack-episodes-list" v-if="episodesDownloadedList.length">
-        <div class="pack-episodes-item" v-for="item in episodesList" :key="item.order"
-          :class="{
-            disable: !episodesDownloadedList.includes(String(item.order))
-          }"
-          @click.stop="packZip(item.order)">{{ item.title }}</div>
-      </div>
-      <div class="btn-div">
-        <div class="btn" @click.stop="togglePack()">取消</div>
-      </div>
-    </div>
-    -->
     <div class="recommend-card"
       v-if="
         (
@@ -186,7 +168,6 @@ export default {
       nextEpisodesPage: 1,
       episodesDownloadChosenList: [],
       episodesDownloadedList: [],
-      episodesPackChosenList: [],
       favouriteAuthorList: [],
       favouriteChineseList: [],
       recommendComicList: [],
@@ -198,7 +179,6 @@ export default {
       isRequestingFavourite: false,
       isRequestingLike: false,
       isChoosingDownLoad: false,
-      isChoosingPackZip: false,
       isDescriptionPreview: false,
       isEpisodesListEnd: false
     }
@@ -301,7 +281,6 @@ export default {
       }
     },
     async toggleDownload () {
-      this.isChoosingPackZip && await this.togglePack()
       this.isChoosingDownLoad = !this.isChoosingDownLoad
     },
     async toggleDownloadChosenList (orderNum) {
@@ -312,10 +291,6 @@ export default {
         ? chosenSet.delete(order)
         : chosenSet.add(order)
       this.episodesDownloadChosenList = Array.from(chosenSet)
-    },
-    async togglePack () {
-      this.isChoosingDownLoad && await this.toggleDownload()
-      this.isChoosingPackZip = !this.isChoosingPackZip
     },
     async download () {
       // this.$swal.modal.fire('下载功能暂未公测哦，请静候更新')
@@ -339,6 +314,7 @@ export default {
         comicAllDownloadInfo.forEach(comicDownloadInfo => {
           this.$api.downloadComic({ comicDownloadInfo: JSON.stringify(comicDownloadInfo) })
         })
+        this.episodesDownloadedList.push(...this.episodesDownloadChosenList)
         this.episodesDownloadChosenList = []
       }).catch(() => {
         this.$swal.toast.error.fire('下载失败，请重试')
@@ -379,17 +355,9 @@ export default {
       }
       return comicAllDownloadInfo
     },
-    async packZip (episodesOrder) {
-      if (episodesOrder === undefined) { return }
-      const downloadZipUrl = await this.$api.downloadZipUrl(this.comicId, episodesOrder)
-      const downloadZipWindow = window.open(downloadZipUrl)
-      downloadZipWindow.document.title = '漫画下载'
-    },
     async getDownloadedList () {
-      const downloadInfo = await this.$api.downloadInfo()
-      console.log(downloadInfo)
-      const episodesDownloadedList = downloadInfo[this.comicId] || []
-      this.$set(this, 'episodesDownloadedList', [...episodesDownloadedList])
+      this.episodesDownloadedList = (await this.$api.downloadTree())[this.comicId]?.map(i => '' + i) || []
+      console.log('this.episodesDownloadedList', this.episodesDownloadedList)
     },
     async toggleDescriptionPreview () {
       this.isDescriptionPreview = !this.isDescriptionPreview
@@ -421,12 +389,13 @@ export default {
     comicId (nextValue) {
       if (!nextValue) { return }
       // init $data.
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data.call(this))
       this.getComicDetail()
       this.getEpisodesList()
       this.getFavouriteAuthorList()
       this.getFavouriteChineseList()
       this.getRecommendComic()
+      this.getDownloadedList()
     }
   },
   created () {
@@ -435,7 +404,7 @@ export default {
     this.getFavouriteAuthorList()
     this.getFavouriteChineseList()
     this.getRecommendComic()
-    // this.getDownloadedList()
+    this.getDownloadedList()
   }
 }
 </script>
@@ -629,11 +598,15 @@ export default {
         &:nth-last-child(1) {
           margin-right: 0;
         }
-        &:hover {
+        &:not(.disabled):hover {
           transform: scale(110%)
         }
         &.chosen {
           background: lighten(@background-btn-highlight, 25%);
+        }
+        &.disabled {
+          background: darken(@background-btn-default, 29%);
+          cursor: not-allowed;
         }
       }
     }
