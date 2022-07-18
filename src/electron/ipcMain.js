@@ -1,5 +1,5 @@
 import { ipcMain, shell } from 'electron'
-import fs from 'fs-extra'
+import fs from './utils/fs-extra-safe'
 import path from 'path'
 import deleteDownloadComic from './downloadComic/deleteDownloadComic'
 import downloadComic from './downloadComic/downloadComic'

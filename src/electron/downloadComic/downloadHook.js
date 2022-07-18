@@ -1,4 +1,4 @@
-import fs from 'fs-extra'
+import fs from '../utils/fs-extra-safe'
 import path from 'path'
 import generateDownloadKey from './generateDownloadKey'
 import { AbortController } from 'node-abort-controller'

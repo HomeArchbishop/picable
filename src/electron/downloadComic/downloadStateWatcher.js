@@ -1,6 +1,6 @@
 import * as windowsManager from '../windowsManager'
 import watch from 'node-watch'
-import fs from 'fs-extra'
+import fs from '../utils/fs-extra-safe'
 import path from 'path'
 
 function generateDownloadStateWatcher () {
