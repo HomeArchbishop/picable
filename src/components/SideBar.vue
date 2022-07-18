@@ -49,11 +49,11 @@
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="eye" />
         </div>
+      </router-link>
       <router-link :to="{ name: 'Download' }" custom v-slot="{ navigate }">
         <div class="common-btn" @click="navigate">
           <font-awesome-icon icon="download" />
         </div>
-      </router-link>
       </router-link>
     </div>
   </div>
