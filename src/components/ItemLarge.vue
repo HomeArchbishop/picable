@@ -70,7 +70,7 @@ export default {
         }
       }
       if (this.item.categories) {
-        if (!this.item.categories.every(c => !RegExp.prototype.test.call(/無H|无H/i, c))) {
+        if (!this.item.categories.every(c => !RegExp.prototype.test.call(/無H|无H|禁書/i, c))) {
           return true
         }
       }
