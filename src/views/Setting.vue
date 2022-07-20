@@ -251,7 +251,8 @@
           <span class="display-word">请键入快捷键</span>
         </div>
       </div>
-      <small class="small-tip">【说明】在这里定义的快捷键，只有在App被聚焦时才有效哦。</small>
+      <small class="small-tip">【说明】在这里定义的快捷键，只有在App被聚焦时才有效哦。</small><br>
+      <small class="small-tip">【重要】目前自定义快捷键时可能存在隐性bug（如win7），请谨慎使用。如果出现键盘卡死等异常，请尝试菜单栏上的「视图」->「重载页面」</small>
     </sub-view>
 
     <sub-view view-name="代理" title-highlight v-if="isShowProxySubView" @hide="isShowProxySubView = false">

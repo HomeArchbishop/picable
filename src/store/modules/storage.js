@@ -27,8 +27,8 @@ export default {
       order: ['normalMei', 'normalMu', 'rankH24', 'rankD7', 'rankD30']
     },
     shortcuts: {
-      routeToHideSecret: ['mod+k'],
-      routeLeaveHideSecret: ['mod+shift+k'],
+      routeToHideSecret: ['mod+t'],
+      routeLeaveHideSecret: ['mod+shift+t'],
       comicViewerRowNext: ['right'],
       comicViewerRowLast: ['left'],
       comicViewerColumnNext: ['down'],
