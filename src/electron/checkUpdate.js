@@ -14,13 +14,17 @@ export async function checkUpdate () {
       setTimeout(checkUpdate, 50000)
     })
     .then((version = '0.0.0') => {
-      const LatestVersion = version.split('.')
-      const currentVersion = packageJSON.version.split('.')
+      const LatestVersion = version.split('-')[0].split('.')
+      const currentVersion = packageJSON.version.split('-')[0].split('.')
+      console.log(LatestVersion, currentVersion)
       for (let i = 0; i < Math.max(LatestVersion.length, currentVersion.length); i++) {
+        if ((+LatestVersion[i] || 0) === (+currentVersion[i] || 0)) {
+          continue
+        }
         if ((+LatestVersion[i] || 0) > (+currentVersion[i] || 0)) {
           createTipWindow(version)
-          break
         }
+        break
       }
     })
 }
