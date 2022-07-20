@@ -7,24 +7,23 @@
   <!--<a href="."><img src="https://img.shields.io/badge/Node-6.0.0%2B-green" alt="node_6+"></a>
   <a href="."><img src="https://img.shields.io/badge/npm-3.0.0%2B-green" alt="npm_v3+"></a>
   <a href="."><img src="https://img.shields.io/badge/LANG-JS/TS-gold" alt="lang:ts/js"></a>-->
-  <a href="."><img src="https://img.shields.io/badge/state-be optimizing-darkblue" alt="state: optimization"></a>
+  <!-- <a href="."><img src="https://img.shields.io/badge/state-be optimizing-darkblue" alt="state: optimization"></a> -->
   <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/HomeArchbishop/picable">
-  <a href="."><img src="https://img.shields.io/badge/release-none-green" alt="release:none"></a>
-  <a href="."><img src="https://img.shields.io/badge/Vue-^3.0.0-brightgreen" alt="Vue^3.0.0"></a>
-  <a href="."><img src="https://img.shields.io/badge/electron-^13.0.0-75C0D0" alt="electron^13.0.0"></a>
+  <a href="https://github.com/HomeArchbishop/picable/releases"><img src="https://img.shields.io/badge/release-latest-green" alt="release:latest"></a>
+  <a href="."><img src="https://img.shields.io/badge/vue-^3-brightgreen" alt="Vue^3"></a>
+  <!-- <a href="."><img src="https://img.shields.io/badge/electron-^13.0.0-75C0D0" alt="electron^13.0.0"></a> -->
   <a href="."><img alt="GitHub license" src="https://img.shields.io/github/license/HomeArchbishop/picable"></a>
 </p>
 
-<h1 align="center">预计7月1x日发布最新版本，做了非常多的优化和更改！<br>旧版本应用里会有提醒更新😉</h1>
+<h1 align="center">v1.0.0-alpha版发布🎉</h1>
 
 * 🍑旨在让PC（电脑）访问哔咔更加便捷，功能更加灵活人性化，为绅士淑女们提供极致的享受。
-* 🍓实现了官方的**绝大部分**功能，还添加了一些**个性化**功能，满足各位的日常需要绰绰有余😏。
+* 🍓实现了官方的功能，还添加了一些**个性化**功能，满足各位的日常需要绰绰有余😏。
 * 🍌本项目是原项目的vue3版本重写，架构更加科学。（原项目已废弃）
-* ✨一些细小的功能会日后更新。希望各位绅士淑女们及时关注更新（届时应用内会提醒）。
 
 ## 功能
 * 哔咔官方有的功能它就有
-* **快速隐藏页面**
+* **快速隐藏页面**，模糊界面等，保护隐私
 * **收藏作者及汉化组** （非官方功能，本地收藏）
 * 下载、 打包成pdf/zip
 * 代理proxy
@@ -32,13 +31,29 @@
 * 更多useful的特性都会有的，有想法可以提issue和pr。
 
 ## 新版本优化
-* 界面UI改进
-* 网络处理更完备
-* 灵活度up
-* 细节更加人性化
+
+- [x] 📌首页模块可选，可以选择订阅哪些内容（四个推荐和三个热榜）
+- [x] 📌看图支持横向竖向，左翻页和右翻页
+- [x] 📌使用代理
+- [x] 📌下载，打包成pdf zip
+- [x] 📌可以键盘翻页
+- [x] 📌完备美观的错误处理机制，不卡顿
+- [x] 特殊漫画标记
+- [x] 图片懒加载
+- [x] 用户自定义快捷键
+- [x] 最近观看的加载更流畅
+- [x] 本地存储方式更科学
+- [x] 安全性up
+- [x] 其他但是大量的内在逻辑优化
+
+感谢 #1 #3 #4 #5 等给我的鼓励和建议！ 
 
 ### 如果各位觉得本项目还不错，请点个star关注，算是对我的最大的鼓励啦。十分感谢。
 
+## 使用
+1. 前往Releases[下载安装包/dmg](https://github.com/HomeArchbishop/picable/releases)
+2. 在你的平台上安装
+3. enjoy!
 
 ## 为什么要开发这个？
 
