@@ -29,7 +29,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('delete-download-comic', { comicId, episodesOrder })
   },
   packPDF: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-pdf', { comicId, episodesOrder }),
-  packZIP: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-zip', { comicId, episodesOrder })
+  packZIP: ({ comicId, episodesOrder }) => ipcRenderer.invoke('pack-zip', { comicId, episodesOrder }),
+
+  // proxy
+  setProxy: ({ isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst }) => {
+    return ipcRenderer.invoke('set-proxy', { isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst })
+  }
 })
 
 ipcRenderer.on('download-state-change', (event) => {

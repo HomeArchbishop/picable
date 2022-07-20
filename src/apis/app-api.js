@@ -84,7 +84,7 @@ const deleteDownloadComic = async function ({ comicId, episodesOrder }) {
 }
 
 const downloadTree = async function () {
-  if (!window.electronAPI.existRuntimeDir({ dir: './download' })) {
+  if (!await window.electronAPI.existRuntimeDir({ dir: './download' })) {
     return []
   }
   const tree = []
@@ -105,7 +105,7 @@ const downloadTree = async function () {
 }
 
 const downloadEpiState = async function ({ comicId, epiOrder }) {
-  if (!window.electronAPI.existRuntimeFile({ file: `./download/${comicId}/${epiOrder}/epi.json` })) {
+  if (!await window.electronAPI.existRuntimeFile({ file: `./download/${comicId}/${epiOrder}/epi.json` })) {
     throw Error('file: epi.json not exists')
   }
   return JSON.parse(await window.electronAPI.readRuntimeFile({ file: `./download/${comicId}/${epiOrder}/epi.json` }))
@@ -119,6 +119,17 @@ const packZIP = async function ({ comicId, episodesOrder }) {
   return await window.electronAPI.packZIP({ comicId, episodesOrder })
 }
 
+const proxyArgs = async function () {
+  if (!await window.electronAPI.existRuntimeFile({ file: './proxy.json' })) {
+    return { isUseProxy: false, proxyURL: '', isLocalNeedProxy: false, isSystemFirst: true }
+  }
+  return JSON.parse(await window.electronAPI.readRuntimeFile({ file: './proxy.json' }))
+}
+
+const setProxy = async function ({ isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst }) {
+  return await window.electronAPI.setProxy({ isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst })
+}
+
 export {
   favouriteAuthor, favouriteAuthorList,
   favouriteChinese, favouriteChineseList,
@@ -127,5 +138,6 @@ export {
   updateRememberAccount, getRememberAccount,
   downloadComic, deleteDownloadComic,
   downloadTree, downloadEpiState,
-  packPDF, packZIP
+  packPDF, packZIP,
+  proxyArgs, setProxy
 }

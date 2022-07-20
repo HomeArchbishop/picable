@@ -14,6 +14,16 @@ import configs from '../configs'
 
 const backendApiUrl = '//localhost:3825/'
 
+async function networkSpeedTest ({ diversionUrl, token }) {
+  const startTime = new Date().getTime()
+  const subUrl = 'keywords'
+  await sendGet({
+    diversionUrl, subUrl, token, excludeStatus: [401]
+  })
+  const endTime = new Date().getTime()
+  return { rtt: endTime - startTime }
+}
+
 // 验证token
 async function checkToken ({ diversionUrl, token }) {
   const subUrl = 'keywords'
@@ -401,6 +411,7 @@ async function postWebComments ({ token, postId, page = 1 }) {
 }
 
 export {
+  networkSpeedTest,
   checkToken, authorize, categories, comics, info, episodes, picture,
   recommend, keyword, searchCategories, searchTag, search, like, comments, favourite,
   personInfo, myFavourite, myComments, shenMoCollections, punch, randomComic, appList,

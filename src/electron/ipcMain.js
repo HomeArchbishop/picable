@@ -5,6 +5,7 @@ import deleteDownloadComic from './downloadComic/deleteDownloadComic'
 import downloadComic from './downloadComic/downloadComic'
 import packPDF from './downloadComic/packPDF'
 import packZIP from './downloadComic/packZIP'
+import { setProxy } from './proxy/proxyManager'
 
 export function ipcMainStart () {
   const appRuntimeDirPath = global.RUNTIME_DATA_PATH
@@ -39,6 +40,7 @@ export function ipcMainStart () {
     shell.openExternal(url)
   })
 
+  // donwload
   ipcMain.handle('download-comic', async function downloadComicHandler (event, { comicDownloadInfo }) {
     await downloadComic({ comicDownloadInfo })
   })
@@ -53,5 +55,10 @@ export function ipcMainStart () {
 
   ipcMain.handle('pack-zip', async function (event, { comicId, episodesOrder }) {
     return await packZIP({ comicId, episodesOrder })
+  })
+
+  // proxy
+  ipcMain.handle('set-proxy', async function (event, { isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst }) {
+    return setProxy({ isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst })
   })
 }

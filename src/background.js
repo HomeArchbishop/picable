@@ -14,6 +14,7 @@ import topMenuTemplate from './electron/menuTemplate/topMenuTemplate'
 import sweepDownloadingPast from './electron/downloadComic/sweepDownloadingPast'
 import * as windowsManager from './electron/windowsManager'
 import { startDownloadStateWatcher } from './electron/downloadComic/downloadStateWatcher'
+import initProxy from './electron/proxy/initProxy'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -86,6 +87,8 @@ async function createWindow () {
   win.on('close', e => {
     windowsManager.removeWindow(win.id)
   })
+
+  await initProxy(win.webContents)
 
   return win
 }

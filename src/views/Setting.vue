@@ -122,14 +122,25 @@
           <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
         </div>
       </div>
-      <!-- <div class="info-item">
-      <div>
-        <div class="label">代理</div>
+      <div class="info-item">
+        <div>
+          <div class="label">代理</div>
+        </div>
+        <div>
+          <a href="." @click.prevent="isShowProxySubView = true">点击设置</a>
+        </div>
       </div>
-      <div>
-        <toggle-button :isChecked="isUseHttps" @click="toggleIsUseHttps()" />
+      <div class="info-item">
+        <div>
+          <div class="label">延时</div>
+        </div>
+        <div>
+          <span class="display-word" v-if="!isNetworkSpeedTest && network.rtt">{{ network.rtt }}ms</span>
+          <span class="display-word" v-if="!isNetworkSpeedTest && isNaN(network.rtt)">网络出错</span>
+          <a href="." @click.prevent="networkSpeedTest()" v-if="!isNetworkSpeedTest">点击测速</a>
+          <a v-else>正在测速</a>
+        </div>
       </div>
-    </div> -->
     </div>
     <!-- 软件信息 -->
     <div v-if="!isInSubView">
@@ -242,11 +253,51 @@
       </div>
       <small class="small-tip">【说明】在这里定义的快捷键，只有在App被聚焦时才有效哦。</small>
     </sub-view>
+
+    <sub-view view-name="代理" title-highlight v-if="isShowProxySubView" @hide="isShowProxySubView = false">
+      <div class="info-item">
+        <div>
+          <div class="label">启用代理</div>
+        </div>
+        <div>
+          <toggle-button :isChecked="proxyArgs.isUseProxy" @click="proxyArgs.isUseProxy = !proxyArgs.isUseProxy" />
+        </div>
+      </div>
+      <div class="info-item">
+        <div>
+          <div class="label" v-tippy="'示例 localhost:7890'">代理地址</div>
+        </div>
+        <div>
+          <form @submit.prevent>
+            <input type="text" v-model="proxyArgs.proxyURL">
+          </form>
+        </div>
+      </div>
+      <div class="info-item">
+        <div>
+          <div class="label" v-tippy="'开启时，本地的请求仍会使用代理'">本地地址仍启用代理</div>
+        </div>
+        <div>
+          <toggle-button :isChecked="proxyArgs.isLocalNeedProxy" @click="proxyArgs.isLocalNeedProxy = !proxyArgs.isLocalNeedProxy" />
+        </div>
+      </div>
+      <!-- <div class="info-item">
+        <div>
+          <div class="label" v-tippy="'开启时，如果系统有代理，会使用系统代理而非此处的代理'">优先使用系统代理</div>
+        </div>
+        <div>
+          <toggle-button :isChecked="proxyArgs.isSystemFirst" @click="proxyArgs.isSystemFirst = !proxyArgs.isSystemFirst" />
+        </div>
+      </div> -->
+      <div class="info-item">
+        <div class="big-btn" @click="setProxy()">保存</div>
+      </div>
+      <small class="small-tip">【说明】请记住点保存按钮。</small>
+    </sub-view>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash, faPen, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -258,7 +309,6 @@ import { mapState } from 'vuex'
 
 library.add(faEye, faEyeSlash, faPen, faBars)
 
-defineComponent({})
 export default {
   name: 'Setting',
   props: {
@@ -281,7 +331,12 @@ export default {
       nextAppLockPassword: this.$store.state.storage.appLockPassword,
       isShowHomePageModuleSubView: false,
       isShowShortcutsSubView: false,
+      isShowProxySubView: false,
       shortcutRecordingKey: '',
+      proxyArgs: this.$store.state.runtime.proxyArgs,
+      // => { isUseProxy, proxyURL, isLocalNeedProxy, isSystemFirst }
+      network: { rtt: 0 },
+      isNetworkSpeedTest: false,
       packageJSON: require('../../package.json')
     }
   },
@@ -404,7 +459,41 @@ export default {
           end()
         })
       })
+    },
+    async getProxyArgs () {
+      this.proxyArgs = await this.$api.proxyArgs()
+    },
+    async setProxy () {
+      try {
+        const resultString = await this.$api.setProxy(this.proxyArgs)
+        if (resultString === 'set_success') {
+          this.$swal.toast.success.fire('代理设置成功')
+        } else { throw new Error('unknown error in setting proxy') }
+      } catch (err) {
+        this.$swal.toast.error.fire('代理设置失败')
+      }
+    },
+    async networkSpeedTest () {
+      this.isNetworkSpeedTest = true
+      try {
+        let cnt = 4
+        const taskStack = Array.from({ length: cnt }).map(
+          () => async (rtt) => rtt + (await this.$api.networkSpeedTest({ diversionUrl: this.diversionUrl, token: this.token })).rtt
+        )
+        const rttTot = await taskStack.reduce((previousPromise, testFunc) => {
+          return previousPromise.then(testFunc).catch(() => {
+            this.$swal.toast.error.close()
+            cnt--
+            return previousPromise
+          })
+        }, Promise.resolve(0))
+        this.network.rtt = rttTot / cnt // => number includes NaN
+      } catch (err) {}
+      this.isNetworkSpeedTest = false
     }
+  },
+  created () {
+    this.getProxyArgs()
   }
 }
 </script>
@@ -445,6 +534,7 @@ export default {
         font-family: inherit;
         border: none;
         border-bottom: 2px solid @color-line-default-sub;
+        color: @color-font-default-sub;
         box-sizing: content-box;
         background-color: transparent;
         outline: none;
@@ -452,6 +542,7 @@ export default {
         text-align: right;
         &:focus {
           border-bottom: 2px solid @color-line-default;
+          color: @color-font-default;
         }
       }
       .submit-btn {
@@ -469,6 +560,16 @@ export default {
         }
         .hoverable-btn()
       }
+    }
+    .big-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      font-size: 18px;
+      padding: 4px 0;
+      border: 1px solid @color-font-default-sub;
+      cursor: pointer;
     }
   }
   .hr-line {
