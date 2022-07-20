@@ -1,41 +1,26 @@
-<div style="
-  display: flex;
-  align-items: center"
->
-<p align="center">
-  <img
-    width="180"
-    src="./static/logos/logo-256x256.png"
-    alt="Pica-comic logo"
-  >
-</p>
-<div
-  style="margin-left: 1em"
->
-  <p
-    style="
-      font-size: 2em;
-      font-weight: 600;
-      line-height: 1.25;"
-  >
-    🍑Picable哔咔漫画客户端
-  </p>
-
-  <p>
-    <!--<a href="."><img src="https://img.shields.io/badge/Node-6.0.0%2B-green" alt="node_6+"></a>
-    <a href="."><img src="https://img.shields.io/badge/npm-3.0.0%2B-green" alt="npm_v3+"></a>
-    <a href="."><img src="https://img.shields.io/badge/LANG-JS/TS-gold" alt="lang:ts/js"></a>-->
-    <!-- <a href="."><img src="https://img.shields.io/badge/state-be optimizing-darkblue" alt="state: optimization"></a> -->
-    <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/HomeArchbishop/picable">
-    <a href="https://github.com/HomeArchbishop/picable/releases"><img src="https://img.shields.io/badge/release-latest-green" alt="release:latest"></a>
-    <a href=""><img src="https://img.shields.io/badge/vue-^3-brightgreen" alt="Vue^3"></a>
-    <!-- <a href="."><img src="https://img.shields.io/badge/electron-^13.0.0-75C0D0" alt="electron^13.0.0"></a> -->
-    <a href="./LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/HomeArchbishop/picable"></a>
+<img
+  align=left
+  width="180"
+  src="./static/logos/logo-256x256.png"
+  alt="Pica-comic logo">
+ <div align=right>
+      <h1 align=left>
+        🍑Picable哔咔漫画客户端
+      </h1>
+<p align=left>
+<!--<a href="."><img src="https://img.shields.io/badge/Node-6.0.0%2B-green" alt="node_6+"></a>
+<a href="."><img src="https://img.shields.io/badge/npm-3.0.0%2B-green" alt="npm_v3+"></a>
+<a href="."><img src="https://img.shields.io/badge/LANG-JS/TS-gold" alt="lang:ts/js"></a>-->
+<!-- <a href="."><img src="https://img.shields.io/badge/state-be optimizing-darkblue" alt="state: optimization"></a> -->
+<img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/HomeArchbishop/picable">
+<a href="https://github.com/HomeArchbishop/picable/releases"><img src="https://img.shields.io/badge/release-latest-green" alt="release:latest"></a>
+<a href=""><img src="https://img.shields.io/badge/vue-^3-brightgreen" alt="Vue^3"></a>
+<!-- <a href="."><img src="https://img.shields.io/badge/electron-^13.0.0-75C0D0" alt="electron^13.0.0"></a> -->
+<a href="./LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/HomeArchbishop/picable"></a>
   </p>
 </div>
-</div>
 
-<h1 align="center">v1.0.0-alpha版发布🎉</h1>
+## v1.0.0-alpha版发布🎉
 
 * 🍑旨在让PC（电脑）访问哔咔更加便捷，功能更加灵活人性化，为绅士淑女们提供极致的享受。
 * 🍓实现了官方的功能，还添加了一些**个性化**功能，满足各位的日常需要绰绰有余😏。
