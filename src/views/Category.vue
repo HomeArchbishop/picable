@@ -1,15 +1,24 @@
 <template>
   <div class="category-container">
     <div class="display-card">
+      <h2 class="title">应用</h2>
+      <div class="item-wrap" v-if="!appList.length && !webList.length">
+        <loading-item-small v-for="i in 5" :key="i" />
+      </div>
+      <div class="item-wrap">
+        <item-small v-for="item in appList" :key="item._id + item.title" :item="item"
+          :link="{ name: item.toName }" />
+      </div>
+    </div>
+    <div class="display-card">
       <h2 class="title">小程序</h2>
       <div class="item-wrap" v-if="!appList.length && !webList.length">
-        <loading-item-small v-for="i in 13" :key="i" />
+        <loading-item-small v-for="i in 8" :key="i" />
       </div>
       <div class="item-wrap">
         <item-small v-for="item in webList" :key="item._id + item.title" :item="item"
           :link="{ name: 'Link', query: { link: item.link } }" />
-        <item-small v-for="item in appList" :key="item._id + item.title" :item="item"
-          :link="{ name: item.toName }" />
+        <item-small v-if="postWebItem.title" :item="postWebItem" :link="{ name: 'PostWeb' }" />
       </div>
     </div>
     <div class="display-card">
@@ -40,6 +49,7 @@ export default {
     return {
       appList: [],
       webList: [],
+      postWebItem: {},
       cateList: []
     }
   },
@@ -62,8 +72,7 @@ export default {
             if (item.title !== '嗶咔鍋貼') {
               this.webList.push(item)
             } else {
-              item.toName = 'PostWeb'
-              this.appList.push(item)
+              this.postWebItem = item
             }
             return
           }
